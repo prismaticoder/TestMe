@@ -16,6 +16,7 @@ class Jss1Physics extends Migration
         //Create the J1 Physics table
         Schema::create('jss1_physics', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('class_id')->unsigned();
             $table->foreign('class_id')->references('id')->on('classes');
             $table->longText('question');
             $table->json('options');
