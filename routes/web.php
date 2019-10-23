@@ -11,6 +11,23 @@
 |
 */
 
+use Illuminate\Support\Facades\Route;
+
 Route::get('/', function () {
     return view('welcome');
+});
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+Route::group(['prefix' => 'admin'], function () {
+    Route::get('/login', function() {
+        return view('admin.login');
+    });
+    Route::get('/', function() {
+        return view('admin.dashboard');
+    });
+    Route::get('/students/{class}', 'AdminController@getClassStudents');
+
 });
