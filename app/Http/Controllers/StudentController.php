@@ -32,5 +32,7 @@ class StudentController extends Controller
             return view('exam',compact('questions'));
         }
 
+        return abort('404');
+
     }
 }
