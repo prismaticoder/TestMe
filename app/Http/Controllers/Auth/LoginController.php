@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Auth;
+use App\User;
 
 class LoginController extends Controller
 {
@@ -19,7 +20,7 @@ class LoginController extends Controller
     |
     */
 
-    use AuthenticatesUsers;
+    // use AuthenticatesUsers;
 
     /**
      * Where to redirect users after login.
@@ -40,9 +41,14 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        $this->validateLogin($request);
+        $code = $request->input('code');
+        $firstname = $request->input('firstname');
+        $lastname = $request->input('lastname');
+        $user = User::where('code',$code)->where('firstname',$firstname)->where('lastname',$lastname)->first();
 
-        if ($this->attemptLogin($request)) {
+
+        if ($user) {
+            Auth::login($user);
             return redirect()->intended();
         }
 
@@ -61,7 +67,7 @@ class LoginController extends Controller
     {
         //Note that the username field here represents the code
         $request->validate([
-            $this->username() => 'required|number',
+            $this->username() => 'required|integer',
             'lastname' => 'required|string',
             'firstname' => 'required|string',
         ]);
