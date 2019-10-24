@@ -1,9 +1,9 @@
 <?php
 
-use App\Question;
 use Illuminate\Database\Seeder;
+use App\Option;
 
-class QuestionsTableSeeder extends Seeder
+class OptionTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -12,6 +12,6 @@ class QuestionsTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(Question::class,50)->create();
+        factory(Option::class,200)->create();
     }
 }
