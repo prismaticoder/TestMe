@@ -25,9 +25,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/login', function() {
         return view('admin.login');
     });
-    Route::get('/', function() {
-        return view('admin.dashboard');
-    });
+    Route::get('/', 'AdminController@dashboard');
     Route::get('/students/{class}', 'AdminController@getClassStudents');
 
 });
