@@ -52,14 +52,56 @@ class AdminController extends Controller
         return abort('404','Page does not exist');
     }
 
-    public function addQuestion(Request $request) {
-        // $question = $request->input('question');
-        // DB::transaction(function(Request $request) use() {
-        //     Question::options()->create($request->only('optionA','optionB',)
-        // });
+    public function addQuestion(Request $request,$subject,$class_id) {
+        $subject = Subject::where('alias',$subject)->first();
+
+        if ($subject) {
+            $subject_id = $subject->id;
+            $question = $request->only('question');
+            $options = $request->only('optionA','optionB','optionC','optionD');
+            $correctAnswer = $request->only('correct');
+
+
+
+            DB::transaction(function() use($class_id,$subject_id,$question,$options,$correctAnswer) {
+                Question::create([
+                    'subject_id' => $subject_id,
+                    'class_id' => $class_id,
+                    'question' => $question,
+                ]);
+                foreach ($options as $key=>$option) {
+                    Question::options()->create([
+                        'body' => $option,
+                        'isCorrect' => ($correctAnswer == $key)?1:0
+                    ]);
+                }
+            });
+        }
+
+        return abort('404');
     }
 
-    public function updateQuestion($id) {
+    public function updateQuestion(Request $request,$subject,$class_id,$id) {
+        $subject = Subject::where('alias',$subject)->first();
+        if ($subject) {
+            $question = $request->only('question');
+            $options = $request->only('optionA','optionB','optionC','optionD');
+            $correctAnswer = $request->only('correct');
+
+            DB::transaction(function() use($question,$options,$correctAnswer,$id) {
+                Question::find($id)->update([
+                    'question' => $question,
+                ]);
+                foreach ($options as $key=>$option) {
+                    Question::find($id)->options()->update([
+                        'body' => $option,
+                        'isCorrect' => ($correctAnswer == $key)?1:0
+                    ]);
+                }
+            });
+        }
+
+        return abort('404');
 
     }
 }
