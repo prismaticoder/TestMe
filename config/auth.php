@@ -47,7 +47,7 @@ return [
             'hash' => false,
         ],
         //Add Admin Guard
-        'admin' => [
+        'admins' => [
             'driver' => 'session',
             'provider' => 'admins',
         ],

@@ -17,15 +17,20 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
+// Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::group(['prefix' => 'admin'], function () {
-    Route::get('/login', function() {
-        return view('admin.login');
-    });
+    Route::get('/login', "Admin\LoginController@showLoginForm")->name('admin-login');
+    Route::post('/login', "Admin\LoginController@authenticate");
     Route::get('/', 'AdminController@dashboard');
     Route::get('/students/{class}', 'AdminController@getClassStudents');
+
+    Route::group(['prefix' => 'subjects'], function() {
+        Route::get('/{subject}/questions', 'AdminController@getAllQuestions');
+        Route::post('/{subject}/questions', 'AdminController@addNewQuestion');
+        Route::put('/{subject}/questions/{id}', 'AdminController@updateQuestion');
+    });
 
 });
