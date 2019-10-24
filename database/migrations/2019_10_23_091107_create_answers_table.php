@@ -17,7 +17,7 @@ class CreateAnswersTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('question_id');
             $table->foreign('question_id')->references('id')->on('questions');
-            $table->longText('option');
+            $table->longText('body');
             $table->boolean('isCorrect')->default(0);
         });
     }
