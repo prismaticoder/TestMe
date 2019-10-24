@@ -31,9 +31,9 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/students/{class}', 'AdminController@getClassStudents');
 
     Route::group(['prefix' => 'subjects'], function() {
-        Route::get('/{subject}/{class_id}/questions', 'AdminController@getAllQuestions');
+        Route::get('/{subject}/{class_id}/questions', 'AdminController@getAllQuestions')->name('questions');
         Route::post('/{subject}/{class_id}/questions', 'AdminController@addNewQuestion');
-        Route::put('/{subject}/{class_id}/questions/{id}', 'AdminController@updateQuestion');
+        Route::post('/{subject}/{class_id}/questions/{id}', 'AdminController@updateQuestion');
     });
 
 });
