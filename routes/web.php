@@ -17,6 +17,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/login', 'Auth\LoginController@login')->name('login');
+Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
+
 // Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
@@ -24,7 +27,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::group(['prefix' => 'admin'], function () {
     Route::get('/login', "Admin\LoginController@showLoginForm")->name('admin-login');
     Route::post('/login', "Admin\LoginController@authenticate");
-    Route::get('/', 'AdminController@dashboard');
+    Route::get('/', 'AdminController@dashboard')->name('dashboard');
     Route::get('/students/{class}', 'AdminController@getClassStudents');
 
     Route::group(['prefix' => 'subjects'], function() {
