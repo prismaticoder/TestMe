@@ -18,4 +18,8 @@ class Subject extends Model
     public function options() {
         return $this->hasManyThrough(Option::class, Question::class);
     }
+
+    public function classes() {
+        return $this->belongsToMany(Classes::class, 'questions');
+    }
 }

@@ -7,6 +7,7 @@ use App\Subject;
 use App\Classes;
 use App\Question;
 use App\Option;
+use DB;
 
 class AdminController extends Controller
 {
@@ -36,16 +37,29 @@ class AdminController extends Controller
         return abort('404','Page does not exist');
     }
 
-    public function getAllQuestions($subject) {
+    public function getAllQuestions($subject,$class_id) {
         $subject = Subject::where('alias',$subject)->first();
+        $subject_id = $subject['id'];
 
         if ($subject) {
-            $questions = $subject->questions;
-            $answers = $subject->answers;
 
-            return view('admin.questions', compact('questions','answers'));
+            $questions = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->with('options')->get();
+            // $options = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->options;
+
+            return view('admin.questions', compact('questions'));
         }
 
         return abort('404','Page does not exist');
+    }
+
+    public function addQuestion(Request $request) {
+        // $question = $request->input('question');
+        // DB::transaction(function(Request $request) use() {
+        //     Question::options()->create($request->only('optionA','optionB',)
+        // });
+    }
+
+    public function updateQuestion($id) {
+
     }
 }
