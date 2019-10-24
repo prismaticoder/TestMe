@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Subject;
+use App\Classes;
+use App\Question;
+use App\Option;
 
 class AdminController extends Controller
 {
@@ -21,19 +25,27 @@ class AdminController extends Controller
     }
 
     public function getClassStudents($class) {
-        $class = Classes::where('class',$class);
+        $class = Classes::where('class',$class)->first();
 
-        $students = $class->students;
+        if ($class) {
+            $students = $class->students;
 
-        return view('admin.class-students')->with('students',$students);
+            return view('admin.class-students')->with('students',$students);
+        }
+
+        return abort('404','Page does not exist');
     }
 
     public function getAllQuestions($subject) {
-        $subject = Subject::where('alias',$subject)->get();
+        $subject = Subject::where('alias',$subject)->first();
 
-        $questions = $subject->questions;
-        $answers = $subject->answers;
+        if ($subject) {
+            $questions = $subject->questions;
+            $answers = $subject->answers;
 
-        return view('admin.questions', compact('questions','answers'));
+            return view('admin.questions', compact('questions','answers'));
+        }
+
+        return abort('404','Page does not exist');
     }
 }

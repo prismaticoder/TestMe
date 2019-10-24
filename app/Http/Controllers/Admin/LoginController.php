@@ -33,7 +33,7 @@ class LoginController extends Controller
     public function authenticate(Request $request) {
         $credentials = $request->only('username','password');
 
-        if(Auth::guard('admins')->check($credentials)) {
+        if(Auth::guard('admins')->attempt($credentials)) {
             return redirect()->intended(route('dashboard'));
         }
 
