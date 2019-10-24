@@ -9,6 +9,6 @@ class Classes extends Model
     protected $table = 'classes';
 
     public function students() {
-        return $this->hasMany(User::Class, 'class_id');
+        return $this->hasMany(User::class, 'class_id');
     }
 }

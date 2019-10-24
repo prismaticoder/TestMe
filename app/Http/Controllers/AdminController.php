@@ -27,4 +27,13 @@ class AdminController extends Controller
 
         return view('admin.class-students')->with('students',$students);
     }
+
+    public function getAllQuestions($subject) {
+        $subject = Subject::where('alias',$subject)->get();
+
+        $questions = $subject->questions;
+        $answers = $subject->answers;
+
+        return view('admin.questions', compact('questions','answers'));
+    }
 }
