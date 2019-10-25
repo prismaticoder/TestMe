@@ -23,13 +23,15 @@ class StudentController extends Controller
         $user = Auth::user();
         $class_id = $user->class_id;
 
+        $name = $user->firstname . ' ' . $user->lastname;
+
         $subject = Subject::where('alias',$subject)->first();
 
         if ($subject) {
             $subject_id = $subject->id;
-            $questions = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->with('options')->get();
+            $questions = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->with('options')->inRandomOrder()->get();
 
-            return view('exam',compact('questions'));
+            return view('exam',compact('questions','name','user'));
         }
 
         return abort('404');

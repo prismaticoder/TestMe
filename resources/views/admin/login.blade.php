@@ -66,33 +66,33 @@
     <form class="form-signin" action="{{route('admin-login')}}" method="post">
       <img class="mb-4" src="../../assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
       <h1 class="h3 mb-3 font-weight-normal">Admin Login</h1>
-        
+
         @csrf
 
         @foreach ($error as $err)
             {{$err}}
         @endforeach<br>
 
-      <input type="text" id="inputEmail" class="form-control" placeholder="Username" required autofocus>
+      <input type="text" id="inputEmail" class="form-control" name="username" placeholder="Username" required autofocus>
 
-      <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+      <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password" required>
       <input class="btn btn-lg btn-primary btn-block" type="submit" value="Submit Details">
-      <p class="mt-5 mb-3 text-muted">&copy; 2019</p>
+      <p class="mt-5 mb-3 text-muted">&copy; {{date('Y')}}</p>
     </form>
   </body>
 </html>
 
         {{-- Admin Login Page --}}
 
-        <!-- <form action="{{route('admin-login')}}" method="post">
-            @csrf
+        <!-- <form action="{{}}" method="post">
+            {{-- @csrf --}}
 
-            @foreach ($error as $err)
+            {{-- @foreach ($error as $err)
                 {{$err}}
-            @endforeach<br>
+            @endforeach<br> --}}
             Username: <input type="text" name="username"><br>
             Password: <input type="password" name="password"><br>
 
             <input type="submit" value="Submit Details">
         </form> -->
-    
+
