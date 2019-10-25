@@ -19,7 +19,7 @@ class CreateUsersTable extends Migration
             $table->foreign('class_id')->references('id')->on('classes');
             $table->string('firstname');
             $table->string('lastname');
-            $table->string('code')->unique();
+            $table->string('code');
             // $table->timestamp('email_verified_at')->nullable();
             // $table->string('password');
             // $table->rememberToken();
