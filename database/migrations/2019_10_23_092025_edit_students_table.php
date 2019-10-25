@@ -13,7 +13,7 @@ class EditStudentsTable extends Migration
      */
     public function up()
     {
-        Schema::table('students', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             $table->softDeletes();
         });
     }
@@ -25,7 +25,7 @@ class EditStudentsTable extends Migration
      */
     public function down()
     {
-        Schema::table('students', function(Blueprint $table) {
+        Schema::table('users', function(Blueprint $table) {
             $table->dropColumn('deleted_at');
         });
 
