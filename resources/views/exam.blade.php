@@ -2,8 +2,10 @@
 @foreach ($questions as $question)
     <b>Question</b> {{$question->question}}<br>
 
+    @php $letter = "A" @endphp
     @foreach ($question->options as $option)
-        Option: <pre>{{$option->body}}</pre>
+        Option {{$letter}}: <pre>{{$option->body}}</pre>
+        @php $letter++ @endphp
     @endforeach
 
 @endforeach
