@@ -1,15 +1,15 @@
 ## ToDo
 1. Admin dashboard 
 
-Contains a list of all subjects with links to host the exams, add questions or see exam results
-Has links to view the students of each class (JSS1, JSS2 and JSS3)
+    - Contains a list of all subjects with links to host the exams, add questions or see exam results
+    - Has links to view the students of each class (JSS1, JSS2 and JSS3)
 
 
 2. Admin Login Page
 3. Students Login Page
 4. Single Page for Showing each question with their options (there's a "next" button for the user to choose the next question) (Link is `/exam/physics` for example)
 
-This is the main SPA. The user has the question (with its options) occupying most of the page. Then there is a timer on one part of the page, a submit button, a section that shows the student's name and the subjects he is taking. Then a sidebar with links to each question, he clicks a question and the page automatically displays the question without refreshing, there's also a "next" button. The view for this is `exam.blade.php`
+    - This is the main SPA. The user has the question (with its options) occupying most of the page. Then there is a timer on one part of the page, a submit button, a section that shows the student's name and the subjects he is taking. Then a sidebar with links to each question, he clicks a question and the page automatically displays the question without refreshing, there's also a "next" button. The view for this is `exam.blade.php`
 
 5. Page for viewing all students eligible to write an exam for a class (Link is `/admin/students/jss1` for example) It shows the user the list of all students. He can add a new student, delete a student or edit student details (all linking to modals, not new pages) The view for this is `admin/class-students.blade.php`
 6. Page that Lists all subjects with links to host the exam and also to add question, also to view all results of students who took the question (This is the admin dashboard as referred above)
