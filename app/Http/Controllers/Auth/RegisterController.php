@@ -67,7 +67,7 @@ class RegisterController extends Controller
             'firstname' => $data['firstname'],
             'lastname' => $data['lastname'],
             'class_id' => $data['class_id'],
-            'code' => rand(0000,9999),
+            'code' => 'OASIS-' . rand(0000,9999),
         ]);
     }
 }
