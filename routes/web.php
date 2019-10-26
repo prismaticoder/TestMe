@@ -31,7 +31,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/login', "Admin\LoginController@showLoginForm")->name('admin-login');
     Route::post('/login', "Admin\LoginController@authenticate");
     Route::get('/', 'AdminController@dashboard')->name('dashboard');
-    Route::get('/students/{class}', 'AdminController@getClassStudents');
+    Route::get('/students/{class}', 'AdminController@getClassStudents')->name('class-students');
 
     Route::group(['prefix' => 'subjects'], function() {
         Route::get('/{subject}/{class_id}/questions', 'AdminController@getAllQuestions')->name('questions');

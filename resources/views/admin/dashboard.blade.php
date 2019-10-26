@@ -181,24 +181,14 @@
               </a>
             </h6>
             <ul class="nav flex-column mb-2">
-              <li class="nav-item">
-                <a class="nav-link" href="#">
-                  <span data-feather="users"></span>
-                  JSS 1
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">
-                  <span data-feather="users"></span>
-                  JSS 2
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">
-                  <span data-feather="users"></span>
-                  JSS 3
-                </a>
-              </li>
+                @foreach ($classes as $class)
+                    <li class="nav-item">
+                    <a class="nav-link" href="{{route('class-students',['class'=>strtolower($class->class)])}}">
+                          <span data-feather="users"></span>
+                          {{$class->class}}
+                        </a>
+                    </li>
+                @endforeach
             </ul>
 
             <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
@@ -208,24 +198,14 @@
               </a>
             </h6>
             <ul class="nav flex-column mb-2">
-              <li class="nav-item">
-                <a class="nav-link" href="#">
-                  <span data-feather="file-text"></span>
-                  English Language
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">
-                  <span data-feather="file-text"></span>
-                  Mathematics
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">
-                  <span data-feather="file-text"></span>
-                  JSS 3
-                </a>
-              </li>
+                @foreach ($subjects as $subject)
+                    <li class="nav-item">
+                    <a class="nav-link" href="{{route('questions',['subject'=>$subject->alias,'class_id'=>1])}}">
+                          <span data-feather="file-text"></span>
+                          {{$subject->subject_name}}
+                        </a>
+                    </li>
+                @endforeach
             </ul>
           </div>
         </nav>

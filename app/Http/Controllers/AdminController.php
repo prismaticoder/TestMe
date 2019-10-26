@@ -22,7 +22,9 @@ class AdminController extends Controller
     }
 
     public function dashboard() {
-        return view('admin.dashboard');
+        $subjects = Subject::get();
+        $classes = Classes::get();
+        return view('admin.dashboard',compact('subjects','classes'));
     }
 
     public function getClassStudents($class) {
