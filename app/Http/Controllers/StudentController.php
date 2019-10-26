@@ -29,9 +29,9 @@ class StudentController extends Controller
 
         if ($subject) {
             $subject_id = $subject->id;
-            $questions = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->with('options')->inRandomOrder()->get();
+            $questions = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->with('options')->paginate(1);
 
-            return view('exam',compact('questions','name','user'));
+            return view('exam',compact('questions','name','user','subject'));
         }
 
         return abort('404');
