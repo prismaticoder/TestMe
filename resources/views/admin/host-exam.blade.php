@@ -1,0 +1,1 @@
+{{-- The page that the admin sees after setting the exam modalities in the "Host Exam" modal. Basic Page to show the timer. The number of students who have submitted and also those who are currently undertaking the course --}}
