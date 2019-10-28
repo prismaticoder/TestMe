@@ -89,6 +89,9 @@
         [role="main"] {
         padding-top: 100px; /* Space for fixed navbar */
         }
+        .card-text {
+          font-size: 48px !important;
+        }
 
         /*
         * Navbar
@@ -212,32 +215,30 @@
         </nav>
 
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+          <h1>Dashboard</h1>
           <div class="card-deck">
             <div class="card">
-              <img src="..." class="card-img-top" alt="...">
               <div class="card-body">
-                <h5 class="card-title">JSS 1 STUDENTS</h5>
-                <p class="card-text">135</P>
+                <h5 class="card-title">Junior Secondary School 1</h5>
+                <p class="card-text">135 Students</P>
               </div>
               <div class="card-footer">
                 <small class="text-muted">Last updated 3 mins ago</small>
               </div>
             </div>
             <div class="card">
-              <img src="..." class="card-img-top" alt="...">
               <div class="card-body">
-                <h5 class="card-title">JSS 1 STUDENTS</h5>
-                <p class="card-text">135</P>
+                <h5 class="card-title">Junior Secondary School 1</h5>
+                <p class="card-text">135 Students</P>
               </div>
               <div class="card-footer">
                 <small class="text-muted">Last updated 3 mins ago</small>
               </div>
             </div>
             <div class="card">
-              <img src="..." class="card-img-top" alt="...">
               <div class="card-body">
-                <h5 class="card-title">JSS 1 STUDENTS</h5>
-                <p class="card-text">135</P>
+                <h5 class="card-title">Junior Secondary School 1</h5>
+                <p class="card-text">135 Students</P>
               </div>
               <div class="card-footer">
                 <small class="text-muted">Last updated 3 mins ago</small>
