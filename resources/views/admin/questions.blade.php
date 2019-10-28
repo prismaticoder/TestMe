@@ -70,40 +70,58 @@
     <form action="{{route('questions',['subject'=>$subject->alias,'class_id'=>$class_id])}}" method="post">
         @csrf
         <textarea name="question" id="summernote"></textarea>
+        <div class="options">
+            <div class="form-group row">
+                <label for="optionA" class="col-sm-2 col-form-label">Option A</label>
+                <div class="col-sm-10">
+                <input type="text" class="form-control" id="optionA" placeholder="Password">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="optionB" class="col-sm-2 col-form-label">Option B</label>
+                <div class="col-sm-10">
+                <input type="text" class="form-control" id="optionB" placeholder="Password">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="optionC" class="col-sm-2 col-form-label">Option C</label>
+                <div class="col-sm-10">
+                <input type="text" class="form-control" id="optionC" placeholder="Password">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="optionD" class="col-sm-2 col-form-label">Option D</label>
+                <div class="col-sm-10">
+                <input type="text" class="form-control" id="optionD" placeholder="Password">
+                </div>
+            </div>
+        </div>
 
-        <div class="form-group row">
-            <label for="optionA" class="col-sm-2 col-form-label">Option A</label>
-            <div class="col-sm-10">
-            <input type="text" class="form-control" id="optionA" placeholder="Enter optional answers here">
+        <div class="answer">
+            Select the right answer
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" id="inlineCheckbox1" value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">1</label>
             </div>
-        </div>
-        <div class="form-group row">
-            <label for="optionB" class="col-sm-2 col-form-label">Option B</label>
-            <div class="col-sm-10">
-            <input type="text" class="form-control" id="optionB" placeholder="Enter optional answers here">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" id="inlineCheckbox2" value="option2">
+                <label class="form-check-label" for="inlineCheckbox2">2</label>
             </div>
-        </div>
-        <div class="form-group row">
-            <label for="optionC" class="col-sm-2 col-form-label">Option C</label>
-            <div class="col-sm-10">
-            <input type="text" class="form-control" id="optionC" placeholder="Enter optional answers here">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" id="inlineCheckbox3" value="option3">
+                <label class="form-check-label" for="inlineCheckbox3">3</label>
             </div>
-        </div>
-        <div class="form-group row">
-            <label for="optionD" class="col-sm-2 col-form-label">Option D</label>
-            <div class="col-sm-10">
-            <input type="text" class="form-control" id="optionD" placeholder="Enter optional answers here">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" id="inlineCheckbox4" value="option4">
+                <label class="form-check-label" for="inlineCheckbox4">4</label>
             </div>
         </div>
 
-        <ul>
-        <li><input type="radio" name="correct" id="A" value="optionA">A</li>
-        <li><input type="radio" name="correct" id="B" value="optionB">B</li>
-        <li><input type="radio" name="correct" id="C" value="optionC">C</li>
-        <li><input type="radio" name="correct" id="D" value="optionD">D</li>
-        </ul>
-
-        <input type="submit" value="Submit question">
+        <div >
+            <button type="button" class="btn btn-secondary">Last Question</button>
+            <button type="submit" class="btn btn-secondary">Submit Question</button>
+            <button type="button" class="btn btn-secondary">Next Question</button>
+        </div>
     </form>
 
 
