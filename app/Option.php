@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Option extends Model
 {
     //
-    protected $fillable = ['question_id','option','isCorrect'];
+    protected $fillable = ['question_id','body','isCorrect'];
 
     public $timestamps = false;
 }

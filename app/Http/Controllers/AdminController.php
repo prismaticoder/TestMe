@@ -48,7 +48,7 @@ class AdminController extends Controller
             $questions = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->with('options')->get();
             // $options = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->options;
 
-            return view('admin.questions', compact('questions'));
+            return view('admin.questions', compact('questions','subject','class_id'));
         }
 
         return abort('404','Page does not exist');
@@ -59,9 +59,9 @@ class AdminController extends Controller
 
         if ($subject) {
             $subject_id = $subject->id;
-            $question = $request->only('question');
-            $options = $request->only('optionA','optionB','optionC','optionD');
-            $correctAnswer = $request->only('correct');
+            $question = $request->question;
+            $options = $request->only(['optionA','optionB','optionC','optionD']);
+            $correctAnswer = $request->correct;
 
 
 
@@ -72,7 +72,7 @@ class AdminController extends Controller
                     'question' => $question,
                 ]);
                 foreach ($options as $key=>$option) {
-                    Question::options()->create([
+                    Question::orderBy('created_at','desc')->first()->options()->create([
                         'body' => $option,
                         'isCorrect' => ($correctAnswer == $key)?1:0
                     ]);
