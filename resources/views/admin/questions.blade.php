@@ -71,14 +71,30 @@
         @csrf
         <textarea name="question" id="summernote"></textarea>
 
-        <label for="optionA">Option A</label>
-        <input type="text" name="optionA" id="optionA"><br>
-        <label for="optionB">Option B</label>
-        <input type="text" name="optionB" id="optionB"><br>
-        <label for="optionC">Option C</label>
-        <input type="text" name="optionC" id="optionC"><br>
-        <label for="optionD">Option D</label>
-        <input type="text" name="optionD" id="optionD">
+        <div class="form-group row">
+            <label for="optionA" class="col-sm-2 col-form-label">Option A</label>
+            <div class="col-sm-10">
+            <input type="text" class="form-control" id="optionA" placeholder="Enter optional answers here">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="optionB" class="col-sm-2 col-form-label">Option B</label>
+            <div class="col-sm-10">
+            <input type="text" class="form-control" id="optionB" placeholder="Enter optional answers here">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="optionC" class="col-sm-2 col-form-label">Option C</label>
+            <div class="col-sm-10">
+            <input type="text" class="form-control" id="optionC" placeholder="Enter optional answers here">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="optionD" class="col-sm-2 col-form-label">Option D</label>
+            <div class="col-sm-10">
+            <input type="text" class="form-control" id="optionD" placeholder="Enter optional answers here">
+            </div>
+        </div>
 
         <ul>
         <li><input type="radio" name="correct" id="A" value="optionA">A</li>
