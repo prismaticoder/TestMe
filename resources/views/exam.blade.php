@@ -1,7 +1,7 @@
 {{-- Welcome to our SPA. This is the view for the exam the student will be undertaking --}}
 @php $n = 0 @endphp
 @foreach ($questions as $question)
-    {{$question->question}}<br>
+    {!!$question->question!!}<br>
     <form action="" method="POST">
         @php $letter = "A" @endphp
         <ul>

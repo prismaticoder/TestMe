@@ -78,6 +78,8 @@ class AdminController extends Controller
                     ]);
                 }
             });
+
+            return back()->with('message','Question Added Succesfully');
         }
 
         return abort('404');
