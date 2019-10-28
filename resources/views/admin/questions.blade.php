@@ -97,8 +97,10 @@
             </div>
         </div>
 
-        <div class="answer">
-            Select the right answer
+        <div class="answer row">
+            <label for="optionD" class="col-sm-2 col-form-label">Right answer</label>
+            <div class="col-sm-10">
+            
             <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" id="inlineCheckbox1" value="option1">
                 <label class="form-check-label" for="inlineCheckbox1">1</label>
@@ -115,10 +117,11 @@
                 <input class="form-check-input" type="radio" id="inlineCheckbox4" value="option4">
                 <label class="form-check-label" for="inlineCheckbox4">4</label>
             </div>
+            </div>
         </div>
 
         <div >
-            <button type="button" class="btn btn-secondary">Last Question</button>
+            <button type="button" class="btn btn-secondary">Previous Question</button>
             <button type="submit" class="btn btn-secondary">Submit Question</button>
             <button type="button" class="btn btn-secondary">Next Question</button>
         </div>
