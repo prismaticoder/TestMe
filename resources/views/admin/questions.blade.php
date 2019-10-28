@@ -121,9 +121,7 @@
         </div>
 
         <div >
-            <button type="button" class="btn btn-secondary">Previous Question</button>
             <button type="submit" class="btn btn-secondary">Submit Question</button>
-            <button type="button" class="btn btn-secondary">Next Question</button>
         </div>
     </form>
 
