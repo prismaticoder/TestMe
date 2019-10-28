@@ -7,13 +7,15 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Questions Page</title>
     <!-- include libraries(jQuery, bootstrap) -->
-    <link href="{{asset('css/bootstrap.css')}}" rel="stylesheet">
+    <link href="{{asset('css/bootstrap.min.css')}}" rel="stylesheet">
     <script src="{{asset('js/jquery.js')}}"></script>
     <script src="{{asset('js/bootstrap.js')}}"></script>
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
 
-    <!-- include summernote css/js-->
+    <!-- include summernote css-->
     <link href="{{asset('css/summernote.css')}}" rel="stylesheet">
+
+    <!-- include summernote js-->
     <script src="{{asset('js/summernote.js')}}"></script>
 
     <script>
@@ -29,10 +31,43 @@
             });
             })
     </script>
+    <style>
+        form {
+            margin-top: 120px;
+        }
+    </style>
 
     </head>
 <body>
-<form action="{{route('questions',['subject'=>$subject->alias,'class_id'=>$class_id])}}" method="post">
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">One-Time Schools</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Current Subject <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">JSS 1</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">JSS 2</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">JSS 3</a>
+            </li>
+            </ul>
+            <span class="navbar-text">
+                <a class="nav-link" href="#">Sign out</a>
+            </span>
+        </div>
+    </nav>
+    
+
+    <div class="container">
+    <form action="{{route('questions',['subject'=>$subject->alias,'class_id'=>$class_id])}}" method="post">
         @csrf
         <textarea name="question" id="summernote"></textarea>
 
@@ -54,6 +89,12 @@
 
         <input type="submit" value="Submit question">
     </form>
+
+
+    </div>
+
+
+    
 </body>
 </html>
 @foreach ($questions as $question)
