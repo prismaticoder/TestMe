@@ -17,27 +17,41 @@
     <link rel="stylesheet" href="{{asset('/css/bootstrap.min.css')}}">
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
     <style>
-        nav {
-            margin-bottom: 300px;
+        h2 {
+            margin-top: 120px;
+            text-align: center;
         }
     </style>
   </head>
   <body>
-
-  <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-      <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">One-Time Schools</a>
-      <ul class="navbar-nav px-3">
-        <li class="nav-item text-nowrap">
-          <a class="nav-link" href="#">Sign out</a>
-        </li>
-      </ul>
+    
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">One-Time Schools</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Home </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Features <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Pricing</a>
+            </li>
+            </ul>
+            <span class="navbar-text">
+                <a class="nav-link" href="#">Sign out</a>
+            </span>
+        </div>
     </nav>
 
-    <div class="container">
-        <h2>CLass</h2>
-          <div class="table-responsive">
+    <div class="container contents">
+        <h2>JSS One Students List</h2>
           
-          <table class="table table-sm table-hover table-bordered">
+          <table class="table table-s table-hover table-bordered">
               <thead class="thead-dark">
                 <tr>
                   <th scope="col">Registration Number</th>
@@ -48,22 +62,22 @@
               </thead>
               <tbody>
                 <tr>
-                  <th scope="row">1</th>
+                  <td >1</td>
                   <td>Mark</td>
                   <td>Otto</td>
                   <td>@mdo</td>
                 </tr>
                 @foreach ($students as $student )
                     <tr>
-                        <td scope="row">{{$student->firstname}}</td>
-                        <td>{{$student->lastname}}</td>
-                        <td>{{$student->code}}</td>
+                        <td scope="col">{{$student->firstname}}</td>
+                        <td scope="col">{{$student->lastname}}</td>
+                        <td scope="col">{{$student->code}}</td>
+                        <td scope="col">{{$student->code}}</td>
                     </tr>
                 @endforeach
                 
               </tbody>
             </table>
-          </div>
           </div>
     </body>
 </html>
