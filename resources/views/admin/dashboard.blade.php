@@ -94,7 +94,7 @@
             </div>
             <div class="card-footer">
               <small class="text-muted">
-              <a href="#" class="btn btn-secondary">Start Exam</a>
+              <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">Start Exam</a>
               <a href="#" class="btn btn-secondary">JSS 1</a>
               <a href="#" class="btn btn-secondary">JSS 2</a>
               <a href="#" class="btn btn-secondary">JSS 3</a>
@@ -105,13 +105,54 @@
         </main>
 
         </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+              <form>
+                <div class="row">
+                <div class="col">
+                    <label for="">Time</label>
+                  </div>
+                  <div class="col">
+                    <input type="text" class="form-control" placeholder="Hour">
+                  </div>
+                  <div class="col">
+                    <input type="text" class="form-control" placeholder="Minutes">
+                  </div>
+                </div>
+                <div class="form-group row mt-3">
+                  <label for="colFormLabel" class="col-sm-2 col-form-label">Score</label>
+                  <div class="col-sm-10">
+                    <input type="email" class="form-control" id="colFormLabel" placeholder="score">
+                  </div>
+                </div>
+              </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Start Exam</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
     <script src="../../assets/js/vendor/popper.min.js"></script>
 
-    <script src="{{asset('js/jquery.min.js')}}"></script>
+    <script src="{{asset('js/jquery.js')}}"></script>
     <script src="{{asset('js/bootstrap.min.js')}}"></script>
 
     <!-- Icons -->
