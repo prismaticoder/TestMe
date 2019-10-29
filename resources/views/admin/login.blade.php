@@ -73,11 +73,12 @@
             {{$err}}
         @endforeach<br>
 
-      <input type="text" id="inputEmail" class="form-control" name="username" placeholder="Username" required autofocus>
-
-      <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password" required>
-      <input class="btn btn-lg btn-primary btn-block" type="submit" value="Submit Details">
-      <p class="mt-5 mb-3 text-muted">&copy; {{date('Y')}}</p>
+        <label for="username">Username:</label>
+        <input type="text" id="username" class="form-control" name="username" placeholder="Username" required><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" class="form-control" placeholder="Password" required><br>
+        <input class="btn btn-lg btn-primary btn-block" type="submit" value="Login">
+        <p class="mt-5 mb-3 text-muted">&copy; {{date('Y')}}</p>
     </form>
   </body>
 </html>

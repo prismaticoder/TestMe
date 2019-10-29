@@ -130,7 +130,7 @@
       <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">One-Time Schools</a>
       <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
-          <a class="nav-link" href="#">Sign out</a>
+          <a class="nav-link" href="{{route('admin-logout')}}">Sign out</a>
         </li>
       </ul>
     </nav>
@@ -217,33 +217,17 @@
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
           <h1>Dashboard</h1>
           <div class="card-deck">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">Junior Secondary School 1</h5>
-                <p class="card-text">135 Students</P>
-              </div>
-              <div class="card-footer">
-                <small class="text-muted">Last updated 3 mins ago</small>
-              </div>
-            </div>
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">Junior Secondary School 1</h5>
-                <p class="card-text">135 Students</P>
-              </div>
-              <div class="card-footer">
-                <small class="text-muted">Last updated 3 mins ago</small>
-              </div>
-            </div>
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">Junior Secondary School 1</h5>
-                <p class="card-text">135 Students</P>
-              </div>
-              <div class="card-footer">
-                <small class="text-muted">Last updated 3 mins ago</small>
-              </div>
-            </div>
+              @foreach ($classes as $class)
+                <div class="card">
+                    <div class="card-body">
+                    <h5 class="card-title">Junior Secondary School {{$class->id}}</h5>
+                      <p class="card-text">{{$class->students()->count()}} Students</P>
+                    </div>
+                    <div class="card-footer">
+                      <small class="text-muted">Last updated 3 mins ago</small>
+                    </div>
+                </div>
+              @endforeach
           </div>
         </main>
       </div>

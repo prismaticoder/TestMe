@@ -24,9 +24,9 @@
     </style>
   </head>
   <body>
-    
+
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">One-Time Schools</a>
+    <a class="navbar-brand" href="{{route('dashboard')}}">Dashboard</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -43,39 +43,33 @@
             </li>
             </ul>
             <span class="navbar-text">
-                <a class="nav-link" href="#">Sign out</a>
+            <a class="nav-link" href="{{route('admin-logout')}}">Sign out</a>
             </span>
         </div>
     </nav>
 
     <div class="container contents">
-        <h2>JSS One Students List</h2>
-          
+    <h2>JSS{{$class->id}} Student List</h2>
+
           <table class="table table-s table-hover table-bordered">
               <thead class="thead-dark">
                 <tr>
                   <th scope="col">Registration Number</th>
                   <th scope="col">Firstname</th>
                   <th scope="col">Lastname</th>
-                  <th scope="col">Handle</th>
+                  <th scope="col">Class</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td >1</td>
-                  <td>Mark</td>
-                  <td>Otto</td>
-                  <td>@mdo</td>
-                </tr>
                 @foreach ($students as $student )
                     <tr>
+                        <td scope="col">{{$student->code}}</td>
                         <td scope="col">{{$student->firstname}}</td>
                         <td scope="col">{{$student->lastname}}</td>
-                        <td scope="col">{{$student->code}}</td>
-                        <td scope="col">{{$student->code}}</td>
+                        <td scope="col">JSS{{$student->class_id}}</td>
                     </tr>
                 @endforeach
-                
+
               </tbody>
             </table>
           </div>
