@@ -28,193 +28,46 @@
         vertical-align: text-bottom;
         }
 
-        /*
-        * Sidebar
-        */
-
-        .sidebar {
-        position: fixed;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        z-index: 100; /* Behind the navbar */
-        padding: 48px 0 0; /* Height of navbar */
-        box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
-        }
-
-        .sidebar-sticky {
-        position: relative;
-        top: 0;
-        height: calc(100vh - 48px);
-        padding-top: .5rem;
-        overflow-x: hidden;
-        overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-        }
-
-        @supports ((position: -webkit-sticky) or (position: sticky)) {
-        .sidebar-sticky {
-            position: -webkit-sticky;
-            position: sticky;
-        }
-        }
-
-        .sidebar .nav-link {
-        font-weight: 500;
-        color: #333;
-        }
-
-        .sidebar .nav-link .feather {
-        margin-right: 4px;
-        color: #999;
-        }
-
-        .sidebar .nav-link.active {
-        color: #007bff;
-        }
-
-        .sidebar .nav-link:hover .feather,
-        .sidebar .nav-link.active .feather {
-        color: inherit;
-        }
-
-        .sidebar-heading {
-        font-size: .75rem;
-        text-transform: uppercase;
-        }
-
-        /*
-        * Content
-        */
-
-        [role="main"] {
-        padding-top: 100px; /* Space for fixed navbar */
+        .classes {
+          margin-top: 120px;
         }
         .card-text {
-          font-size: 48px !important;
+          font-size: 36px !important;
+          font-weight: bold;
         }
 
-        /*
-        * Navbar
-        */
-
-        .navbar-brand {
-        padding-top: .75rem;
-        padding-bottom: .75rem;
-        font-size: 1rem;
-        background-color: rgba(0, 0, 0, .25);
-        box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
-        }
-
-        .navbar .form-control {
-        padding: .75rem 1rem;
-        border-width: 0;
-        border-radius: 0;
-        }
-
-        .form-control-dark {
-        color: #fff;
-        background-color: rgba(255, 255, 255, .1);
-        border-color: rgba(255, 255, 255, .1);
-        }
-
-        .form-control-dark:focus {
-        border-color: transparent;
-        box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
-        }
+       
 
     </style>
   </head>
 
   <body>
-    <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-      <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">One-Time Schools</a>
-      <ul class="navbar-nav px-3">
-        <li class="nav-item text-nowrap">
-          <a class="nav-link" href="{{route('admin-logout')}}">Sign out</a>
-        </li>
-      </ul>
+  <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
+    <a class="navbar-brand" href="{{route('dashboard')}}">Dashboard</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Features</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Pricing</a>
+            </li>
+            </ul>
+            <span class="navbar-text">
+            <a class="nav-link" href="{{route('admin-logout')}}">Sign out</a>
+            </span>
+        </div>
     </nav>
 
-    <div class="container-fluid">
-      <div class="row">
-        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-          <div class="sidebar-sticky">
-            <ul class="nav flex-column">
-              <li class="nav-item">
-                <a class="nav-link active" href="#">
-                  <span data-feather="home"></span>
-                  Dashboard <span class="sr-only">(current)</span>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">
-                  <span data-feather="file"></span>
-                  Orders
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">
-                  <span data-feather="shopping-cart"></span>
-                  Products
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">
-                  <span data-feather="users"></span>
-                  Customers
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">
-                  <span data-feather="bar-chart-2"></span>
-                  Reports
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">
-                  <span data-feather="layers"></span>
-                  Integrations
-                </a>
-              </li>
-            </ul>
+    <div class="container">
 
-            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-              <span>CLASSES</span>
-              <a class="d-flex align-items-center text-muted" href="#">
-                <span data-feather="plus-circle"></span>
-              </a>
-            </h6>
-            <ul class="nav flex-column mb-2">
-                @foreach ($classes as $class)
-                    <li class="nav-item">
-                    <a class="nav-link" href="{{route('class-students',['class'=>strtolower($class->class)])}}">
-                          <span data-feather="users"></span>
-                          {{$class->class}}
-                        </a>
-                    </li>
-                @endforeach
-            </ul>
-
-            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-              <span>SUBJECTS</span>
-              <a class="d-flex align-items-center text-muted" href="#">
-                <span data-feather="plus-circle"></span>
-              </a>
-            </h6>
-            <ul class="nav flex-column mb-2">
-                @foreach ($subjects as $subject)
-                    <li class="nav-item">
-                    <a class="nav-link" href="{{route('questions',['subject'=>$subject->alias,'class_id'=>1])}}">
-                          <span data-feather="file-text"></span>
-                          {{$subject->subject_name}}
-                        </a>
-                    </li>
-                @endforeach
-            </ul>
-          </div>
-        </nav>
-
-        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+        <main role="main" class="classes">
           <h1>Dashboard</h1>
           <div class="card-deck">
               @foreach ($classes as $class)
@@ -229,10 +82,29 @@
                 </div>
               @endforeach
           </div>
+          </main>
+        
+        <h1 style="margin-top:50px;">Subjects</h1>
+        
+        <main class="card-columns">
+          @foreach ($subjects as $subject)
+          <div class="card">
+            <div class="card-body">
+              <p class="card-text">Subject</p>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">
+              <a href="#" class="btn btn-secondary">Start Exam</a>
+              <a href="#" class="btn btn-secondary">JSS 1</a>
+              <a href="#" class="btn btn-secondary">JSS 2</a>
+              <a href="#" class="btn btn-secondary">JSS 3</a>
+              </small>
+            </div>
+          </div>
+          @endforeach
         </main>
-      </div>
-    </div>
 
+        </div>
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
