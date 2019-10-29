@@ -5,8 +5,12 @@ $( function() {
         }
     })
 
+
+    const userAnswers = new Array();
 $('.nxtButton').click(function() {
-    let questionID = this.id;
+    let id = this.id;
+    let questionID = $('.question').attr('id');
+
 
     $.ajax({
         url:'/getQuestions',
@@ -14,20 +18,22 @@ $('.nxtButton').click(function() {
         data: {
             subject: 'english',
             class:2,
-            question_id: questionID
+            question_id: id
         },
         success:function(response) {
             console.log(response);
-            $('#question').html(response.question)
+            $('.question').html(response.question)
             $('.options').each(function(index) {
                 $(this).html(response.options[index].body)
             })
-            $('.nxtButton').attr('id',parseInt(questionID)+1);
-            $('input[name="options"]:checked').attr('checked',false);
-            $('#subjectH').val('english');
-            $('#classH').val(2);
-            $('#questionH').val(questionID);
-            $('#reloadForm').submit()
+            $('.nxtButton').attr('id',parseInt(id)+1);
+            let answer = $('input[name="options"]:checked').val();
+            if (answer) {
+                userAnswers.push({'question_id':questionID,'answer':answer});
+            }
+            document.getElementById('options').reset();
+            $('.question').attr('id',response.id);
+            console.log(userAnswers)
         },
         error: function(response) {
             console.log(response);

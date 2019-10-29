@@ -54,6 +54,7 @@ class LoginController extends Controller
 
         if ($user) {
             Auth::login($user);
+            session('seed',rand(0000,9999));
             return redirect()->intended();
         }
 

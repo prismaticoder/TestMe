@@ -33,7 +33,7 @@ class AdminController extends Controller
         if ($class) {
             $students = $class->students;
 
-            return view('admin.class-students')->with('students',$students);
+            return view('admin.class-students', compact('students','class'));
         }
 
         return abort('404','Page does not exist');
@@ -89,7 +89,7 @@ class AdminController extends Controller
         $subject = Subject::where('alias',$subject)->first();
         if ($subject) {
             $question = $request->only('question');
-            $options = $request->only('optionA','optionB','optionC','optionD');
+            $options = $request->only(['optionA','optionB','optionC','optionD']);
             $correctAnswer = $request->only('correct');
 
             DB::transaction(function() use($question,$options,$correctAnswer,$id) {
@@ -104,7 +104,7 @@ class AdminController extends Controller
                 }
             });
 
-            return redirect()->back();
+            return back()->with('message','Question Updated Succesfully');
         }
 
         return abort('404');

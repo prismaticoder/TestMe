@@ -60,11 +60,11 @@
             </li>
             </ul>
             <span class="navbar-text">
-                <a class="nav-link" href="#">Sign out</a>
+                <a class="nav-link" href="{{route('admin-logout')}}">Sign out</a>
             </span>
         </div>
     </nav>
-    
+
 
     <div class="container">
     <form action="{{route('questions',['subject'=>$subject->alias,'class_id'=>$class_id])}}" method="post">
@@ -100,7 +100,7 @@
         <div class="answer row">
             <label for="optionD" class="col-sm-2 col-form-label">Right answer</label>
             <div class="col-sm-10">
-            
+
             <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" id="inlineCheckbox1" value="option1">
                 <label class="form-check-label" for="inlineCheckbox1">1</label>
@@ -129,7 +129,7 @@
     </div>
 
 
-    
+
 </body>
 </html>
 @foreach ($questions as $question)
