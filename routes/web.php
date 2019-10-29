@@ -27,9 +27,13 @@ Route::get('/exam/{subject}','StudentController@getExamQuestions')->name('exam')
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+Route::get('/getQuestions','StudentController@getAjaxQuestions')->name('get-questions');
+// Route::post('/exam/{subject}','StudentController@getAjaxQuestions');
+
 Route::group(['prefix' => 'admin'], function () {
     Route::get('/login', "Admin\LoginController@showLoginForm")->name('admin-login');
     Route::post('/login', "Admin\LoginController@authenticate");
+    Route::get('/logout', "Admin\LoginController@logout")->name('admin-logout');
     Route::get('/', 'AdminController@dashboard')->name('dashboard');
     Route::get('/students/{class}', 'AdminController@getClassStudents')->name('class-students');
 
