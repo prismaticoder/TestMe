@@ -12,8 +12,6 @@
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="{{asset('/css/bootstrap.min.css')}}">
-    <!-- Custom styles for this template -->
-    <link href="signin.css" rel="stylesheet">
     <style>
         html,
         body {
