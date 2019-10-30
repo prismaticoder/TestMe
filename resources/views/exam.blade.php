@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{csrf_token()}}">
-    <title>Student Examination</title>
+<title>Oasis CBT | {{$subject->subject_name}} Examination</title>
 
         <!-- Bootstrap core CSS -->
         <link rel="stylesheet" href="{{asset('/css/bootstrap.min.css')}}">
@@ -44,7 +44,7 @@
         <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="#">{{strtoupper($subject->subject_name)}} JSS{{$user->class_id}} <span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="{{Request::url()}}">{{strtoupper($subject->subject_name)}} JSS{{$user->class_id}} <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
             <a class="nav-link" href="#">{{$name}}</a>
@@ -80,7 +80,7 @@
         <div class="card">
             <div class="card-body">
             <h5 class="card-title">Question No 13 of 60</h5>
-                <p class="card-text" id="question">Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Which of these is true?</p>
+                <p class="card-text" id="question">Some quick example text to build on the card title and maked on the card title and make up the bulk of the card's content.<br>up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Which of these is true?</p>
             </div>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item"><input type="radio" name="options" id="">A. Cras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odio</li>
