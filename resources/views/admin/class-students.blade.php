@@ -73,7 +73,7 @@
                         <td>{{$student->lastname}}</td>
                         <td>JSS{{$student->class_id}}</td>
                         <td >
-                          <button href="#" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModalCenter">EDIT</button>
+                          <button href="#" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editModal">EDIT</button>
                           <button href="#" class="btn btn-secondary btn-sm">DELETE</button>
                         </td>
                     </tr>
@@ -95,21 +95,16 @@
               </div>
               <div class="modal-body">
               <form>
-                <div class="row">
-                <div class="col">
-                    <label for="">Time</label>
-                  </div>
-                  <div class="col">
-                    <input type="text" class="form-control" placeholder="Hour">
-                  </div>
-                  <div class="col">
-                    <input type="text" class="form-control" placeholder="Minutes">
+                <div class="form-group row mt-3">
+                  <label for="firstName" class="col-sm-4 col-form-label">First Name</label>
+                  <div class="col-sm-8">
+                    <input type="email" class="form-control" id="firstName" placeholder="First Name">
                   </div>
                 </div>
                 <div class="form-group row mt-3">
-                  <label for="colFormLabel" class="col-sm-2 col-form-label">Score</label>
-                  <div class="col-sm-10">
-                    <input type="email" class="form-control" id="colFormLabel" placeholder="score">
+                  <label for="lastName" class="col-sm-4 col-form-label">Last Name</label>
+                  <div class="col-sm-8">
+                    <input type="email" class="form-control" id="lastName" placeholder="Last Name">
                   </div>
                 </div>
               </form>
@@ -121,5 +116,50 @@
             </div>
           </div>
         </div>
+
+        <!-- Edit Modal -->
+        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="editModalTitle">Edit Student Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+              <form>
+                <div class="form-group row mt-3">
+                  <label for="firstName" class="col-sm-4 col-form-label">First Name</label>
+                  <div class="col-sm-8">
+                    <input type="email" class="form-control" id="firstName" placeholder="First Name">
+                  </div>
+                </div>
+                <div class="form-group row mt-3">
+                  <label for="lastName" class="col-sm-4 col-form-label">Last Name</label>
+                  <div class="col-sm-8">
+                    <input type="email" class="form-control" id="lastName" placeholder="Last Name">
+                  </div>
+                </div>
+              </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save Changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+        <!-- Bootstrap core JavaScript
+        ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+        <script src="../../assets/js/vendor/popper.min.js"></script>
+
+        <script src="{{asset('js/jquery.js')}}"></script>
+        <script src="{{asset('js/bootstrap.min.js')}}"></script>
     </body>
 </html>
