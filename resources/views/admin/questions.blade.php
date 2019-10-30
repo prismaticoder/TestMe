@@ -77,25 +77,25 @@
             <div class="form-group row">
                 <label for="optionA" class="col-sm-2 col-form-label">Option A</label>
                 <div class="col-sm-10">
-                <input type="text" required class="option form-control" id="optionA" name="optionA" placeholder="Option A">
+                <input type="text" required class="option form-control"  data-option-id="" id="optionA" name="optionA" placeholder="Option A">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="optionB" class="col-sm-2 col-form-label">Option B</label>
                 <div class="col-sm-10">
-                <input type="text" required class="option form-control" id="optionB" name="optionB" placeholder="Option B">
+                <input type="text" required class="option form-control" data-option-id="" id="optionB" name="optionB" placeholder="Option B">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="optionC" class="col-sm-2 col-form-label">Option C</label>
                 <div class="col-sm-10">
-                <input type="text" required class="option form-control" id="optionC" name="optionC" placeholder="Option C">
+                <input type="text" required class="option form-control" data-option-id="" id="optionC" name="optionC" placeholder="Option C">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="optionD" class="col-sm-2 col-form-label">Option D</label>
                 <div class="col-sm-10">
-                <input type="text" required class="option form-control" id="optionD" name="optionD" placeholder="Option D">
+                <input type="text" required class="option form-control" data-option-id="" id="optionD" name="optionD" placeholder="Option D">
                 </div>
             </div>
         </div>
