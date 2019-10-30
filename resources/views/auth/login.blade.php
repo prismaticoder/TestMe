@@ -7,7 +7,7 @@
     <meta name="author" content="">
     <link rel="icon" href="/docs/4.1/assets/img/favicons/favicon.ico">
 
-    <title>Admin Login Page</title>
+    <title>Student Login Page</title>
 
 
     <!-- Bootstrap core CSS -->
