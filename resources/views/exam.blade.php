@@ -21,13 +21,13 @@
 
         }
         .question-body {
-           padding: 130px 100px 0;
+           padding: 130px 100px 50px;
         }
         .question-body input {
             margin-right: 15px;
         }
         .sidebar {
-            padding: 70px 0;
+            padding: 70px 0 20px;
             height: 100vh;
             overflow-y: scroll;
             background-color: #fff;

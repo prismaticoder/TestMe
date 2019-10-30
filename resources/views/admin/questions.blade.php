@@ -42,13 +42,13 @@
             cursor: pointer;
         }
         .sidebar {
-            padding: 70px 0;
+            padding: 70px 0 20px;
             height: 100vh;
             overflow-y: scroll;
             background-color: #fff;
         }
         .question-body {
-           padding: 130px 100px 0;
+           padding: 130px 100px 50px;
         }
     </style>
 
@@ -151,7 +151,7 @@
             <button data-button-type="add-question" class="btn btn-secondary submitBtn">Submit Question</button>
         </div>
     </form>
-    
+    <br>
     <ul>
         @foreach ($questions as $question)
             <li><span class="questionBtn" id="{{$question->id}}">Question {{$loop->iteration}}</span></li>
