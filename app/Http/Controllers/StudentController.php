@@ -21,6 +21,12 @@ class StudentController extends Controller
     }
 
     public function getExamQuestions(\Request $request, $subject) {
+
+        $checkHost = Subject::where('alias',$subject)->first()->isHosted;
+
+        // If and Only if CheckHost applies should a user proceed further, else, return 401 - Not Authorized
+
+
         $user = Auth::user();
         $class_id = $user->class_id;
 
