@@ -66,7 +66,7 @@
             </li>
             @foreach ($classes as $class)
                 <li class="nav-item">
-                <a class="nav-link" href="{{route('questions',['subject'=>$subject->alias,'class'=>$class->id])}}">JSS {{$class->id}}</a>
+                <a class="nav-link {{ (request()->segment(4) == $class->id) ? 'active' : '' }}" href="{{route('questions',['subject'=>$subject->alias,'class_id'=>$class->id])}}">JSS {{$class->id}}</a>
                 </li>
             @endforeach
             </ul>
@@ -80,13 +80,9 @@
         <div class="col-md-2 sidebar">
             <h4 class="mt-3 mb-3 ml-3">Questions List</h4>
             <div class="list-group">
-                <a href="#" class="list-group-item list-group-item-action active">
-                    Cras justo odio
-                </a>
-                <a href="#" class="list-group-item list-group-item-action">Dapibus ac facilisis in</a>
-                <a href="#" class="list-group-item list-group-item-action">Morbi leo risus</a>
-                <a href="#" class="list-group-item list-group-item-action">Porta ac consectetur ac</a>
-                <a href="#" class="list-group-item list-group-item-action" tabindex="-1" aria-disabled="true">Vestibulum at eros</a>
+                @foreach ($questions as $question)
+                <span class="questionBtn list-group-item list-group-item-action" id="{{$question->id}}">Question {{$loop->iteration}}</span>
+                @endforeach
             </div>
         </div>
 
@@ -152,12 +148,12 @@
         </div>
     </form>
     <br>
-    <ul>
+    {{-- <ul>
         @foreach ($questions as $question)
             <li><span class="questionBtn" id="{{$question->id}}">Question {{$loop->iteration}}</span></li>
 
         @endforeach
-    </ul>
+    </ul> --}}
 
     </div>
     </div>

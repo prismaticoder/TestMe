@@ -71,7 +71,7 @@
               @foreach ($classes as $class)
                 <div class="card">
                     <div class="card-body">
-                    <a href="#" class="text-dark">
+                    <a href="{{route('class-students',['class'=>$class->class])}}" class="text-dark">
                       <h5 class="card-title">Junior Secondary School {{$class->id}}</h5>
                     </a>
                       <p class="card-text">{{$class->students()->count()}} Students</P>
