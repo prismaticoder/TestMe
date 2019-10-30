@@ -74,7 +74,7 @@
                         <td>JSS{{$student->class_id}}</td>
                         <td >
                           <button href="#" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editModal">EDIT</button>
-                          <button href="#" class="btn btn-secondary btn-sm">DELETE</button>
+                          <button href="#" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#deleteModal">DELETE</button>
                         </td>
                     </tr>
                 @endforeach
@@ -146,6 +146,28 @@
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary">Save Changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Edit Modal -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalTitle">Delete Student Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p>Delete the student below from School Database</p>
+                <p>Student First name and Last name</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Delete Student</button>
               </div>
             </div>
           </div>
