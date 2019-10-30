@@ -143,10 +143,13 @@
         </div>
 
         <br>
+        <input type="hidden" name="" id="subject_id" value="{{$subject->id}}">
+        <input type="hidden" name="" id="class_id" value="{{$class_id}}">
         <div>
             <button data-button-type="add-question" class="btn btn-secondary submitBtn">Submit Question</button>
         </div>
     </form>
+
     <br>
     {{-- <ul>
         @foreach ($questions as $question)

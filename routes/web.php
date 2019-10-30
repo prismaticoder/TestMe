@@ -31,6 +31,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/getQuestions','StudentController@getAjaxQuestions')->name('get-questions');
 Route::get('/admin/findQuestion/{id}', 'AdminController@findOneQuestion');
 Route::post('/updateQuestion/{id}','AdminController@updateQuestion');
+Route::post('/addQuestion', 'AdminController@addQuestion');
 // Route::post('/exam/{subject}','StudentController@getAjaxQuestions');
 
 Route::group(['prefix' => 'admin'], function () {

@@ -56,35 +56,35 @@ class AdminController extends Controller
         return abort('404','Page does not exist');
     }
 
-    public function addQuestion(Request $request,$subject,$class_id) {
-        $subject = Subject::where('alias',$subject)->first();
-
-        if ($subject) {
-            $subject_id = $subject->id;
-            $question = $request->question;
-            $options = $request->only(['optionA','optionB','optionC','optionD']);
-            $correctAnswer = $request->correct;
+    public function addQuestion(Request $request) {
+        $subject_id = $request->subject_id;
+        $class_id = $request->class_id;
+        $question = $request->question;
+        $options = $request->options;
+        $correctAnswer = $request->correct;
 
 
 
-            DB::transaction(function() use($class_id,$subject_id,$question,$options,$correctAnswer) {
-                Question::create([
-                    'subject_id' => $subject_id,
-                    'class_id' => $class_id,
-                    'question' => $question,
+        DB::transaction(function() use($class_id,$subject_id,$question,$options,$correctAnswer) {
+            Question::create([
+                'subject_id' => $subject_id,
+                'class_id' => $class_id,
+                'question' => $question,
+            ]);
+            foreach ($options as $key=>$option) {
+                Question::orderBy('created_at','desc')->first()->options()->create([
+                    'body' => $option,
+                    'isCorrect' => ($correctAnswer == $key)?1:0
                 ]);
-                foreach ($options as $key=>$option) {
-                    Question::orderBy('created_at','desc')->first()->options()->create([
-                        'body' => $option,
-                        'isCorrect' => ($correctAnswer == $key)?1:0
-                    ]);
-                }
-            });
+            }
+        });
 
-            return back()->with('message','Question Added Succesfully');
-        }
+        $newQuestion = Question::orderBy('created_at','desc')->first();
+        $count = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->count();
 
-        return abort('404');
+        Log::info($newQuestion);
+
+        return response()->json(['question'=>$newQuestion,'count'=>$count]);
     }
 
     public function updateQuestion(Request $request, $id) {

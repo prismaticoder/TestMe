@@ -6,6 +6,8 @@ $(function() {
     })
 
     $('.questionBtn').on('click', function() {
+        $(this).addClass("active");
+        $(".questionBtn").not(this).removeClass("active");
         id = this.id;
         getSelectedQuestion(id);
     })
@@ -17,6 +19,9 @@ $(function() {
         if (type == 'question-update') {
             // alert(id);
             updateQuestion(id);
+        }
+        else {
+            addQuestion();
         }
     })
 
@@ -82,6 +87,37 @@ $(function() {
             },
             success:function(response) {
                 alert('Question Updated Successfully')
+            },
+            error:function(response) {
+                console.log(response)
+            }
+        })
+    }
+
+    function addQuestion() {
+        let question = $('#summernote').val();
+        let options1 = $('.option');
+        let options = [];
+        let subject_id = $('#subject_id').val();
+        let class_id = $('#class_id').val();
+        options1.each(function() {
+            options.push($(this).val())
+        })
+        let correct = $('input[name="correct"]:checked').val();
+        $.ajax({
+            url: '/addQuestion',
+            method: 'POST',
+            data: {
+                question:question,
+                options:options,
+                correct:correct,
+                subject_id:subject_id,
+                class_id:class_id
+            },
+            success:function(response) {
+                alert('Question Added Successfully')
+                console.log(response)
+                $('.list-group').append("<span class=\"questionBtn list-group-item list-group-item-action\" id=\""+response.question.id+"\">Question "+response.count+"</span>")
             },
             error:function(response) {
                 console.log(response)
