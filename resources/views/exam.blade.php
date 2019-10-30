@@ -37,20 +37,20 @@
 </head>
 <body class="container-fluid">
 <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
-    <a class="navbar-brand" href="{{route('dashboard')}}">One Time Schools</a>
+    <a class="navbar-brand" href="{{route('dashboard')}}">OASIS ROYAL ACADEMY</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="#">Subject <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="#">{{strtoupper($subject->subject_name)}} JSS{{$user->class_id}} <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Student Name</a>
+            <a class="nav-link" href="#">{{$name}}</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Exam No: 1234</a>
+            <a class="nav-link" href="#">Exam No: {{$user->code}}</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">Time: 35 min left</a>
@@ -69,10 +69,9 @@
                 <a href="#" class="list-group-item list-group-item-action active">
                     Cras justo odio
                 </a>
-                <a href="#" class="list-group-item list-group-item-action">Dapibus ac facilisis in</a>
-                <a href="#" class="list-group-item list-group-item-action">Morbi leo risus</a>
-                <a href="#" class="list-group-item list-group-item-action">Porta ac consectetur ac</a>
-                <a href="#" class="list-group-item list-group-item-action" tabindex="-1" aria-disabled="true">Vestibulum at eros</a>
+                @foreach ($questions as $question)
+                    <a href="#" class="list-group-item list-group-item-action" id="{{$question->id}}">Question {{$loop->iteration}}</a>
+                @endforeach
             </div>
         </div>
 
