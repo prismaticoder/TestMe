@@ -13,29 +13,29 @@
     <style>
         html,
         body {
-        height: 100%;
+        border: border-box;
         }
 
         body {
-        display: -ms-flexbox;
-        display: flex;
-        -ms-flex-align: center;
-        align-items: center;
-        padding-top: 40px;
-        padding-bottom: 40px;
         background-color: #f5f5f5;
-        }
 
+        }
+        .question-body {
+           padding: 130px 100px 0;
+        }
         .question-body input {
             margin-right: 15px;
         }
-        .card {
+        .sidebar {
+            padding: 70px 0;
+            height: 100vh;
             overflow-y: scroll;
+            background-color: #fff;
         }
     </style>
 
 </head>
-<body>
+<body class="container-fluid">
 <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
     <a class="navbar-brand" href="{{route('dashboard')}}">One Time Schools</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,7 +47,10 @@
                 <a class="nav-link" href="#">Subject <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Features</a>
+                <a class="nav-link" href="#">Student Name</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Exam No: 1234</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">Time: 35 min left</a>
@@ -59,9 +62,22 @@
         </div>
     </nav>
 
+    <div class="row">
+        <div class="col-md-2 sidebar">
+            <h4 class="mt-3 mb-3 ml-3">Questions List</h4>
+            <div class="list-group">
+                <a href="#" class="list-group-item list-group-item-action active">
+                    Cras justo odio
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">Dapibus ac facilisis in</a>
+                <a href="#" class="list-group-item list-group-item-action">Morbi leo risus</a>
+                <a href="#" class="list-group-item list-group-item-action">Porta ac consectetur ac</a>
+                <a href="#" class="list-group-item list-group-item-action" tabindex="-1" aria-disabled="true">Vestibulum at eros</a>
+            </div>
+        </div>
 
 
-    <div class="container question-body">
+    <div class="col-md-10 question-body ">
         <div class="card">
             <div class="card-body">
             <h5 class="card-title">Question No 13 of 60</h5>
@@ -78,6 +94,8 @@
                 <a href="#" class="btn btn-primary card-link">Next Question</a>
             </div>
         </div>
+    </div>
+
     </div>
 
         {{-- <p id="demo"></p>
