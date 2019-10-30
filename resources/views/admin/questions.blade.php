@@ -11,7 +11,7 @@
     <link href="{{asset('css/bootstrap.min.css')}}" rel="stylesheet">
     <script src="{{asset('js/jquery.js')}}"></script>
     <script src="{{asset('js/bootstrap.js')}}"></script>
-    <script src="{{asset('js/functions2.js')}}"></script>
+    <script src="{{asset('/js/functions2.js')}}"></script>
     {{-- <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"> --}}
 
     <!-- include summernote css-->
@@ -107,19 +107,19 @@
             <div class="col-sm-10">
 
             <div class="form-check form-check-inline">
-                <input class="form-check-input" required name="correct" type="radio" id="inlineCheckbox1" value="optionA">
+                <input class="form-check-input" required name="correct" type="radio" id="inlineCheckbox1" value="0">
                 <label class="form-check-label" for="inlineCheckbox1">A</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" name="correct" type="radio" id="inlineCheckbox2" value="optionB">
+                <input class="form-check-input" name="correct" type="radio" id="inlineCheckbox2" value="1">
                 <label class="form-check-label" for="inlineCheckbox2">B</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" name="correct" type="radio" id="inlineCheckbox3" value="optionC">
+                <input class="form-check-input" name="correct" type="radio" id="inlineCheckbox3" value="2">
                 <label class="form-check-label" for="inlineCheckbox3">C</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" name="correct" type="radio" id="inlineCheckbox4" value="optionD">
+                <input class="form-check-input" name="correct" type="radio" id="inlineCheckbox4" value="3">
                 <label class="form-check-label" for="inlineCheckbox4">D</label>
             </div>
             </div>
@@ -127,7 +127,7 @@
 
         <br>
         <div>
-            <button type="submit" class="btn btn-secondary">Submit Question</button>
+            <button type="submit" class="btn btn-secondary submitBtn">Submit Question</button>
         </div>
     </form>
 
@@ -135,7 +135,7 @@
     </div>
 <ul>
     @foreach ($questions as $question)
-        <li><span class="questionBtn" id="{{$loop->index}}" onclick="getSelectedQuestion({{$question->id}})">Question {{$loop->iteration}}</span></li>
+        <li><span class="questionBtn" id="{{$question->id}}">Question {{$loop->iteration}}</span></li>
 
     @endforeach
 </ul>
