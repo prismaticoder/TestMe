@@ -10,12 +10,13 @@ $(function() {
         getSelectedQuestion(id);
     })
 
-    $('.submitBtn').click(function(event) {
+    $('.submitBtn').on('click',function(event) {
         event.preventDefault();
         let type = $(this).attr('data-button-type');
-        let id = $(this).id;
+        let id = $(this).attr('id');
         if (type == 'question-update') {
-            return updateQuestion(id);
+            // alert(id);
+            updateQuestion(id);
         }
     })
 
@@ -34,6 +35,7 @@ $(function() {
                 if (length >= 4) {
                     $('.option').each(function(index) {
                         $(this).val(response.options[index].body)
+                        $(this).attr('data-option-id', response.options[index].id)
                     })
                 }
 
@@ -64,7 +66,11 @@ $(function() {
     //Update Existing Question
     function updateQuestion(id) {
         let question = $('#summernote').val();
-        let options = document.getElementsByClassName('option');
+        let options1 = $('.option');
+        let options = [];
+        options1.each(function() {
+            options.push({id:$(this).attr('data-option-id'), value:$(this).val()})
+        })
         let correct = $('input[name="correct"]:checked').val();
         $.ajax({
             url: '/updateQuestion/' + id,
@@ -75,7 +81,10 @@ $(function() {
                 correct:correct
             },
             success:function(response) {
-                alert(response)
+                alert('Question Updated Successfully')
+            },
+            error:function(response) {
+                console.log(response)
             }
         })
     }

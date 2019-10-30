@@ -8,6 +8,7 @@ use App\Classes;
 use App\Question;
 use App\Option;
 use DB;
+use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
@@ -42,13 +43,14 @@ class AdminController extends Controller
     public function getAllQuestions($subject,$class_id) {
         $subject = Subject::where('alias',$subject)->first();
         $subject_id = $subject['id'];
+        $classes = Classes::all();
 
         if ($subject) {
 
             $questions = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->with('options')->get();
             // $options = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->options;
 
-            return view('admin.questions', compact('questions','subject','class_id'));
+            return view('admin.questions', compact('questions','subject','class_id','classes'));
         }
 
         return abort('404','Page does not exist');
@@ -85,29 +87,33 @@ class AdminController extends Controller
         return abort('404');
     }
 
-    public function updateQuestion(Request $request,$subject,$class_id,$id) {
-        $subject = Subject::where('alias',$subject)->first();
-        if ($subject) {
-            $question = $request->only('question');
-            $options = $request->only(['optionA','optionB','optionC','optionD']);
-            $correctAnswer = $request->only('correct');
+    public function updateQuestion(Request $request, $id) {
+        $question = $request->question;
+        $options = $request->options;
+        $correctAnswer = $request->correct;
+        $questionDB = Question::where('id',$id)->first();
 
-            DB::transaction(function() use($question,$options,$correctAnswer,$id) {
-                Question::find($id)->update([
-                    'question' => $question,
-                ]);
-                foreach ($options as $key=>$option) {
-                    Question::find($id)->options()->update([
-                        'body' => $option,
-                        'isCorrect' => ($correctAnswer == $key)?1:0
-                    ]);
-                }
-            });
+        Log::info($options);
 
-            return back()->with('message','Question Updated Succesfully');
-        }
+        DB::transaction(function() use($question,$options,$correctAnswer,$questionDB) {
+            $questionDB->update([
+                'question' => $question,
+            ]);
+            foreach ($options as $key => $option) {
+                $optionFind = Option::find($option['id']);
+                $optionFind->body = $option['value'];
+                $optionFind->isCorrect = ($correctAnswer == $key)?1:0;
+                $optionFind->save();
+            }
+        });
 
-        return abort('404');
+        return response()->json('Question Updated Succesfully');
 
+    }
+
+    public function findOneQuestion(Request $request, $id) {
+        $question = Question::where('id',$id)->with('options')->get();
+
+        return response()->json($question[0]);
     }
 }
