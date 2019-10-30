@@ -35,17 +35,25 @@
             })
     </script>
     <style>
-        form {
-            margin-top: 120px;
+        body {
+            background-color: #f5f5f5;
         }
-
         .questionBtn {
             cursor: pointer;
+        }
+        .sidebar {
+            padding: 70px 0;
+            height: 100vh;
+            overflow-y: scroll;
+            background-color: #fff;
+        }
+        .question-body {
+           padding: 130px 100px 0;
         }
     </style>
 
     </head>
-<body>
+<body class="container-fluid">
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
         <a class="navbar-brand" href="{{route('dashboard')}}">OASIS-CBT ADMIN</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,8 +76,21 @@
         </div>
     </nav>
 
+    <div class="row">
+        <div class="col-md-2 sidebar">
+            <h4 class="mt-3 mb-3 ml-3">Questions List</h4>
+            <div class="list-group">
+                <a href="#" class="list-group-item list-group-item-action active">
+                    Cras justo odio
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">Dapibus ac facilisis in</a>
+                <a href="#" class="list-group-item list-group-item-action">Morbi leo risus</a>
+                <a href="#" class="list-group-item list-group-item-action">Porta ac consectetur ac</a>
+                <a href="#" class="list-group-item list-group-item-action" tabindex="-1" aria-disabled="true">Vestibulum at eros</a>
+            </div>
+        </div>
 
-    <div class="container">
+    <div class="col-md-10 question-body ">
     <form autocomplete="off" action="{{route('questions',['subject'=>$subject->alias,'class_id'=>$class_id])}}" method="post">
         @csrf
         <textarea required name="question" id="summernote"></textarea><br>
@@ -130,15 +151,17 @@
             <button data-button-type="add-question" class="btn btn-secondary submitBtn">Submit Question</button>
         </div>
     </form>
+    
+    <ul>
+        @foreach ($questions as $question)
+            <li><span class="questionBtn" id="{{$question->id}}">Question {{$loop->iteration}}</span></li>
 
+        @endforeach
+    </ul>
 
     </div>
-<ul>
-    @foreach ($questions as $question)
-        <li><span class="questionBtn" id="{{$question->id}}">Question {{$loop->iteration}}</span></li>
+    </div>
 
-    @endforeach
-</ul>
 
 
 </body>
