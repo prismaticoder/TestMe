@@ -29,6 +29,9 @@
         .question-body input {
             margin-right: 15px;
         }
+        .card {
+            overflow-y: scroll;
+        }
     </style>
 
 </head>
@@ -62,13 +65,13 @@
         <div class="card">
             <div class="card-body">
             <h5 class="card-title">Question No 13 of 60</h5>
-                <p class="card-text" id="question">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                <p class="card-text" id="question">Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Which of these is true?</p>
             </div>
             <ul class="list-group list-group-flush">
-                <li class="list-group-item"><input type="radio" name="options" id="">A. Cras justo odio</li>
-                <li class="list-group-item"><input type="radio" name="options" id="">B. Dapibus ac facilisis in</li>
-                <li class="list-group-item"><input type="radio" name="options" id="">C. Vestibulum at eros</li>
-                <li class="list-group-item"><input type="radio" name="options" id="">D. Vestibulum at eros</li>
+                <li class="list-group-item"><input type="radio" name="options" id="">A. Cras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odio</li>
+                <li class="list-group-item"><input type="radio" name="options" id="">B. Dapibus ac facilisis inCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odio</li>
+                <li class="list-group-item"><input type="radio" name="options" id="">C. Vestibulum at erosCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odio</li>
+                <li class="list-group-item"><input type="radio" name="options" id="">D. Vestibulum at erosCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odio</li>
             </ul>
             <div class="card-body">
                 <a href="#" class="btn btn-secondary card-link">Previous Question</a>
