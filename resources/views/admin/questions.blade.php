@@ -127,7 +127,7 @@
 
         <br>
         <div>
-            <button type="submit" class="btn btn-secondary submitBtn">Submit Question</button>
+            <button data-button-type="add-question" class="btn btn-secondary submitBtn">Submit Question</button>
         </div>
     </form>
 

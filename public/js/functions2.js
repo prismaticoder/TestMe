@@ -10,6 +10,15 @@ $(function() {
         getSelectedQuestion(id);
     })
 
+    $('.submitBtn').click(function(event) {
+        event.preventDefault();
+        let type = $(this).attr('data-button-type');
+        let id = $(this).id;
+        if (type == 'question-update') {
+            return updateQuestion(id);
+        }
+    })
+
     function getSelectedQuestion(id) {
         $.ajax({
             url: '/admin/findQuestion/' + id,
@@ -17,7 +26,8 @@ $(function() {
             success: function(response) {
                 $('#summernote').summernote('code', response.question);
                 $('.submitBtn').html('Update Question');
-                $('.submitBtn').attr('id','question-update');
+                $('.submitBtn').attr('data-button-type','question-update');
+                $('.submitBtn').attr('id', id);
                 console.log(response);
                 let length = response.options.length;
 
@@ -55,7 +65,7 @@ $(function() {
     function updateQuestion(id) {
         let question = $('#summernote').val();
         let options = document.getElementsByClassName('option');
-        let correct = $('input:name["correct"]:checked').val();
+        let correct = $('input[name="correct"]:checked').val();
         $.ajax({
             url: '/updateQuestion/' + id,
             method: 'POST',
@@ -63,6 +73,9 @@ $(function() {
                 question:question,
                 options:options,
                 correct:correct
+            },
+            success:function(response) {
+                alert(response)
             }
         })
     }
