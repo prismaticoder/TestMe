@@ -53,7 +53,7 @@
     </nav>
 
     <div class="container contents">
-    <h2>JSS{{$class->id}} Student List <button href="#" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModalCenter">ADD STUDENT</button></h2>
+    <h2>JSS{{$class->id}} Student List <button href="#" class="btn btn-primary btn-sm ml-3" data-toggle="modal" data-target="#exampleModalCenter">ADD STUDENT</button></h2>
 
           <table class="table table-s table-hover table-bordered">
               <thead class="thead-dark">
@@ -88,7 +88,7 @@
           <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalCenterTitle">Modal title</h5>
+                <h5 class="modal-title" id="exampleModalCenterTitle">Add New Student</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -111,7 +111,7 @@
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Start Exam</button>
+                <button type="button" class="btn btn-primary">Add Student</button>
               </div>
             </div>
           </div>
