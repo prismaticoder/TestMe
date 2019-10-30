@@ -32,25 +32,25 @@
           margin-top: 120px;
         }
         .card-text {
-          font-size: 36px !important;
+          font-size: 20px !important;
           font-weight: bold;
         }
 
-       
+
 
     </style>
   </head>
 
   <body>
   <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
-    <a class="navbar-brand" href="{{route('dashboard')}}">Dashboard</a>
+    <a class="navbar-brand" href="{{route('dashboard')}}">OASIS-CBT ADMIN</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                <a class="nav-link active" href="{{route('dashboard')}}">Dashboard <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">Features</a>
@@ -68,7 +68,7 @@
     <div class="container">
 
         <main role="main" class="classes">
-          <h1>Dashboard</h1>
+          <h1>Students</h1>
           <div class="card-deck">
               @foreach ($classes as $class)
                 <div class="card">
@@ -77,27 +77,27 @@
                       <p class="card-text">{{$class->students()->count()}} Students</P>
                     </div>
                     <div class="card-footer">
-                      <small class="text-muted">Last updated 3 mins ago</small>
+                    <small class="text-muted"><a href="{{route('class-students',['class'=>$class->class])}}">See Student List</a></small>
                     </div>
                 </div>
               @endforeach
           </div>
           </main>
-        
+
         <h1 style="margin-top:50px;">Subjects</h1>
-        
+
         <main class="card-columns">
           @foreach ($subjects as $subject)
           <div class="card">
             <div class="card-body">
-              <p class="card-text">Subject</p>
+              <p class="card-text">{{strtoupper($subject->alias)}}</p>
             </div>
             <div class="card-footer">
               <small class="text-muted">
               <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">Start Exam</a>
-              <a href="#" class="btn btn-secondary">JSS 1</a>
-              <a href="#" class="btn btn-secondary">JSS 2</a>
-              <a href="#" class="btn btn-secondary">JSS 3</a>
+              <a href="{{route('questions',['subject'=>$subject->alias,'class_id'=>1])}}" class="btn btn-secondary">JSS 1</a>
+              <a href="{{route('questions',['subject'=>$subject->alias,'class_id'=>2])}}" class="btn btn-secondary">JSS 2</a>
+              <a href="{{route('questions',['subject'=>$subject->alias,'class_id'=>3])}}" class="btn btn-secondary">JSS 3</a>
               </small>
             </div>
           </div>
@@ -119,20 +119,20 @@
               <div class="modal-body">
               <form>
                 <div class="row">
-                <div class="col">
-                    <label for="">Time</label>
+                <div class="col-sm-5">
+                    <label for="">Exam Duration</label>
                   </div>
-                  <div class="col">
-                    <input type="text" class="form-control" placeholder="Hour">
+                  <div class="col-sm-3">
+                    <input type="number" class="form-control" placeholder="Hour">
                   </div>
-                  <div class="col">
-                    <input type="text" class="form-control" placeholder="Minutes">
+                  <div class="col-sm-3">
+                    <input type="number" class="form-control" placeholder="Minutes">
                   </div>
                 </div>
                 <div class="form-group row mt-3">
-                  <label for="colFormLabel" class="col-sm-2 col-form-label">Score</label>
-                  <div class="col-sm-10">
-                    <input type="email" class="form-control" id="colFormLabel" placeholder="score">
+                  <label for="colFormLabel" class="col-sm-5 col-form-label">Total Allotable Marks</label>
+                  <div class="col-sm-4">
+                    <input type="number" class="form-control" id="colFormLabel" placeholder="score">
                   </div>
                 </div>
               </form>
