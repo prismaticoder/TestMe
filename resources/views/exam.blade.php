@@ -48,7 +48,7 @@
         <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-            <a class="nav-link" href="{{Request::url()}}">{{strtoupper($subject->subject_name)}} JSS{{$user->class_id}} <span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="{{Request::url()}}"><span class="subject">{{strtoupper($subject->alias)}}</span> JSS<span class="class">{{$user->class_id}}</span> <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
             <a class="nav-link" href="#">{{$name}}</a>
@@ -74,7 +74,7 @@
                     Cras justo odio
                 </a>
                 @foreach ($questions as $question)
-                    <a href="#" class="list-group-item list-group-item-action" id="{{$question->id}}">Question {{$loop->iteration}}</a>
+            <a href="#" data-question="{{$loop->iteration}}" class="list-group-item list-group-item-action" id="{{$question->id}}">Question {{$loop->iteration}}</a>
                 @endforeach
             </div>
         </div>
@@ -84,20 +84,22 @@
         <div class="card">
             <div class="card-body">
             <h5 class="card-title">Question No 13 of 60</h5>
-                <p class="card-text" id="question">Some quick example text to build on the card title and maked on the card title and make up the bulk of the card's content.<br>up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Which of these is true?</p>
+                <p class="card-text question">Who is the Father of Computer?</p>
             </div>
             <ul class="list-group list-group-flush">
-                    <label for="radio1"><li class="list-group-item radios"><input type="radio" id="radio1" name="options" id="">A. Cras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odio</li></label>
-                    <label for="radio2"><li class="list-group-item radios"><input type="radio" id="radio2" name="options" id="">B. Dapibus ac facilisis inCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odio</li></label>
-                    <label for="radio3"><li class="list-group-item radios"><input type="radio" id="radio3" name="options" id="">C. Vestibulum at erosCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odio</li></label>
-                    <label for="radio4"><li class="list-group-item radios"><input type="radio" id="radio4" name="options" id="">D. Vestibulum at erosCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odio</li></label>
+                    <label for="radio1"><li class="list-group-item radios"><input type="radio" id="radio1" data-option-id="1" name="options" id="">A. <span class="options"> Bill Gates</span></li></label>
+                    <label for="radio2"><li class="list-group-item radios"><input type="radio" id="radio2" data-option-id="2" name="options" id="">B. <span class="options"> Charles Babbage</span></li></label>
+                    <label for="radio3"><li class="list-group-item radios"><input type="radio" id="radio3" data-option-id="3" name="options" id="">C. <span class="options"> Keifer Sutherland</span></li></label>
+                    <label for="radio4"><li class="list-group-item radios"><input type="radio" id="radio4" data-option-id="4" name="options" id="">D. <span class="options"> James Naismith</span></li></label>
             </ul>
             <div class="card-body">
-                <a href="#" class="btn btn-secondary card-link">Previous Question</a>
-                <a href="#" class="btn btn-primary card-link">Next Question</a>
+                <span class="btn btn-secondary card-link prevButton newButton">Previous Question</span>
+                <span data-button-type="start" data-question="1"  class="btn btn-primary card-link nxtButton newButton">START</span>
             </div>
         </div>
     </div>
+
+
 
     </div>
 

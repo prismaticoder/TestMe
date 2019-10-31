@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Auth;
 use App\User;
+use Illuminate\Support\Facades\Session;
 
 class LoginController extends Controller
 {
@@ -54,7 +55,7 @@ class LoginController extends Controller
 
         if ($user) {
             Auth::login($user);
-            session('seed',rand(0000,9999));
+            Session::put('scoreArray', []);
             return redirect()->intended();
         }
 

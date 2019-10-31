@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use Auth;
 use App\Question;
 use App\Subject;
-use Session;
+use App\Option;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 
 class StudentController extends Controller
 {
@@ -40,7 +42,9 @@ class StudentController extends Controller
         if ($subject) {
             $subject_id = $subject->id;
             $seed = Auth::user()->code;
-            $questions = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->with('options')->inRandomOrder($seed)->paginate(1);
+            // Session::put('scoreArray', []);
+            // session('scoreArray',[]);
+            $questions = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->with('options')->get();
 
             return view('exam',compact('questions','name','user','subject'));
         }
@@ -66,5 +70,37 @@ class StudentController extends Controller
         }
 
         return abort('404');
+    }
+
+    public function calculateScore(Request $request, Session $session) {
+        $question_id = $request->question_id;
+        $option_id = $request->option_id;
+
+        $scoreArray = session('scoreArray');
+
+        Log::info($option_id);
+
+        // Log::info($request->session()->all());
+
+        foreach (session('scoreArray') as $key => $array) {
+            if ($array['question_id'] == $question_id) {
+                unset(session('scoreArray')[$key]);
+            }
+        }
+
+        $option = Option::where('id',$option_id)->get();
+
+        Log::info($option);
+
+        if ($option[0]->isCorrect) {
+            session()->push('scoreArray',['question_id'=>$question_id,'answer'=>1]);
+        }
+        else {
+            session()->push('scoreArray',['question_id'=>$question_id,'answer'=>0]);
+        }
+
+        Log::info($scoreArray);
+
+        return response()->json('Option Saved');
     }
 }
