@@ -71,9 +71,7 @@
               @foreach ($classes as $class)
                 <div class="card">
                     <div class="card-body">
-                    <a href="#" class="text-dark">
                       <h5 class="card-title">Junior Secondary School {{$class->id}}</h5>
-                    </a>
                       <p class="card-text">{{$class->students()->count()}} Students</P>
                     </div>
                     <div class="card-footer">
