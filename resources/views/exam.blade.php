@@ -32,6 +32,10 @@
             overflow-y: scroll;
             background-color: #fff;
         }
+
+        .radios:hover {
+            border:solid #204d74 1px;
+        }
     </style>
 
 </head>
@@ -83,10 +87,10 @@
                 <p class="card-text" id="question">Some quick example text to build on the card title and maked on the card title and make up the bulk of the card's content.<br>up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Some quick example text to build on the card title and make up the bulk of the card's content.<br>Which of these is true?</p>
             </div>
             <ul class="list-group list-group-flush">
-                <li class="list-group-item"><input type="radio" name="options" id="">A. Cras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odio</li>
-                <li class="list-group-item"><input type="radio" name="options" id="">B. Dapibus ac facilisis inCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odio</li>
-                <li class="list-group-item"><input type="radio" name="options" id="">C. Vestibulum at erosCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odio</li>
-                <li class="list-group-item"><input type="radio" name="options" id="">D. Vestibulum at erosCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odio</li>
+                    <label for="radio1"><li class="list-group-item radios"><input type="radio" id="radio1" name="options" id="">A. Cras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odio</li></label>
+                    <label for="radio2"><li class="list-group-item radios"><input type="radio" id="radio2" name="options" id="">B. Dapibus ac facilisis inCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odio</li></label>
+                    <label for="radio3"><li class="list-group-item radios"><input type="radio" id="radio3" name="options" id="">C. Vestibulum at erosCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odio</li></label>
+                    <label for="radio4"><li class="list-group-item radios"><input type="radio" id="radio4" name="options" id="">D. Vestibulum at erosCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odioCras justo odio</li></label>
             </ul>
             <div class="card-body">
                 <a href="#" class="btn btn-secondary card-link">Previous Question</a>
