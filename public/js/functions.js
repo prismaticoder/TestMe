@@ -52,6 +52,23 @@ $( function() {
                 // selected.checked = false;
                 console.log(response);
 
+                let answerExists = $('input[name="options"]:checked').val();
+                let answer = $('input[name="options"]:checked').attr('data-option-id');
+                if (buttonType == 'next') {
+                    if (answerExists != undefined) {
+                        calculateScore(questionID,answer)
+                    }
+
+                }
+                else {
+                    $('.nxtButton').attr('data-button-type','next')
+                    $('.nxtButton').html('Next Question');
+                    $('.questionList').each(function() {
+                        $(this).removeClass('disabled')
+                    })
+                    $('.prevButton').removeClass('disabled')
+                }
+
                 if ($('.nxtButton').html() != "Next Question") {
                     $('.nxtButton').html("Next Question")
                     $('.nxtButton').attr("data-button-type",'next')
@@ -59,18 +76,20 @@ $( function() {
                 let length = response.options.length;
                 $('.question').html(response.question)
 
+                let shuffledOptions = response.options;
+
                 if (length >= 4) {
                     $('.options').each(function(index) {
-                        $(this).html(response.options[index].body)
-                        $(this).siblings('input').attr('data-option-id',response.options[index].id)
+                        $(this).html(shuffledOptions[index].body)
+                        $(this).siblings('input').attr('data-option-id',shuffledOptions[index].id)
                     })
                 }
 
                 else {
                     $('.options').each(function(index) {
                         if (index <= length-1) {
-                            $(this).html(response.options[index].body)
-                            $(this).siblings('input').attr('data-option-id',response.options[index].id)
+                            $(this).html(shuffledOptions[index].body)
+                            $(this).siblings('input').attr('data-option-id',shuffledOptions[index].id)
                         }
                         else {
                             $(this).html('No Option')
@@ -107,22 +126,7 @@ $( function() {
                 $('.nxtButton').attr('data-question',parseInt(id)+1);
                 $('.prevButton').attr('data-question',parseInt(id)-1);
 
-                let answerExists = $('input[name="options"]:checked').val();
-                let answer = $('input[name="options"]:checked').attr('data-option-id');
-                if (buttonType == 'next') {
-                    if (answerExists != undefined) {
-                        calculateScore(questionID,answer)
-                    }
 
-                }
-                else {
-                    $('.nxtButton').attr('data-button-type','next')
-                    $('.nxtButton').html('Next Question');
-                    $('.questionList').each(function() {
-                        $(this).removeClass('disabled')
-                    })
-                    $('.prevButton').removeClass('disabled')
-                }
                 $('.question').attr('id',response.id);
                 // if (answer) {
                 //     userAnswers.forEach(function(element,index) {
@@ -159,5 +163,20 @@ $( function() {
                 console.log(response)
             }
         })
+    }
+
+    function shuffle(arr) {
+        var currentIndex = arr.length, temporaryValue, randomIndex;
+
+        while(0 !== currentIndex) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex-=1
+
+            temporaryValue = arr[currentIndex];
+            arr[currentIndex] = arr[randomIndex];
+            arr[randomIndex] = temporaryValue
+        }
+
+        return arr
     }
 })

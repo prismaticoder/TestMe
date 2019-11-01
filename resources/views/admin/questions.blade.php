@@ -87,7 +87,7 @@
         </div>
 
     <div class="col-md-10 question-body ">
-    <form autocomplete="off" action="{{route('questions',['subject'=>$subject->alias,'class_id'=>$class_id])}}" method="post">
+    <form id="myForm" autocomplete="off" action="{{route('questions',['subject'=>$subject->alias,'class_id'=>$class_id])}}" method="post">
         @csrf
         <textarea required name="question" id="summernote"></textarea><br>
         <div class="options">

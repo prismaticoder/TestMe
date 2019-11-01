@@ -93,8 +93,8 @@
                     <label for="radio4"><li class="list-group-item radios"><input type="radio" id="radio4" data-option-id="4" name="options" id="">D. <span class="options"> James Naismith</span></li></label>
             </ul>
             <div class="card-body">
-                <span data-button-type="next" class="btn btn-secondary card-link prevButton newButton disabled">Previous Question</span>
-                <span data-button-type="start" data-question="1"  class="btn btn-primary card-link nxtButton newButton">START</span>
+                <button data-button-type="next" class="btn btn-secondary card-link prevButton newButton disabled">Previous Question</button>
+                <button data-button-type="start" data-question="1"  class="btn btn-primary card-link nxtButton newButton">START</button>
             </div>
         </div>
     </div>

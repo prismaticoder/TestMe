@@ -44,7 +44,7 @@ class StudentController extends Controller
             $seed = Auth::user()->code;
             // Session::put('scoreArray', []);
             // session('scoreArray',[]);
-            $questions = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->with('options')->get();
+            $questions = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->with('options')->inRandomOrder($seed)->get();
 
             return view('exam',compact('questions','name','user','subject'));
         }
@@ -76,15 +76,37 @@ class StudentController extends Controller
         $question_id = $request->question_id;
         $option_id = $request->option_id;
 
-        $scoreArray = session('scoreArray');
+        $scoreArray = session()->pull('scoreArray');
 
         Log::info($option_id);
 
         // Log::info($request->session()->all());
 
-        foreach (session('scoreArray') as $key => $array) {
-            if ($array['question_id'] == $question_id) {
-                unset(session('scoreArray')[$key]);
+        // $key = array_search(session('scoreArray'));
+        // if ($key!==false) {
+        //     )
+        // }
+
+        $val = "No more";
+
+        // for ($i=0; $i < count(session('scoreArray')); $i++) {
+        //     if (session('scoreArray')[$i]['question_id'] == $question_id) {
+        //         if (session('scoreArray')[$i]['answer'] == 1) {
+        //             session()->push('scoreArray',['question_id'=>$question_id,'answer'=>-1]);
+        //         }
+        //         else {
+        //             session()->push('scoreArray',['question_id'=>$question_id,'answer'=>0]);
+        //         }
+        //         $val .= ' Done';
+        //     }
+        // }
+
+        foreach ($scoreArray as $key => $array) {
+            if ($question_id == $array['question_id']) {
+                // unset($scoreArray[$key]);
+                // array_splice(session('scoreArray'),$key,1);
+                // $array['answer'] = 0;
+                unset($scoreArray[$key]);
             }
         }
 
@@ -93,14 +115,24 @@ class StudentController extends Controller
         Log::info($option);
 
         if ($option[0]->isCorrect) {
-            session()->push('scoreArray',['question_id'=>$question_id,'answer'=>1]);
+            array_push($scoreArray,['question_id'=>$question_id,'answer'=>1]);
         }
         else {
-            session()->push('scoreArray',['question_id'=>$question_id,'answer'=>0]);
+            array_push($scoreArray,['question_id'=>$question_id,'answer'=>0]);
         }
 
-        Log::info($scoreArray);
+        session()->put('scoreArray',$scoreArray);
 
-        return response()->json('Option Saved');
+        Log::info(session('scoreArray'));
+
+        $ara = [];
+
+        foreach (session('scoreArray') as $key => $arr) {
+            array_push($ara,$arr['answer']);
+        }
+
+        $score = array_sum($ara);
+
+        return response()->json($score);
     }
 }

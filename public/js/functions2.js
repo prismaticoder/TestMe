@@ -118,6 +118,7 @@ $(function() {
                 alert('Question Added Successfully')
                 console.log(response)
                 $('.list-group').append("<span class=\"questionBtn list-group-item list-group-item-action\" id=\""+response.question.id+"\">Question "+response.count+"</span>")
+                document.getElementById('myForm').reset();
             },
             error:function(response) {
                 console.log(response)
