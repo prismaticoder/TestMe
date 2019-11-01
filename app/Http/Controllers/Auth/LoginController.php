@@ -56,7 +56,7 @@ class LoginController extends Controller
         if ($user) {
             Auth::login($user);
             Session::put('scoreArray', []);
-            return redirect()->intended();
+            return redirect()->intended('/home');
         }
 
         return redirect(route('login',['error' => 'Incorrect Login Credentials']));

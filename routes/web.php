@@ -25,7 +25,7 @@ Route::get('/exam/{subject}','StudentController@getExamQuestions')->name('exam')
 
 // Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home', 'StudentController@index')->name('home');
 
 //Ajax Routes
 Route::get('/getQuestions','StudentController@getAjaxQuestions')->name('get-questions');

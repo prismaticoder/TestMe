@@ -22,6 +22,11 @@ class StudentController extends Controller
         $this->middleware('auth');
     }
 
+    public function index() {
+        $subjects = Subject::all();
+        return view('home',compact('subjects'));
+    }
+
     public function getExamQuestions(\Request $request, $subject) {
 
         $checkHost = Subject::where('alias',$subject)->first()->isHosted;
@@ -72,6 +77,8 @@ class StudentController extends Controller
         return abort('404');
     }
 
+
+    //Function to calculate student scores
     public function calculateScore(Request $request, Session $session) {
         $question_id = $request->question_id;
         $option_id = $request->option_id;
@@ -81,25 +88,6 @@ class StudentController extends Controller
         Log::info($option_id);
 
         // Log::info($request->session()->all());
-
-        // $key = array_search(session('scoreArray'));
-        // if ($key!==false) {
-        //     )
-        // }
-
-        $val = "No more";
-
-        // for ($i=0; $i < count(session('scoreArray')); $i++) {
-        //     if (session('scoreArray')[$i]['question_id'] == $question_id) {
-        //         if (session('scoreArray')[$i]['answer'] == 1) {
-        //             session()->push('scoreArray',['question_id'=>$question_id,'answer'=>-1]);
-        //         }
-        //         else {
-        //             session()->push('scoreArray',['question_id'=>$question_id,'answer'=>0]);
-        //         }
-        //         $val .= ' Done';
-        //     }
-        // }
 
         foreach ($scoreArray as $key => $array) {
             if ($question_id == $array['question_id']) {
