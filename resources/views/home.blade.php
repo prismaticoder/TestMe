@@ -15,7 +15,7 @@
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="{{asset('/css/bootstrap.min.css')}}">
-    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+    {{-- <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"> --}}
 
     <!-- Custom styles for this template -->
     <style>
@@ -42,7 +42,7 @@
 
   <body>
   <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
-    <a class="navbar-brand" href="{{route('dashboard')}}">OASIS-CBT ADMIN</a>
+    <a class="navbar-brand" href="#">OASIS-CBT</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -59,7 +59,7 @@
             </li>
             </ul>
             <span class="navbar-text">
-            <a class="nav-link" href="{{route('admin-logout')}}">Sign out</a>
+            <a class="nav-link" href="{{route('logout')}}">Sign out</a>
             </span>
         </div>
     </nav>
@@ -69,56 +69,18 @@
         <h1>Choose Subject to start exam</h1>
 
         <main class="card-columns mt-3">
-          <div class="card">
-            <div class="card-body">
-              <p class="card-text">Prismotiua</p>
-            </div>
-            <div class="card-footer">
-              <small class="text-muted">
-              <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">Start Exam</a>
-              </small>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-body">
-              <p class="card-text">Prismotiua</p>
-            </div>
-            <div class="card-footer">
-              <small class="text-muted">
-              <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">Start Exam</a>
-              </small>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-body">
-              <p class="card-text">Prismotiua</p>
-            </div>
-            <div class="card-footer">
-              <small class="text-muted">
-              <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">Start Exam</a>
-              </small>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-body">
-              <p class="card-text">Prismotiua</p>
-            </div>
-            <div class="card-footer">
-              <small class="text-muted">
-              <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">Start Exam</a>
-              </small>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-body">
-              <p class="card-text">Prismotiua</p>
-            </div>
-            <div class="card-footer">
-              <small class="text-muted">
-              <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">Start Exam</a>
-              </small>
-            </div>
-          </div>
+              @foreach ($subjects as $subject)
+              <div class="card">
+              <div class="card-body">
+                    <p class="card-text">{{strtoupper($subject->alias)}}</p>
+                  </div>
+                  <div class="card-footer">
+                    <small class="text-muted">
+                    <a href="{{route('exam',['subject'=>$subject->alias])}}" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">Start Exam</a>
+                    </small>
+                  </div>
+                </div>
+              @endforeach
         </main>
 
 
