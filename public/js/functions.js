@@ -19,8 +19,11 @@ $( function() {
         if (buttonType == 'next') {
             getQuestion(id,'next');
         }
-        else {
+        else if (buttonType == 'start') {
             getQuestion(id,'start');
+        }
+        else {
+            submitQuestion();
         }
 
     });
@@ -34,6 +37,7 @@ $( function() {
         let questionID = $('.question').attr('id');
         let subject = $('.subject').html().toLowerCase();
         let class_id = $('.class').html();
+        let count = $('.questionCount').text();
         $.ajax({
             url:'/getQuestions',
             method: 'GET',
@@ -47,6 +51,11 @@ $( function() {
                 let selected = $('.options');
                 // selected.checked = false;
                 console.log(response);
+
+                if ($('.nxtButton').html() != "Next Question") {
+                    $('.nxtButton').html("Next Question")
+                    $('.nxtButton').attr("data-button-type",'next')
+                }
                 let length = response.options.length;
                 $('.question').html(response.question)
 
@@ -70,6 +79,20 @@ $( function() {
                     })
                 }
 
+                if (id == count) {
+                    $('.nxtButton').html('SUBMIT')
+                    $('.nxtButton').attr('data-button-type','submit')
+                }
+
+                $('.questionList').each(function() {
+                    if ($(this).attr('id') == response.id) {
+                        $(this).addClass('active');
+                        $('.questionList').not(this).removeClass('active');
+                    }
+                })
+
+                $('.questionNo').text(id);
+
                 // let exists = userAnswers.find(function(element) {
                 //     return element.question_id == questionID
                 // })
@@ -84,13 +107,21 @@ $( function() {
                 $('.nxtButton').attr('data-question',parseInt(id)+1);
                 $('.prevButton').attr('data-question',parseInt(id)-1);
 
+                let answerExists = $('input[name="options"]:checked').val();
                 let answer = $('input[name="options"]:checked').attr('data-option-id');
                 if (buttonType == 'next') {
-                    calculateScore(questionID,answer)
+                    if (answerExists != undefined) {
+                        calculateScore(questionID,answer)
+                    }
+
                 }
                 else {
                     $('.nxtButton').attr('data-button-type','next')
                     $('.nxtButton').html('Next Question');
+                    $('.questionList').each(function() {
+                        $(this).removeClass('disabled')
+                    })
+                    $('.prevButton').removeClass('disabled')
                 }
                 $('.question').attr('id',response.id);
                 // if (answer) {

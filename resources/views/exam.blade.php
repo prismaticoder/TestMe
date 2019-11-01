@@ -69,12 +69,12 @@
     <div class="row">
         <div class="col-md-2 sidebar">
             <h4 class="mt-3 mb-3 ml-3">Questions List</h4>
-            <div class="list-group">
-                <a href="#" class="list-group-item list-group-item-action active">
+            <div class="list-group questionListParent">
+                {{-- <a href="#" class="list-group-item list-group-item-action active">
                     Cras justo odio
-                </a>
+                </a> --}}
                 @foreach ($questions as $question)
-            <a href="#" data-question="{{$loop->iteration}}" class="list-group-item list-group-item-action" id="{{$question->id}}">Question {{$loop->iteration}}</a>
+            <a href="#" data-button-type="next" data-question="{{$loop->iteration}}" class="newButton questionList list-group-item list-group-item-action disabled" id="{{$question->id}}">Question {{$loop->iteration}}</a>
                 @endforeach
             </div>
         </div>
@@ -83,7 +83,7 @@
     <div class="col-md-10 question-body ">
         <div class="card">
             <div class="card-body">
-            <h5 class="card-title">Question No 13 of 60</h5>
+            <h5 class="card-title">Question No <span class="questionNo">0</span> of <span class="questionCount">{{$questions->count()}}</span></h5>
                 <p class="card-text question">Who is the Father of Computer?</p>
             </div>
             <ul class="list-group list-group-flush">
@@ -93,7 +93,7 @@
                     <label for="radio4"><li class="list-group-item radios"><input type="radio" id="radio4" data-option-id="4" name="options" id="">D. <span class="options"> James Naismith</span></li></label>
             </ul>
             <div class="card-body">
-                <span class="btn btn-secondary card-link prevButton newButton">Previous Question</span>
+                <span data-button-type="next" class="btn btn-secondary card-link prevButton newButton disabled">Previous Question</span>
                 <span data-button-type="start" data-question="1"  class="btn btn-primary card-link nxtButton newButton">START</span>
             </div>
         </div>
