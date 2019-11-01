@@ -22,6 +22,8 @@
         }
         .question-body {
            padding: 130px 100px 50px;
+           height: 100vh;
+            overflow-y: scroll;
         }
         .question-body input {
             margin-right: 15px;
