@@ -10,6 +10,16 @@ $(function() {
         updateStudent(id);
     })
 
+    $('.deleteBtn').click(function() {
+        let id = this.id;
+        deleteStudent(id);
+    })
+
+    $('.restoreBtn').click(function() {
+        let id = this.id;
+        restoreStudent(id);
+    })
+
     function updateStudent(id) {
         $.ajax({
             url:'/updateStudent/'+id,
@@ -27,5 +37,39 @@ $(function() {
                 console.log(response)
             }
         })
+    }
+
+    function deleteStudent(id) {
+        let firstname = $('.firstname'+id).html();
+        let lastname = $('.lastname'+id).html()
+        if (confirm('Are you sure you want to delete ' + firstname.toUpperCase() + ' ' + lastname.toUpperCase() +' from the exam sheet thereby disabling his/her access to the examination?')) {
+            $.ajax({
+                url: '/deleteStudent/'+id,
+                method:'POST',
+                success:function(response) {
+                    alert(response)
+                },
+                error:function(response) {
+                    console.log(response)
+                }
+            })
+        }
+    }
+
+    function restoreStudent(id) {
+        let firstname = $('.firstname'+id).html();
+        let lastname = $('.lastname'+id).html()
+        if (confirm('Are you sure you want to restore ' + firstname.toUpperCase() + ' ' + lastname.toUpperCase() +' to the examination sheet thereby making him/her eligible to write the examination?')) {
+            $.ajax({
+                url: '/restoreStudent/'+id,
+                method:'POST',
+                success:function(response) {
+                    alert(response)
+                },
+                error:function(response) {
+                    console.log(response)
+                }
+            })
+        }
     }
 })

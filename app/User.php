@@ -3,12 +3,17 @@
 namespace App;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
     use Notifiable;
+
+    use SoftDeletes; // use the trait
+
+    protected $dates = ['deleted_at']; // mark this column as a date
 
     /**
      * The attributes that are mass assignable.

@@ -33,7 +33,7 @@ class AdminController extends Controller
         $class = Classes::where('class',$class)->first();
 
         if ($class) {
-            $students = $class->students;
+            $students = $class->students()->withTrashed()->get();
 
             return view('admin.class-students', compact('students','class'));
         }
@@ -53,6 +53,13 @@ class AdminController extends Controller
 
         return response()->json('Details Saved Successfully');
 
+    }
+
+    public function deleteStudent($id) {
+        $student = User::find($id);
+        $student->delete();
+
+        return response()->json('Deletion Successful!');
     }
 
     public function getAllQuestions($subject,$class_id) {

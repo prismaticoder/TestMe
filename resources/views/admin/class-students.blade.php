@@ -74,8 +74,12 @@
                         <td class="lastname{{$student->id}}">{{$student->lastname}}</td>
                         <td>JSS{{$student->class_id}}</td>
                         <td >
-                        <button href="#" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editModal{{$loop->iteration}}">EDIT</button>
-                          <button href="#" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#deleteModal">DELETE</button>
+                            @unless ($student->trashed())
+                                <button href="#" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editModal{{$loop->iteration}}">EDIT</button>
+                                <button href="#" id="{{$student->id}}" class="btn btn-secondary btn-sm deleteBtn">DELETE</button>
+                            @else
+                                <button href="#" class="btn btn-primary btn-sm restoreBtn" id="{{$student->id}}">RESTORE</button>
+                            @endunless
                         </td>
                     </tr>
                 @endforeach
@@ -166,8 +170,8 @@
                 </button>
               </div>
               <div class="modal-body">
-                <p>Delete the student below from School Database</p>
-                <p>Student First name and Last name</p>
+                <p>Are you sure you want to delete the student below from the database:</p>
+                <p><span id="deleteFirstname"></span> <span id="deleteLastname"></span></p>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
