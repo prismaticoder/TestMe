@@ -5,7 +5,7 @@ $(function() {
         }
     })
 
-    $('.questionBtn').on('click', function() {
+    $('#questionList').on('click','.questionBtn', function() {
         $(this).addClass("active");
         $(".questionBtn").not(this).removeClass("active");
         id = this.id;

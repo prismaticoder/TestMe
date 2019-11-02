@@ -79,7 +79,7 @@
     <div class="row">
         <div class="col-md-2 sidebar">
             <h4 class="mt-3 mb-3 ml-3">Questions List</h4>
-            <div class="list-group">
+            <div class="list-group" id="questionList">
                 @foreach ($questions as $question)
                 <span class="questionBtn list-group-item list-group-item-action" id="{{$question->id}}">Question {{$loop->iteration}}</span>
                 @endforeach
