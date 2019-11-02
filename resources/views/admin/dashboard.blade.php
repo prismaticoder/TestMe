@@ -51,7 +51,7 @@
                 <a class="nav-link active" href="{{route('dashboard')}}">Dashboard <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Features</a>
+                <a class="nav-link" href="#">Results</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">Pricing</a>
