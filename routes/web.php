@@ -48,6 +48,7 @@ Route::post('/calculateScore', 'StudentController@calculateScore');
 Route::post('/updateStudent/{id}','AdminController@updateStudent');
 Route::post('/deleteStudent/{id}','AdminController@deleteStudent');
 Route::post('/restoreStudent/{id}','AdminController@restoreStudent');
+Route::post('/addStudent', 'AdminController@addStudent');
 // Route::post('/exam/{subject}','StudentController@getAjaxQuestions');
 
 Route::group(['prefix' => 'admin'], function () {

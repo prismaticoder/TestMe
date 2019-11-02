@@ -69,6 +69,27 @@ class AdminController extends Controller
         return response()->json('The selected student has succesfully been restored!');
     }
 
+    public function addStudent(Request $request) {
+        $firstname = $request->firstname;
+        $lastname = $request->lastname;
+        $class_id = $request->class_id;
+
+        $check = User::where('firstname',$firstname)->where('lastname',$lastname)->where('class_id',$class_id)->first();
+
+        if (empty($check)) {
+            $student = new User;
+            $student->firstname = $firstname;
+            $student->lastname = $lastname;
+            $student->save();
+            $res = "Student Added Successfully!";
+        }
+        else {
+            $res = "This Student Already Exists!";
+        }
+
+        return response()->json($res);
+    }
+
     public function getAllQuestions($subject,$class_id) {
         $subject = Subject::where('alias',$subject)->first();
         $subject_id = $subject['id'];

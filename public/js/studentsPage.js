@@ -78,4 +78,27 @@ $(function() {
             })
         }
     }
+
+    function addStudent() {
+        let firstname = $('#addFirstname').val();
+        let lastname = $('#addLastname').val();
+        let class_id = $('#class_id').text();
+
+        $.ajax({
+            url:'/addStudent',
+            data: {
+                firstname:firstname,
+                lastname:lastname,
+                class_id:class_id
+            },
+            method:'POST',
+            success:function(response) {
+                alert(response)
+                window.location.reload(true);
+            },
+            error:function(response) {
+                console.log(response)
+            }
+        })
+    }
 })

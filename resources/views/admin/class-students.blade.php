@@ -54,7 +54,7 @@
     </nav>
 
     <div class="container contents">
-    <h2>JSS{{$class->id}} Student List <button href="#" class="btn btn-primary btn-sm ml-3" data-toggle="modal" data-target="#exampleModalCenter">ADD STUDENT</button></h2>
+    <h2>JSS<span id="class_id">{{$class->id}}</span> Student List <button href="#" class="btn btn-primary btn-sm ml-3" data-toggle="modal" data-target="#exampleModalCenter">ADD STUDENT</button></h2>
 
           <table class="table table-s table-hover table-bordered">
               <thead class="thead-dark">
@@ -101,22 +101,22 @@
               <div class="modal-body">
               <form>
                 <div class="form-group row mt-3">
-                  <label for="firstName" class="col-sm-4 col-form-label">First Name</label>
+                  <label for="addLastname" class="col-sm-4 col-form-label">Surname</label>
                   <div class="col-sm-8">
-                    <input type="email" class="form-control" id="firstName" placeholder="First Name">
+                    <input type="text" required class="form-control" id="addLastname" placeholder="Surname">
                   </div>
                 </div>
                 <div class="form-group row mt-3">
-                  <label for="lastName" class="col-sm-4 col-form-label">Last Name</label>
+                  <label for="addFirstname" class="col-sm-4 col-form-label">First Name</label>
                   <div class="col-sm-8">
-                    <input type="email" class="form-control" id="lastName" placeholder="Last Name">
+                    <input type="text" required class="form-control" id="addFirstname" placeholder="First Name">
                   </div>
                 </div>
               </form>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Add Student</button>
+                <button type="button" id="addBtn" class="btn btn-primary">Add Student</button>
               </div>
             </div>
           </div>
