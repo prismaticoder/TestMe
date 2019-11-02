@@ -59,6 +59,7 @@
           <table class="table table-s table-hover table-bordered">
               <thead class="thead-dark">
                 <tr>
+                <th>S/N</th>
                   <th>Registration Number</th>
                   <th>Firstname</th>
                   <th>Lastname</th>
@@ -69,16 +70,17 @@
               <tbody>
                 @foreach ($students as $student )
                     <tr>
+                    <td>{{$loop->iteration}}</td>
                         <td>{{$student->code}}</td>
                     <td class="firstname{{$student->id}}">{{$student->firstname}}</td>
                         <td class="lastname{{$student->id}}">{{$student->lastname}}</td>
                         <td>JSS{{$student->class_id}}</td>
                         <td >
                             @unless ($student->trashed())
-                                <button href="#" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editModal{{$loop->iteration}}">EDIT</button>
-                                <button href="#" id="{{$student->id}}" class="btn btn-secondary btn-sm deleteBtn">DELETE</button>
+                                <button href="#" class="btn btn-primary btn-sm" title="Edit Student Details" data-toggle="modal" data-target="#editModal{{$loop->iteration}}">EDIT</button>
+                                <button href="#" id="{{$student->id}}" title="Disable this student's access to the examination" class="btn btn-secondary btn-sm deleteBtn">DISABLE EXAM ACCESS</button>
                             @else
-                                <button href="#" title="Restore student to database" class="btn btn-primary btn-sm restoreBtn" id="{{$student->id}}">RESTORE</button>
+                                <button href="#" title="Enable this student to have access to the examination" class="btn btn-primary btn-sm restoreBtn" id="{{$student->id}}">RESTORE ACCESS</button>
                             @endunless
                         </td>
                     </tr>
