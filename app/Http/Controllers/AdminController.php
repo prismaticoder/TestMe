@@ -62,6 +62,13 @@ class AdminController extends Controller
         return response()->json('Deletion Successful!');
     }
 
+    public function restoreStudent($id) {
+        $student = User::onlyTrashed()->where('id',$id);
+        $student->restore();
+
+        return response()->json('The selected student has succesfully been restored!');
+    }
+
     public function getAllQuestions($subject,$class_id) {
         $subject = Subject::where('alias',$subject)->first();
         $subject_id = $subject['id'];

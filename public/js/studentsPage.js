@@ -10,6 +10,10 @@ $(function() {
         updateStudent(id);
     })
 
+    $('#addBtn').click(function() {
+        addStudent();
+    })
+
     $('.deleteBtn').click(function() {
         let id = this.id;
         deleteStudent(id);
@@ -48,6 +52,7 @@ $(function() {
                 method:'POST',
                 success:function(response) {
                     alert(response)
+                    window.location.reload(true);
                 },
                 error:function(response) {
                     console.log(response)
@@ -65,6 +70,7 @@ $(function() {
                 method:'POST',
                 success:function(response) {
                     alert(response)
+                    window.location.reload(true);
                 },
                 error:function(response) {
                     console.log(response)
