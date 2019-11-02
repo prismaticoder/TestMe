@@ -7,6 +7,7 @@ use App\Subject;
 use App\Classes;
 use App\Question;
 use App\Option;
+use App\User;
 use DB;
 use Illuminate\Support\Facades\Log;
 
@@ -38,6 +39,20 @@ class AdminController extends Controller
         }
 
         return abort('404','Page does not exist');
+    }
+
+    public function updateStudent(Request $request,$id) {
+        $student = User::find($id);
+
+        $firstname = $request->firstname;
+        $lastname = $request->lastname;
+
+        $student->firstname = $firstname;
+        $student->lastname = $lastname;
+        $student->save();
+
+        return response()->json('Details Saved Successfully');
+
     }
 
     public function getAllQuestions($subject,$class_id) {
