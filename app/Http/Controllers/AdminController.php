@@ -80,6 +80,8 @@ class AdminController extends Controller
             $student = new User;
             $student->firstname = $firstname;
             $student->lastname = $lastname;
+            $student->class_id = $class_id;
+            $student->code = rand(10000,50000);
             $student->save();
             $res = "Student Added Successfully!";
         }

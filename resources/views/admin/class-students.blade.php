@@ -11,12 +11,12 @@
     <meta name="csrf-token" content="{{csrf_token()}}">
     <link rel="icon" href="/docs/4.1/assets/img/favicons/favicon.ico">
 
-    <title>Admin Dashboard</title>
+  <title>Oasis CBT | JSS{{$class->id}} Student List</title>
 
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="{{asset('/css/bootstrap.min.css')}}">
-    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+    {{-- <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"> --}}
     <style>
         h2 {
             margin-top: 120px;
@@ -31,7 +31,7 @@
   <body>
 
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
-    <a class="navbar-brand" href="{{route('dashboard')}}">One Time Schools</a>
+    <a class="navbar-brand" href="{{route('dashboard')}}">OASIS-CBT ADMIN</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -78,7 +78,7 @@
                                 <button href="#" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editModal{{$loop->iteration}}">EDIT</button>
                                 <button href="#" id="{{$student->id}}" class="btn btn-secondary btn-sm deleteBtn">DELETE</button>
                             @else
-                                <button href="#" class="btn btn-primary btn-sm restoreBtn" id="{{$student->id}}">RESTORE</button>
+                                <button href="#" title="Restore student to database" class="btn btn-primary btn-sm restoreBtn" id="{{$student->id}}">RESTORE</button>
                             @endunless
                         </td>
                     </tr>
@@ -99,7 +99,7 @@
                 </button>
               </div>
               <div class="modal-body">
-              <form>
+              <form autocomplete="off">
                 <div class="form-group row mt-3">
                   <label for="addLastname" class="col-sm-4 col-form-label">Surname</label>
                   <div class="col-sm-8">
