@@ -119,6 +119,7 @@ $(function() {
                 console.log(response)
                 $('.list-group').append("<span class=\"questionBtn list-group-item list-group-item-action\" id=\""+response.question.id+"\">Question "+response.count+"</span>")
                 document.getElementById('myForm').reset();
+                $('#summernote').code("");
             },
             error:function(response) {
                 console.log(response)
