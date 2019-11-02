@@ -69,9 +69,11 @@
 
         @csrf
 
-        @foreach ($error as $err)
-            {{$err}}
-        @endforeach<br>
+        @if ($errors->any())
+                {{-- @foreach ($errors as $error) --}}
+                    <strong style="color:red">{{$error}}</strong>
+                {{-- @endforeach --}}
+        @endif
 
         <label for="username">Username:</label>
         <input type="text" id="username" class="form-control" name="username" placeholder="Username" required><br>
