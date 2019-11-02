@@ -9,7 +9,7 @@
     <meta name="author" content="">
     <link rel="icon" href="/docs/4.1/assets/img/favicons/favicon.ico">
 
-    <title>Admin Dashboard</title>
+    <title>Results Page</title>
 
 
     <!-- Bootstrap core CSS -->
