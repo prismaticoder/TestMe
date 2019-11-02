@@ -7,7 +7,7 @@
     <meta name="author" content="">
     <link rel="icon" href="/docs/4.1/assets/img/favicons/favicon.ico">
 
-    <title>Student Login Page</title>
+    <title>Oasis CBT | Student Login Page</title>
 
 
     <!-- Bootstrap core CSS -->

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{csrf_token()}}">
-    <title>Questions Page</title>
+<title>Oasis CBT | JSS{{$class_id}} {{$subject->subject_name}} Questions</title>
     <!-- include libraries(jQuery, bootstrap) -->
     <link href="{{asset('css/bootstrap.min.css')}}" rel="stylesheet">
     <script src="{{asset('js/jquery.js')}}"></script>
