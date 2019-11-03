@@ -25,6 +25,11 @@ $(function() {
         }
     })
 
+    $('.deleteBtn').on('click',function() {
+        let id = this.id;
+        deleteQuestion(id);
+    })
+
     function getSelectedQuestion(id) {
         $.ajax({
             url: '/admin/findQuestion/' + id,
@@ -125,5 +130,21 @@ $(function() {
                 console.log(response)
             }
         })
+    }
+
+    function deleteQuestion(id) {
+        if (confirm('Are you sure you want to delete this question?')) {
+            $.ajax({
+                url: '/deleteQuestion/'+id,
+                method:'POST',
+                success:function(response) {
+                    alert(response)
+                    window.location.reload(true);
+                },
+                error:function(response) {
+                    console.log(response)
+                }
+            })
+        }
     }
 })

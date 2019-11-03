@@ -9,6 +9,7 @@
 <title>Oasis CBT | JSS{{$class_id}} {{$subject->subject_name}} Questions</title>
     <!-- include libraries(jQuery, bootstrap) -->
     <link href="{{asset('css/bootstrap.min.css')}}" rel="stylesheet">
+    <link href="{{asset('css/font-awesome.min.css')}}" rel="stylesheet">
     <script src="{{asset('js/jquery.js')}}"></script>
     <script src="{{asset('js/bootstrap.js')}}"></script>
     <script src="{{asset('/js/functions2.js')}}"></script>
@@ -41,6 +42,11 @@
         .questionBtn {
             cursor: pointer;
         }
+
+        .form-check-input {
+            width: 25px;
+            height: 25px;
+        }
         .sidebar {
             padding: 70px 0 20px;
             height: 100vh;
@@ -49,6 +55,16 @@
         }
         .question-body {
            padding: 130px 100px 50px;
+        }
+
+        .deleteBtn:hover {
+            /* padding: 1px; */
+            /* border: solid black 2px; */
+            color: #f13c20;
+            text-decoration: none;
+            transition-duration: 0.01s;
+            border-radius: 50%;
+            cursor:default;
         }
     </style>
 
@@ -81,7 +97,7 @@
             <h4 class="mt-3 mb-3 ml-3">Questions List</h4>
             <div class="list-group" id="questionList">
                 @foreach ($questions as $question)
-                <span class="questionBtn list-group-item list-group-item-action" id="{{$question->id}}">Question {{$loop->iteration}}</span>
+            <span class="questionBtn list-group-item list-group-item-action" id="{{$question->id}}">Question {{$loop->iteration}} <i id="{{$question->id}}" title="Delete Question" class="deleteBtn fa fa-2x fa-close" style="float:right"></i></span>
                 @endforeach
             </div>
         </div>

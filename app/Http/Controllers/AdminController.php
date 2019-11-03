@@ -212,6 +212,17 @@ class AdminController extends Controller
 
     }
 
+    public function deleteQuestion($id) {
+        DB::transaction(function () use($id){
+            $options = Option::where('question_id',$id);
+            $options->delete();
+            $question = Question::find($id);
+            $question->delete();
+        });
+
+        return response()->json('Question Deleted Successfully!');
+    }
+
     public function findOneQuestion(Request $request, $id) {
         $question = Question::where('id',$id)->with('options')->get();
 
