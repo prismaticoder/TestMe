@@ -76,7 +76,7 @@
                   </div>
                   <div class="card-footer">
                     <small class="text-muted">
-                    <a href="{{route('exam',['subject'=>$subject->alias])}}" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">Start Exam</a>
+                    <a href="{{route('exam',['subject'=>$subject->alias])}}" class="btn btn-primary">Start Exam</a>
                     </small>
                   </div>
                 </div>
