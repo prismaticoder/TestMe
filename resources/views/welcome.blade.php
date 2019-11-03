@@ -150,15 +150,16 @@
   </header>
 
   <main role="main" class="inner cover">
-    <h1 class="cover-heading">OASIS-CBT Welcome page</h1>
-    <p class="lead">Cover is a one-page template for building simple and beautiful home pages. Download, edit the text, and add your own fullscreen background photo to make it your own.</p>
+    <h1 class="cover-heading">OASIS SCHOOLS CBT</h1>
+    <p class="lead">Welcome to the Oasis Schools Computer Based Test, do follow instructions and goodluck in your exams.</p>
     <p class="lead">
-    @if (Route::has('login'))
+          @if (Route::has('login'))
                 <div class="top-right links">
+                  <a href="{{ url('/admin') }}" class="btn btn-lg btn-secondary">Admin Login</a>
                     @auth
                         <a href="{{ url('/home') }}" class="btn btn-lg btn-secondary">Home</a>
                     @else
-                        <a href="{{ route('login') }}" class="btn btn-lg btn-secondary">Login</a>
+                        <a href="{{ route('login') }}" class="btn btn-lg btn-secondary">Student Login</a>
 
                         @if (Route::has('register'))
                             <a href="{{ route('register') }}" class="btn btn-lg btn-secondary">Register</a>
@@ -166,6 +167,7 @@
                     @endauth
                 </div>
             @endif
+            
     </p>
   </main>
 
