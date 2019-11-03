@@ -28,6 +28,11 @@
         .question-body input {
             margin-right: 15px;
         }
+
+        .radioBtn {
+            width: 20px;
+            height: 20px;
+        }
         .sidebar {
             padding: 70px 0 20px;
             height: 100vh;
@@ -50,8 +55,9 @@
         <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-            <a class="nav-link" href="{{Request::url()}}"><span class="subject">{{strtoupper($subject->alias)}}</span> JSS<span class="class">{{$user->class_id}}</span> <span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="{{Request::url()}}"><span>{{strtoupper($subject->subject_name)}}</span> JSS<span class="class">{{$user->class_id}}</span> <span class="sr-only">(current)</span></a>
             </li>
+            <span style="display:none" class="subject">{{strtoupper($subject->alias)}}</span>
             <li class="nav-item">
             <a class="nav-link" href="#">{{$name}}</a>
             </li>
@@ -59,7 +65,7 @@
             <a class="nav-link" href="#">Exam No: {{$user->code}}</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Time: 35 min left</a>
+                <a class="nav-link" href="#">Time: <span id="hours">01</span> : <span id="minutes">35</span> : <span id="seconds">00</span></a>
             </li>
             </ul>
             <span class="navbar-text">
@@ -89,10 +95,10 @@
                 <p class="card-text question">Who is the Father of Computer?</p>
             </div>
             <ul class="list-group list-group-flush">
-                    <label for="radio1"><li class="list-group-item radios"><input type="radio" id="radio1" data-option-id="1" name="options" id="">A. <span class="options"> Bill Gates</span></li></label>
-                    <label for="radio2"><li class="list-group-item radios"><input type="radio" id="radio2" data-option-id="2" name="options" id="">B. <span class="options"> Charles Babbage</span></li></label>
-                    <label for="radio3"><li class="list-group-item radios"><input type="radio" id="radio3" data-option-id="3" name="options" id="">C. <span class="options"> Keifer Sutherland</span></li></label>
-                    <label for="radio4"><li class="list-group-item radios"><input type="radio" id="radio4" data-option-id="4" name="options" id="">D. <span class="options"> James Naismith</span></li></label>
+                    <label for="radio1"><li class="list-group-item radios"><input type="radio" id="radio1" data-option-id="1" name="options" class="radioBtn">A. <span class="options"> Bill Gates</span></li></label>
+                    <label for="radio2"><li class="list-group-item radios"><input type="radio" id="radio2" data-option-id="2" name="options" class="radioBtn">B. <span class="options"> Charles Babbage</span></li></label>
+                    <label for="radio3"><li class="list-group-item radios"><input type="radio" id="radio3" data-option-id="3" name="options" class="radioBtn">C. <span class="options"> Keifer Sutherland</span></li></label>
+                    <label for="radio4"><li class="list-group-item radios"><input type="radio" id="radio4" data-option-id="4" name="options" class="radioBtn">D. <span class="options"> James Naismith</span></li></label>
             </ul>
             <div class="card-body">
                 <button data-button-type="next" class="btn btn-secondary card-link prevButton newButton disabled">Previous Question</button>
