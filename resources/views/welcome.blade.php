@@ -139,42 +139,39 @@
   <body class="text-center">
     <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
   <header class="masthead mb-auto">
-    <div class="inner">
-      <h3 class="masthead-brand">One Time Schools</h3>
+    <!-- <div class="inner">
+      <h3 class="masthead-brand">OASIS-CBT</h3>
       <nav class="nav nav-masthead justify-content-center">
         <a class="nav-link active" href="#">Home</a>
         <a class="nav-link" href="#">Features</a>
         <a class="nav-link" href="#">Contact</a>
       </nav>
-    </div>
+    </div> -->
   </header>
 
   <main role="main" class="inner cover">
-      
-  @if (Route::has('login'))
+    <h1 class="cover-heading">OASIS-CBT Welcome page</h1>
+    <p class="lead">Cover is a one-page template for building simple and beautiful home pages. Download, edit the text, and add your own fullscreen background photo to make it your own.</p>
+    <p class="lead">
+    @if (Route::has('login'))
                 <div class="top-right links">
                     @auth
-                        <a href="{{ url('/home') }}">Home</a>
+                        <a href="{{ url('/home') }}" class="btn btn-lg btn-secondary">Home</a>
                     @else
-                        <a href="{{ route('login') }}">Login</a>
+                        <a href="{{ route('login') }}" class="btn btn-lg btn-secondary">Login</a>
 
                         @if (Route::has('register'))
-                            <a href="{{ route('register') }}">Register</a>
+                            <a href="{{ route('register') }}" class="btn btn-lg btn-secondary">Register</a>
                         @endif
                     @endauth
                 </div>
             @endif
-
-    <h1 class="cover-heading">Cover your page.</h1>
-    <p class="lead">Cover is a one-page template for building simple and beautiful home pages. Download, edit the text, and add your own fullscreen background photo to make it your own.</p>
-    <p class="lead">
-      <a href="#" class="btn btn-lg btn-secondary">Learn more</a>
     </p>
   </main>
 
   <footer class="mastfoot mt-auto">
     <div class="inner">
-      <p>&copy;2019 One Time Schools.</p>
+      <p>&copy;2019 OASIS-CBT</p>
     </div>
   </footer>
 </div>
