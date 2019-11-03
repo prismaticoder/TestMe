@@ -71,7 +71,7 @@
 
         @if ($errors->any())
                 {{-- @foreach ($errors as $error) --}}
-                    <strong style="color:red">{{$error}}</strong>
+                    <strong style="color:red">{{$errors}}</strong>
                 {{-- @endforeach --}}
         @endif
 
