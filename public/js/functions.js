@@ -38,6 +38,8 @@ $( function() {
         let subject = $('.subject').html().toLowerCase();
         let class_id = $('.class').html();
         let count = $('.questionCount').text();
+        let answerExists = $('input[name="options"]:checked').val();
+        let answer = $('input[name="options"]:checked').attr('data-option-id');
         $.ajax({
             url:'/getQuestions',
             method: 'GET',
@@ -52,15 +54,28 @@ $( function() {
                 // selected.checked = false;
                 console.log(response);
 
-                let answerExists = $('input[name="options"]:checked').val();
-                let answer = $('input[name="options"]:checked').attr('data-option-id');
+                let chosenOption = localStorage.getItem('option'+response.id)
+                if (chosenOption != undefined) {
+                    document.getElementsByName('options')[chosenOption].checked = true
+                }
+                else {
+                    let arr1 = document.getElementsByName('options');
+
+                    arr1.forEach(element => {
+                        element.checked = false
+                    });
+                }
+
+
                 if (buttonType == 'next') {
                     if (answerExists != undefined) {
+                        localStorage.setItem('option'+questionID,answerExists)
                         calculateScore(questionID,answer)
                     }
 
                 }
                 else {
+                    const handle = setInterval(startTimer(),1000);
                     $('.nxtButton').attr('data-button-type','next')
                     $('.nxtButton').html('Next Question');
                     $('.questionList').each(function() {
@@ -178,5 +193,53 @@ $( function() {
         }
 
         return arr
+    }
+
+    function startTimer() {
+        let hours = $('#hours').html();
+        let minutes = $('#minutes').html();
+
+        let currentTime = new Date().getTime();
+        let currentDay = new Date().toDateString();
+
+        let currentHour = new Date().getHours()
+        let futureHour = Number(currentHour) + Number(hours)
+
+        let currentMinute = new Date().getMinutes();
+        let futureMinute = Number(currentMinute) + Number(minutes);
+
+        if (futureMinute > 60) {
+            futureMinute -= 60;
+            if (hours == 0) {
+                futureHour += 1
+            }
+            else if (hours == 1) {
+                futureHour += 2
+            }
+        }
+
+        let futureTime = new Date(currentDay + " " + futureHour + ":" + futureMinute).getTime();
+
+        let distance = futureTime - currentTime;
+
+        console.log(distance)
+
+        let newHours = Math.abs(Math.round(distance/(1000*60*60)));
+        let newMinutes = Math.abs(Math.round(distance/(1000*60))) - (newHours*60);
+        let newSeconds = Math.abs(Math.round(distance/(1000*60*60)));
+
+        $('#hours').html(newHours)
+        $('#minutes').html(newMinutes)
+        $('#seconds').html(newSeconds)
+
+
+        // If the count down is finished, write some text
+        if (distance < 0) {
+            clearInterval(handle);
+            document.getElementById("demo").innerHTML = "EXPIRED";
+        }
+
+        // clearInterval(handle);
+
     }
 })

@@ -95,10 +95,10 @@
                 <p class="card-text question">Who is the Father of Computer?</p>
             </div>
             <ul class="list-group list-group-flush">
-                    <label for="radio1"><li class="list-group-item radios"><input type="radio" id="radio1" data-option-id="1" name="options" class="radioBtn">A. <span class="options"> Bill Gates</span></li></label>
-                    <label for="radio2"><li class="list-group-item radios"><input type="radio" id="radio2" data-option-id="2" name="options" class="radioBtn">B. <span class="options"> Charles Babbage</span></li></label>
-                    <label for="radio3"><li class="list-group-item radios"><input type="radio" id="radio3" data-option-id="3" name="options" class="radioBtn">C. <span class="options"> Keifer Sutherland</span></li></label>
-                    <label for="radio4"><li class="list-group-item radios"><input type="radio" id="radio4" data-option-id="4" name="options" class="radioBtn">D. <span class="options"> James Naismith</span></li></label>
+                    <label for="radio1"><li class="list-group-item radios"><input type="radio" id="radio1" data-option-id="1" name="options" class="radioBtn" value="0">A. <span class="options"> Bill Gates</span></li></label>
+                    <label for="radio2"><li class="list-group-item radios"><input type="radio" id="radio2" data-option-id="2" name="options" class="radioBtn" value="1">B. <span class="options"> Charles Babbage</span></li></label>
+                    <label for="radio3"><li class="list-group-item radios"><input type="radio" id="radio3" data-option-id="3" name="options" class="radioBtn" value="2">C. <span class="options"> Keifer Sutherland</span></li></label>
+                    <label for="radio4"><li class="list-group-item radios"><input type="radio" id="radio4" data-option-id="4" name="options" class="radioBtn" value="3">D. <span class="options"> James Naismith</span></li></label>
             </ul>
             <div class="card-body">
                 <button data-button-type="next" class="btn btn-secondary card-link prevButton newButton disabled">Previous Question</button>

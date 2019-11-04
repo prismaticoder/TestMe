@@ -38,7 +38,7 @@ $(function() {
         }
     })
 
-    $('#questionList').on('click','.questionBtn','.deleteBtn', function() {
+    $('#questionList').on('click','.deleteBtn', function() {
         let id = this.id;
         deleteQuestion(id);
     })
