@@ -87,7 +87,24 @@
         </div>
 
     <div class="col-md-10 question-body ">
+    <h3 class="text-secondary">Set Exam Duration</h3>
+    <form>
+        <div class="form-group row">
+            <label for="hours" class="col-sm-2 col-form-label">Hours</label>
+            <div class="col-sm-2">
+            <input type="email" class="form-control mr-3" id="hours" placeholder="Hours">
+            </div>
+            <label for="minutes" class="col-sm-2 col-form-label">Minutes</label>
+            <div class="col-sm-2">
+            <input type="password" class="form-control mr-3" id="minutes" placeholder="Minutes">
+            </div>
+            <button type="submit" class="btn btn-primary col-md-2">Set Duration</button>
+        </div>
+    </form>
+
     <form id="myForm" autocomplete="off" action="{{route('questions',['subject'=>$subject->alias,'class_id'=>$class_id])}}" method="post">
+        <input type="number" name="hour" min="1" max="5">
+        <input type="number" name="minutes" min="1" max="59">
         @csrf
         <textarea required name="question" id="summernote"></textarea><br>
         <div class="options">

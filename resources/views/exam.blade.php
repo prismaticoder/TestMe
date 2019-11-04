@@ -59,7 +59,7 @@
             <a class="nav-link" href="#">Exam No: {{$user->code}}</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Time: 35 min left</a>
+                <a class="nav-link" href="#">Time: 01 : 35 : 03 left</a>
             </li>
             </ul>
             <span class="navbar-text">
