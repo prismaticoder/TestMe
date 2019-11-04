@@ -94,7 +94,7 @@
 
     <div class="row">
         <div class="col-md-2 sidebar">
-            <h4 class="mt-3 mb-3 ml-3">Questions List</h4>
+            <h4 class="mt-3 mb-3 ml-3">Questions <button style="float:right" title="New Question" data-button-type="add-question" class="addBtn btn btn-secondary"><i class="fa fa-plus"></i> New</button></h4>
             <div class="list-group" id="questionList">
                 @foreach ($questions as $question)
             <span class="questionBtn list-group-item list-group-item-action" id="{{$question->id}}">Question {{$loop->iteration}} <i id="{{$question->id}}" title="Delete Question" class="deleteBtn fa fa-2x fa-close" style="float:right"></i></span>

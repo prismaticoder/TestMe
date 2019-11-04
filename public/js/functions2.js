@@ -5,11 +5,24 @@ $(function() {
         }
     })
 
+    // $('#summmernote').trigger("focus");
+
     $('#questionList').on('click','.questionBtn', function() {
         $(this).addClass("active");
         $(".questionBtn").not(this).removeClass("active");
         id = this.id;
         getSelectedQuestion(id);
+    })
+
+    $('.addBtn').click(function() {
+        $('#summernote').summernote("reset");
+        // $('#summmernote').trigger("focus");
+        document.getElementById('myForm').reset();
+        $('.submitBtn').html('Submit Question');
+        $('.submitBtn').attr('data-button-type','add-question');
+        $('.submitBtn').attr('id', "");
+        $('.questionBtn').removeClass("active")
+
     })
 
     $('.submitBtn').on('click',function(event) {
@@ -25,7 +38,7 @@ $(function() {
         }
     })
 
-    $('.deleteBtn').on('click',function() {
+    $('#questionList').on('click','.questionBtn','.deleteBtn', function() {
         let id = this.id;
         deleteQuestion(id);
     })
@@ -39,6 +52,7 @@ $(function() {
                 $('.submitBtn').html('Update Question');
                 $('.submitBtn').attr('data-button-type','question-update');
                 $('.submitBtn').attr('id', id);
+                $('.addBtn').attr('disabled',false)
                 console.log(response);
                 let length = response.options.length;
 
@@ -122,7 +136,7 @@ $(function() {
             success:function(response) {
                 alert('Question Added Successfully')
                 console.log(response)
-                $('.list-group').append("<span class=\"questionBtn list-group-item list-group-item-action\" id=\""+response.question.id+"\">Question "+response.count+"</span>")
+                $('.list-group').append("<span class=\"questionBtn list-group-item list-group-item-action\" id=\""+response.question.id+"\">Question "+response.count+" <i id=\""+response.question.id+"\" title=\"Delete Question\" class=\"deleteBtn fa fa-2x fa-close\" style=\"float:right\"></i></span>")
                 document.getElementById('myForm').reset();
                 $('#summernote').summernote("reset");
             },
