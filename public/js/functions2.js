@@ -5,7 +5,7 @@ $(function() {
         }
     })
 
-    $('.questionBtn').on('click', function() {
+    $('#questionList').on('click','.questionBtn', function() {
         $(this).addClass("active");
         $(".questionBtn").not(this).removeClass("active");
         id = this.id;
@@ -119,6 +119,7 @@ $(function() {
                 console.log(response)
                 $('.list-group').append("<span class=\"questionBtn list-group-item list-group-item-action\" id=\""+response.question.id+"\">Question "+response.count+"</span>")
                 document.getElementById('myForm').reset();
+                $('#summernote').summernote("reset");
             },
             error:function(response) {
                 console.log(response)

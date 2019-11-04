@@ -142,7 +142,7 @@
     <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
   <header class="masthead mb-auto">
     <div class="inner">
-      <h3 class="masthead-brand">One Time Schools</h3>
+      <h3 class="masthead-brand">Oasis Royal Academy</h3>
       <nav class="nav nav-masthead justify-content-center">
         <a class="nav-link active" href="#">Home</a>
         <a class="nav-link" href="#">Features</a>
@@ -152,8 +152,8 @@
   </header>
 
   <main role="main" class="inner cover">
-      
-  
+
+
 
     <h1 class="cover-heading">Submission successful.</h1>
     <p class="lead">Admin will notify you of your result when ready.</p>
@@ -163,7 +163,7 @@
 
   <footer class="mastfoot mt-auto">
     <div class="inner">
-      <p>&copy;2019 One Time Schools.</p>
+      <p>&copy;{{date('Y')}} Oasis Royal Academy</p>
     </div>
   </footer>
 </div>

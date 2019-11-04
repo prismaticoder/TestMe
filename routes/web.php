@@ -45,6 +45,10 @@ Route::get('/admin/findQuestion/{id}', 'AdminController@findOneQuestion');
 Route::post('/updateQuestion/{id}','AdminController@updateQuestion');
 Route::post('/addQuestion', 'AdminController@addQuestion');
 Route::post('/calculateScore', 'StudentController@calculateScore');
+Route::post('/updateStudent/{id}','AdminController@updateStudent');
+Route::post('/deleteStudent/{id}','AdminController@deleteStudent');
+Route::post('/restoreStudent/{id}','AdminController@restoreStudent');
+Route::post('/addStudent', 'AdminController@addStudent');
 // Route::post('/exam/{subject}','StudentController@getAjaxQuestions');
 
 Route::group(['prefix' => 'admin'], function () {

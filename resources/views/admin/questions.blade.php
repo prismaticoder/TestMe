@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{csrf_token()}}">
-    <title>Questions Page</title>
+<title>Oasis CBT | JSS{{$class_id}} {{$subject->subject_name}} Questions</title>
     <!-- include libraries(jQuery, bootstrap) -->
     <link href="{{asset('css/bootstrap.min.css')}}" rel="stylesheet">
     <script src="{{asset('js/jquery.js')}}"></script>
@@ -79,7 +79,7 @@
     <div class="row">
         <div class="col-md-2 sidebar">
             <h4 class="mt-3 mb-3 ml-3">Questions List</h4>
-            <div class="list-group">
+            <div class="list-group" id="questionList">
                 @foreach ($questions as $question)
                 <span class="questionBtn list-group-item list-group-item-action" id="{{$question->id}}">Question {{$loop->iteration}}</span>
                 @endforeach

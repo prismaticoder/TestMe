@@ -10,7 +10,7 @@
     <meta name="author" content="">
     <link rel="icon" href="/docs/4.1/assets/img/favicons/favicon.ico">
 
-    <title>Students Home</title>
+    <title>Oasis CBT | Students Home</title>
 
 
     <!-- Bootstrap core CSS -->

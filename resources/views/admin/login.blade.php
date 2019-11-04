@@ -7,7 +7,7 @@
     <meta name="author" content="">
     <link rel="icon" href="/docs/4.1/assets/img/favicons/favicon.ico">
 
-    <title>Admin Login Page</title>
+    <title>Oasis CBT | Admin Login Page</title>
 
 
     <!-- Bootstrap core CSS -->
@@ -69,9 +69,11 @@
 
         @csrf
 
-        @foreach ($error as $err)
-            {{$err}}
-        @endforeach<br>
+        @if ($errors->any())
+                {{-- @foreach ($errors as $error) --}}
+                    <strong style="color:red">{{$error}}</strong>
+                {{-- @endforeach --}}
+        @endif
 
         <label for="username">Username:</label>
         <input type="text" id="username" class="form-control" name="username" placeholder="Username" required><br>

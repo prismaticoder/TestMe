@@ -7,6 +7,7 @@ use App\Subject;
 use App\Classes;
 use App\Question;
 use App\Option;
+use App\User;
 use DB;
 use Illuminate\Support\Facades\Log;
 
@@ -32,12 +33,63 @@ class AdminController extends Controller
         $class = Classes::where('class',$class)->first();
 
         if ($class) {
-            $students = $class->students;
+            $students = $class->students()->withTrashed()->get();
 
             return view('admin.class-students', compact('students','class'));
         }
 
         return abort('404','Page does not exist');
+    }
+
+    public function updateStudent(Request $request,$id) {
+        $student = User::find($id);
+
+        $firstname = $request->firstname;
+        $lastname = $request->lastname;
+
+        $student->firstname = $firstname;
+        $student->lastname = $lastname;
+        $student->save();
+
+        return response()->json('Details Saved Successfully');
+
+    }
+
+    public function deleteStudent($id) {
+        $student = User::find($id);
+        $student->delete();
+
+        return response()->json('Deletion Successful!');
+    }
+
+    public function restoreStudent($id) {
+        $student = User::onlyTrashed()->where('id',$id);
+        $student->restore();
+
+        return response()->json('The selected student has succesfully been restored!');
+    }
+
+    public function addStudent(Request $request) {
+        $firstname = $request->firstname;
+        $lastname = $request->lastname;
+        $class_id = $request->class_id;
+
+        $check = User::where('firstname',$firstname)->where('lastname',$lastname)->where('class_id',$class_id)->first();
+
+        if (empty($check)) {
+            $student = new User;
+            $student->firstname = $firstname;
+            $student->lastname = $lastname;
+            $student->class_id = $class_id;
+            $student->code = rand(10000,50000);
+            $student->save();
+            $res = "Student Added Successfully!";
+        }
+        else {
+            $res = "This Student Already Exists!";
+        }
+
+        return response()->json($res);
     }
 
     public function getAllQuestions($subject,$class_id) {

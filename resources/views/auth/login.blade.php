@@ -7,7 +7,7 @@
     <meta name="author" content="">
     <link rel="icon" href="/docs/4.1/assets/img/favicons/favicon.ico">
 
-    <title>Student Login Page</title>
+    <title>Oasis CBT | Student Login Page</title>
 
 
     <!-- Bootstrap core CSS -->
@@ -60,16 +60,22 @@
 
   <body class="text-center">
     <form class="form-signin" method="POST" action="{{ route('login') }}">
-            
+
             <h1>Student Login</h1>
             @csrf
 
-            <label for="email" class="mt-3">{{ __('First Name') }}</label>
-            <input id="email" type="text" class="form-control" name="firstname" required>
-                            
+            @if ($errors->any())
+                {{-- @foreach ($errors as $error) --}}
+                    <strong style="color:red">{{$error}}</strong>
+                {{-- @endforeach --}}
+            @endif
+
             <label for="email" class="mt-3">{{ __('Surname') }}</label>
             <input id="email" type="text" class="form-control" name="lastname" required>
-                            
+
+            <label for="email" class="mt-3">{{ __('First Name') }}</label>
+            <input id="email" type="text" class="form-control" name="firstname" required>
+
             <label for="email" class="mt-3">{{ __('Examination Number') }}</label>
             <input id="email" type="number" class="form-control" name="code" required>
 
@@ -83,7 +89,7 @@
                         {{ __('Forgot Your Password?') }}
                     </a>
                 @endif
-            </div>                    
+            </div>
 
                         {{-- <div class="form-group row">
                             <div class="col-md-6 offset-md-4">
@@ -98,7 +104,7 @@
                         </div> --}}
 
                         <div class="form-group row mb-0">
-                            
+
                         </div>
                     </form>
   </body>

@@ -20,7 +20,7 @@ class LoginController extends Controller
     }
 
     public function showLoginForm() {
-        return view('admin.login')->with('error', array());
+        return view('admin.login');
     }
 
     // protected function guard()
@@ -37,7 +37,7 @@ class LoginController extends Controller
             return redirect()->intended(route('dashboard'));
         }
 
-        return view('admin.login')->with('error', $credentials);
+        return view('admin.login')->withErrors('Incorrect Username or Password!');
     }
 
     public function logout() {

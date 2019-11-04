@@ -59,7 +59,7 @@ class LoginController extends Controller
             return redirect()->intended('/home');
         }
 
-        return redirect(route('login',['error' => 'Incorrect Login Credentials']));
+        return redirect('login')->withErrors('Incorrect Login Credentials');
     }
 
     /**
