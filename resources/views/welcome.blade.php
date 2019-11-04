@@ -155,7 +155,7 @@
     <p class="lead">
           @if (Route::has('login'))
                 <div class="top-right links">
-                  <a href="{{ url('/admin') }}" class="btn btn-lg btn-secondary">Admin Login</a>
+                  <a href="{{ url('/admin') }}" class="btn btn-lg btn-secondary mr-2">Admin Login</a>
                     @auth
                         <a href="{{ url('/home') }}" class="btn btn-lg btn-secondary">Home</a>
                     @else
