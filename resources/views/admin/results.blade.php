@@ -44,11 +44,11 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link active" href="{{route('dashboard')}}">Dashboard <span class="sr-only">(current)</span></a>
-            </li>
             <li class="nav-item">
-            <a class="nav-link" href="{{route('results')}}">Results</a>
+                <a class="nav-link" href="{{route('dashboard')}}">Dashboard</a>
+            </li>
+            <li class="nav-item active">
+            <a class="nav-link active" href="{{route('results')}}">Results</a>
             </li>
             <li class="nav-item">
             <a class="nav-link" href="{{route('dashboard')}}#students">Students</a>
@@ -73,12 +73,12 @@
                       <p class="card-text">{{strtoupper($subject->alias)}}</p>
                     </div>
                     <div class="card-footer">
-                      <small class="text-muted">
+                      {{-- <small class="text-muted"> --}}
                       Class results >
                       @foreach ($classes as $class)
                       <a href="{{route('singleresult',['subject'=>$subject->alias,'class_id'=>$class->id])}}" class="btn btn-secondary">JSS {{$class->id}}</a>
                       @endforeach
-                      </small>
+                      {{-- </small> --}}
                     </div>
             </div>
             @endforeach
