@@ -24,6 +24,10 @@ class User extends Authenticatable
         'firstname', 'lastname', 'class_id', 'code'
     ];
 
+    public function scores() {
+        return $this->hasMany(Score::class);
+    }
+
     /**
      * The attributes that should be hidden for arrays.
      *

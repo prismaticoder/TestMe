@@ -11,12 +11,12 @@
     <meta name="author" content="">
     <link rel="icon" href="/docs/4.1/assets/img/favicons/favicon.ico">
 
-    <title>Admin Dashboard</title>
+  <title>{{$selected_class->class}} {{$subject->subject_name}} Results Page</title>
 
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="{{asset('/css/bootstrap.min.css')}}">
-    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+    {{-- <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"> --}}
     <style>
         h2 {
             margin-top: 120px;
@@ -31,49 +31,50 @@
   <body>
 
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
-    <a class="navbar-brand" href="{{route('dashboard')}}">One Time Schools</a>
+    <a class="navbar-brand" href="{{route('dashboard')}}">OASIS-CBT ADMIN</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarText">
-            <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Features</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Pricing</a>
-            </li>
-            </ul>
-            <span class="navbar-text">
-            <a class="nav-link" href="{{route('admin-logout')}}">Sign out</a>
-            </span>
-        </div>
+                <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">{{strtoupper($subject->alias)}} <span class="sr-only">(current)</span></a>
+                </li>
+                @foreach ($classes as $class)
+                    <li class="nav-item">
+                    <a class="nav-link {{ (request()->segment(4) == $class->id) ? 'active' : '' }}" href="{{route('singleresult',['subject'=>$subject->alias,'class_id'=>$class->id])}}">JSS {{$class->id}}</a>
+                    </li>
+                @endforeach
+                </ul>
+                <span class="navbar-text">
+                    <a class="nav-link" href="{{route('admin-logout')}}">Sign out</a>
+                </span>
+            </div>
     </nav>
 
     <div class="container contents">
-    <h2>JSS1 Physics CBT Scores <button href="#" class="btn btn-primary btn-lg ml-3" data-toggle="modal" data-target="#exampleModalCenter">Print Result</button></h2>
+    <h2>{{$selected_class->class}} {{$subject->subject_name}} CBT Scores <button href="#" class="btn btn-primary btn-lg ml-3" onclick="return window.print()">Print Result</button></h2>
 
           <table class="table table-s table-hover table-bordered">
               <thead class="thead-dark">
                 <tr>
+                <th>S/N</th>
                   <th>Registration Number</th>
+                  <th>Surname</th>
                   <th>First name</th>
-                  <th>Last name</th>
-                  <th>Examination code</th>
                   <th>Score</th>
                 </tr>
               </thead>
               <tbody>
+                  @foreach ($students as $student)
                     <tr>
-                        <td>12345</td>
-                        <td>Lopi</td>
-                        <td>Ada</td>
-                        <td>JSS8</td>
-                        <td >35</td>
+                        <td>{{$loop->iteration}}</td>
+                        <td>{{$student->code}}</td>
+                        <td>{{$student->lastname}}</td>
+                        <td>{{$student->firstname}}</td>
+                        <td >{{($student->scores()->where('subject_id',$subject->id)->first())?$student->scores()->where('subject_id',$subject->id)->first()->score:"-"}}</td>
                     </tr>
+                  @endforeach
 
               </tbody>
             </table>

@@ -235,6 +235,19 @@ class AdminController extends Controller
         return view('admin.results',compact('subjects','classes'));
     }
 
+    public function getSingleResult($subject,$class_id) {
+        $subject = Subject::where('alias',$subject)->first();
+
+        if ($subject) {
+            $students = User::where('class_id',$class_id)->get();
+            $selected_class = Classes::find($class_id);
+            $classes = Classes::get();
+            return view('admin.main-result',compact('students','subject','selected_class','classes'));
+        }
+
+        return abort('404');
+    }
+
     public function hostExam($subject) {
         $subject = Subject::where('alias',$subject)->first();
 
