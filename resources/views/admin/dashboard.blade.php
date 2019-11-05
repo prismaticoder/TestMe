@@ -93,7 +93,7 @@
             </div>
             <div class="card-footer">
               <small class="text-muted">
-              <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">Start Exam</a>
+              <a href="{{route('host-exam', ['subject'=>$subject->alias])}}" class="btn btn-primary">Start Exam</a>
               <a href="{{route('questions',['subject'=>$subject->alias,'class_id'=>1])}}" class="btn btn-secondary">JSS 1</a>
               <a href="{{route('questions',['subject'=>$subject->alias,'class_id'=>2])}}" class="btn btn-secondary">JSS 2</a>
               <a href="{{route('questions',['subject'=>$subject->alias,'class_id'=>3])}}" class="btn btn-secondary">JSS 3</a>

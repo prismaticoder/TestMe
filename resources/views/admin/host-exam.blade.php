@@ -152,16 +152,14 @@
   <main role="main" class="inner cover">
 
 
-    <h1 class="cover-heading">Literature Exam</h1><br>
+    <h1 class="cover-heading">{{$subject->subject_name}} Exam</h1><br>
     <p class="lead">Instructions</p>
-    <p class="lead">The API endpoints should respond with a JSON object specifying the status of the operation, and
-either a data property (on success) or an error property (on failure). When present, the data
-property is always an object or an array</p>
+  <p class="lead">All students can now access the exam page via <strong style="color:orange">{{route('exam',['subject'=>$subject->alias])}}</strong>. Click the "End Exam" button after the exam is fully over to disable student access.</p>
     <p class="lead">Time Countdown</p>
     <h1 class="cover-heading">01:05</h1><br>
 
     <p class="lead">
-      <a href="#" class="btn btn-lg btn-secondary">End Exam</a>
+    <a href="{{route('end-exam', ['subject'=>$subject->alias])}}" class="btn btn-lg btn-secondary" onclick="return confirm('Are you sure you want to end this examination for all students thereby disabling any form of student access?')">End Exam</a>
     </p>
   </main>
 

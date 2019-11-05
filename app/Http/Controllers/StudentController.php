@@ -33,28 +33,33 @@ class StudentController extends Controller
 
         // If and Only if CheckHost applies should a user proceed further, else, return 401 - Not Authorized
 
+        if ($checkHost) {
+            $user = Auth::user();
+            $class_id = $user->class_id;
 
-        $user = Auth::user();
-        $class_id = $user->class_id;
+            $name = $user->firstname . ' ' . $user->lastname;
 
-        $name = $user->firstname . ' ' . $user->lastname;
+            $subject = Subject::where('alias',$subject)->first();
 
-        $subject = Subject::where('alias',$subject)->first();
+            // $seed = rand(0000,9999);
+            // Session::put('seed', $seed);
 
-        // $seed = rand(0000,9999);
-        // Session::put('seed', $seed);
+            if ($subject) {
+                $subject_id = $subject->id;
+                $seed = Auth::user()->code;
+                // Session::put('scoreArray', []);
+                // session('scoreArray',[]);
+                $questions = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->with('options')->inRandomOrder($seed)->get();
 
-        if ($subject) {
-            $subject_id = $subject->id;
-            $seed = Auth::user()->code;
-            // Session::put('scoreArray', []);
-            // session('scoreArray',[]);
-            $questions = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->with('options')->inRandomOrder($seed)->get();
+                return view('exam',compact('questions','name','user','subject'));
+            }
 
-            return view('exam',compact('questions','name','user','subject'));
+            return abort('404');
         }
 
-        return abort('404');
+        return abort('401');
+
+
 
     }
 

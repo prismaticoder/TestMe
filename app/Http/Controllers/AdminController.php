@@ -234,4 +234,25 @@ class AdminController extends Controller
         $classes = Classes::get();
         return view('admin.results',compact('subjects','classes'));
     }
+
+    public function hostExam($subject) {
+        $subject = Subject::where('alias',$subject)->first();
+
+        if ($subject) {
+            $subject->isHosted = 1;
+            $subject->save();
+
+            return view('admin.host-exam',compact('subject'));
+        }
+
+        return abort('404');
+    }
+
+    public function endExam($subject) {
+        $subject = Subject::where('alias',$subject)->first();
+        $subject->isHosted = 0;
+        $subject->save();
+
+        return redirect(route('dashboard'));
+    }
 }

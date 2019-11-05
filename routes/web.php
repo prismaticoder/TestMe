@@ -17,8 +17,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/results', function() {
-    return view('admin.results');
+Route::get('/submitsuccess', function() {
+    return view('submit-success');
 });
 
 Route::get('/singleresult', function() {
@@ -60,6 +60,8 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/', 'AdminController@dashboard')->name('dashboard');
     Route::get('/students/{class}', 'AdminController@getClassStudents')->name('class-students');
     Route::get('/results','AdminController@getResults')->name('results');
+    Route::get('/{subject}/hostexam','AdminController@hostExam')->name('host-exam');
+    Route::get('/{subject}/endexam','AdminController@endExam')->name('end-exam');
 
     Route::group(['prefix' => 'subjects'], function() {
         Route::get('/{subject}/{class_id}/questions', 'AdminController@getAllQuestions')->name('questions');
