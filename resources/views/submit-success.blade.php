@@ -155,9 +155,10 @@
 
 
 
-    <h1 class="cover-heading">Submission successful.</h1>
-    <p class="lead">Admin will notify you of your result when ready.</p>
+  <h1 class="cover-heading">Hey <strong style="color:orange">{{Auth::user()->firstname}}</strong>, Your submission was successful!</h1>
+    <p class="lead">Oasis Royal Academy wishes you luck in the exam, you will be notified when your result is out.</p>
     <p class="lead">
+            <a href="{{route('logout')}}" class="btn btn-lg btn-secondary">Sign Out</a>
     </p>
   </main>
 

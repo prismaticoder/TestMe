@@ -7,6 +7,7 @@ use Auth;
 use App\Question;
 use App\Subject;
 use App\Option;
+use App\Score;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
@@ -129,39 +130,11 @@ class StudentController extends Controller
         return response()->json($score);
     }
 
-    public function submitQuestion(Session $session) {
-        // $question_id = $request->question_id;
-        // $option_id = $request->option_id;
+    public function submitQuestion(Request $request) {
+        $subject = $request->subject;
+        $class_id = $request->class_id;
 
-        // $scoreArray = session()->pull('scoreArray');
-
-        // Log::info($option_id);
-
-        // // Log::info($request->session()->all());
-
-        // foreach ($scoreArray as $key => $array) {
-        //     if ($question_id == $array['question_id']) {
-        //         // unset($scoreArray[$key]);
-        //         // array_splice(session('scoreArray'),$key,1);
-        //         // $array['answer'] = 0;
-        //         unset($scoreArray[$key]);
-        //     }
-        // }
-
-        // $option = Option::where('id',$option_id)->get();
-
-        // Log::info($option);
-
-        // if ($option[0]->isCorrect) {
-        //     array_push($scoreArray,['question_id'=>$question_id,'answer'=>1]);
-        // }
-        // else {
-        //     array_push($scoreArray,['question_id'=>$question_id,'answer'=>0]);
-        // }
-
-        // session()->put('scoreArray',$scoreArray);
-
-        // Log::info(session('scoreArray'));
+        $subject = Subject::where('alias',$subject)->first();
 
         $ara = [];
 
@@ -171,6 +144,17 @@ class StudentController extends Controller
 
         $score = array_sum($ara);
 
-        return response()->json($score);
+        $scoreTable = new Score;
+        $scoreTable->subject_id = $subject->id;
+        $scoreTable->class_id = $class_id;
+        $scoreTable->user_id = Auth::user()->id;
+        $scoreTable->score = $score;
+        $scoreTable->save();
+
+        return response()->json('success');
+    }
+
+    public function submitSuccess() {
+        return view('submit-success');
     }
 }

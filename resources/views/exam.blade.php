@@ -65,7 +65,7 @@
             <a class="nav-link" href="#">Exam No: {{$user->code}}</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Time: <span id="hours">01</span> : <span id="minutes">35</span> : <span id="seconds">00</span></a>
+                <a class="nav-link" href="#">Time: <span id="hours">1</span>h <span id="minutes">35</span>m <span id="seconds">59</span>s</a>
             </li>
             </ul>
             <span class="navbar-text">
@@ -111,11 +111,11 @@
 
     </div>
 
-        {{-- <p id="demo"></p>
+        <p id="demo"></p>
 
         <script>
         // Set the date we're counting down to
-        var countDownDate = new Date("Jan 5, 2021 15:37:25").getTime();
+        var countDownDate = new Date("Nov 5, 2019 02:50:00").getTime();
 
         // Update the count down every 1 second
         var x = setInterval(function() {
@@ -142,7 +142,7 @@
             document.getElementById("demo").innerHTML = "EXPIRED";
           }
         }, 1000);
-        </script> --}}
+        </script>
 
 
 

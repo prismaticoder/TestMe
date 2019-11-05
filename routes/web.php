@@ -17,10 +17,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/submitsuccess', function() {
-    return view('submit-success');
-});
-
 Route::get('/singleresult', function() {
     return view('admin.main-result');
 });
@@ -52,6 +48,8 @@ Route::post('/restoreStudent/{id}','AdminController@restoreStudent');
 Route::post('/addStudent', 'AdminController@addStudent');
 Route::get('/submitQuestion','StudentController@submitQuestion');
 // Route::post('/exam/{subject}','StudentController@getAjaxQuestions');
+
+Route::get('/success','StudentController@submitSuccess')->name('success');
 
 Route::group(['prefix' => 'admin'], function () {
     Route::get('/login', "Admin\LoginController@showLoginForm")->name('admin-login');

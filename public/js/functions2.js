@@ -5,7 +5,7 @@ $(function() {
         }
     })
 
-    // $('#summmernote').trigger("focus");
+    $('#summmernote').trigger("focus");
 
     $('#questionList').on('click','.questionBtn', function() {
         $(this).addClass("active");
@@ -16,7 +16,7 @@ $(function() {
 
     $('.addBtn').click(function() {
         $('#summernote').summernote("reset");
-        // $('#summmernote').trigger("focus");
+        $('#summmernote').trigger("focus");
         document.getElementById('myForm').reset();
         $('.submitBtn').html('Submit Question');
         $('.submitBtn').attr('data-button-type','add-question');

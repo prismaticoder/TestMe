@@ -13,6 +13,11 @@ $( function() {
 
     // getQuestion(id);
 
+
+    const hours = $('#hours').html();
+    const minutes = $('#minutes').html();
+    const seconds = $('#seconds').html();
+
     $('.newButton').click(function() {
         id = $(this).attr('data-question');
         buttonType = $(this).attr('data-button-type');
@@ -75,7 +80,7 @@ $( function() {
 
                 }
                 else {
-                    const handle = setInterval(startTimer(),1000);
+                    const handle = setInterval(startTimer,1000);
                     $('.nxtButton').attr('data-button-type','next')
                     $('.nxtButton').html('Next Question');
                     $('.questionList').each(function() {
@@ -127,35 +132,11 @@ $( function() {
 
                 $('.questionNo').text(id);
 
-                // let exists = userAnswers.find(function(element) {
-                //     return element.question_id == questionID
-                // })
-
-                // if (exists != undefined) {
-                //     selected[exists.answer].checked = true;
-                // }
-                // else {
-                //     selected.checked = false;
-                // }
-
                 $('.nxtButton').attr('data-question',parseInt(id)+1);
                 $('.prevButton').attr('data-question',parseInt(id)-1);
 
 
                 $('.question').attr('id',response.id);
-                // if (answer) {
-                //     userAnswers.forEach(function(element,index) {
-                //         if (element.question_id == questionID) {
-                //             userAnswers.splice(index,1)
-                //         }
-                //     });
-                //     userAnswers.push({'question_id':questionID,'answer':answer});
-                // }
-
-
-                // document.getElementById('options').reset();
-                // console.log(exists)
-                // console.log(userAnswers)
             },
             error: function(response) {
                 console.log(response);
@@ -196,9 +177,6 @@ $( function() {
     }
 
     function startTimer() {
-        let hours = $('#hours').html();
-        let minutes = $('#minutes').html();
-
         let currentTime = new Date().getTime();
         let currentDay = new Date().toDateString();
 
@@ -208,25 +186,25 @@ $( function() {
         let currentMinute = new Date().getMinutes();
         let futureMinute = Number(currentMinute) + Number(minutes);
 
+        let futureSecond = Number(seconds);
+
         if (futureMinute > 60) {
             futureMinute -= 60;
-            if (hours == 0) {
-                futureHour += 1
-            }
-            else if (hours == 1) {
-                futureHour += 2
-            }
+            futureHour += 1
+            // else if (Number(hours) == 1) {
+            //     futureHour += 2
+            // }
         }
 
-        let futureTime = new Date(currentDay + " " + futureHour + ":" + futureMinute).getTime();
+        let futureTime = new Date(currentDay + " " + futureHour + ":" + futureMinute + ":" + futureSecond).getTime();
 
         let distance = futureTime - currentTime;
 
         console.log(distance)
 
-        let newHours = Math.abs(Math.round(distance/(1000*60*60)));
-        let newMinutes = Math.abs(Math.round(distance/(1000*60))) - (newHours*60);
-        let newSeconds = Math.abs(Math.round(distance/(1000*60*60)));
+        let newHours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        let newMinutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        let newSeconds = Math.floor((distance % (1000 * 60)) / 1000);
 
         $('#hours').html(newHours)
         $('#minutes').html(newMinutes)
@@ -236,10 +214,39 @@ $( function() {
         // If the count down is finished, write some text
         if (distance < 0) {
             clearInterval(handle);
-            document.getElementById("demo").innerHTML = "EXPIRED";
+            // document.getElementById("demo").innerHTML = "EXPIRED";
         }
 
         // clearInterval(handle);
 
+    }
+
+    function submitQuestion() {
+        let questionID = $('.question').attr('id');
+        let count = $('.questionCount').text();
+        let subject = $('.subject').html().toLowerCase();
+        let class_id = $('.class').html();
+        let answerExists = $('input[name="options"]:checked').val();
+        let answer = $('input[name="options"]:checked').attr('data-option-id');
+        if (answerExists!=undefined) {
+            calculateScore(questionID,answer)
+        }
+
+        $.ajax({
+            url:'/submitQuestion',
+            data: {
+                subject:subject,
+                class_id:class_id
+            },
+            method:'GET',
+            success:function(response) {
+                localStorage.clear();
+                // console.log(response);
+                window.location.href = "/success"
+            },
+            error:function(response) {
+                console.log(response);
+            }
+        })
     }
 })
