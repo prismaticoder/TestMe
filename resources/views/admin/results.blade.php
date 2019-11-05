@@ -48,10 +48,10 @@
                 <a class="nav-link active" href="{{route('dashboard')}}">Dashboard <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Results</a>
+            <a class="nav-link" href="{{route('results')}}">Results</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Pricing</a>
+            <a class="nav-link" href="{{route('dashboard')}}#students">Students</a>
             </li>
             </ul>
             <span class="navbar-text">
@@ -62,80 +62,28 @@
 
     <div class="container">
 
-        
+
 
         <h1 style="margin-top:120px;">Exam Results Page</h1>
 
         <main class="card-columns mt-3">
-          <div class="card">
-            <div class="card-body">
-              <p class="card-text">English Language</p>
+            @foreach ($subjects as $subject)
+            <div class="card">
+                    <div class="card-body">
+                      <p class="card-text">{{strtoupper($subject->alias)}}</p>
+                    </div>
+                    <div class="card-footer">
+                      <small class="text-muted">
+                      Class results >
+                      @foreach ($classes as $class)
+                      <a href="{{route('singleresult',['subject'=>$subject->alias,'class_id'=>$class->id])}}" class="btn btn-secondary">JSS {{$class->id}}</a>
+                      @endforeach
+                      </small>
+                    </div>
             </div>
-            <div class="card-footer">
-              <small class="text-muted">
-              Class results > 
-              <a href="#" class="btn btn-secondary">JSS 1</a>
-              <a href="#" class="btn btn-secondary">JSS 2</a>
-              <a href="#" class="btn btn-secondary">JSS 3</a>
-              </small>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-body">
-              <p class="card-text">English Language</p>
-            </div>
-            <div class="card-footer">
-              <small class="text-muted">
-              Class results > 
-              <a href="#" class="btn btn-secondary">JSS 1</a>
-              <a href="#" class="btn btn-secondary">JSS 2</a>
-              <a href="#" class="btn btn-secondary">JSS 3</a>
-              </small>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-body">
-              <p class="card-text">English Language</p>
-            </div>
-            <div class="card-footer">
-              <small class="text-muted">
-              Class results > 
-              <a href="#" class="btn btn-secondary">JSS 1</a>
-              <a href="#" class="btn btn-secondary">JSS 2</a>
-              <a href="#" class="btn btn-secondary">JSS 3</a>
-              </small>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-body">
-              <p class="card-text">English Language</p>
-            </div>
-            <div class="card-footer">
-              <small class="text-muted">
-              Class results > 
-              <a href="#" class="btn btn-secondary">JSS 1</a>
-              <a href="#" class="btn btn-secondary">JSS 2</a>
-              <a href="#" class="btn btn-secondary">JSS 3</a>
-              </small>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-body">
-              <p class="card-text">English Language</p>
-            </div>
-            <div class="card-footer">
-              <small class="text-muted">
-              Class results > 
-              <a href="#" class="btn btn-secondary">JSS 1</a>
-              <a href="#" class="btn btn-secondary">JSS 2</a>
-              <a href="#" class="btn btn-secondary">JSS 3</a>
-              </small>
-            </div>
-          </div>
+            @endforeach
         </main>
-
         </div>
-
         </div>
 
 

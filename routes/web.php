@@ -50,6 +50,7 @@ Route::post('/updateStudent/{id}','AdminController@updateStudent');
 Route::post('/deleteStudent/{id}','AdminController@deleteStudent');
 Route::post('/restoreStudent/{id}','AdminController@restoreStudent');
 Route::post('/addStudent', 'AdminController@addStudent');
+Route::get('/submitQuestion','StudentController@submitQuestion');
 // Route::post('/exam/{subject}','StudentController@getAjaxQuestions');
 
 Route::group(['prefix' => 'admin'], function () {
@@ -58,11 +59,13 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/logout', "Admin\LoginController@logout")->name('admin-logout');
     Route::get('/', 'AdminController@dashboard')->name('dashboard');
     Route::get('/students/{class}', 'AdminController@getClassStudents')->name('class-students');
+    Route::get('/results','AdminController@getResults')->name('results');
 
     Route::group(['prefix' => 'subjects'], function() {
         Route::get('/{subject}/{class_id}/questions', 'AdminController@getAllQuestions')->name('questions');
-        Route::post('/{subject}/{class_id}/questions', 'AdminController@addQuestion');
-        Route::post('/{subject}/{class_id}/questions/{id}', 'AdminController@updateQuestion');
+        Route::get('/{subject}/{class_id}/results', 'AdminController@getSingleResult')->name('singleresult');
+        // Route::post('/{subject}/{class_id}/questions', 'AdminController@addQuestion');
+        // Route::post('/{subject}/{class_id}/questions/{id}', 'AdminController@updateQuestion');
     });
 
 });

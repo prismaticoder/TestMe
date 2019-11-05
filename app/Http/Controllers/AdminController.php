@@ -135,7 +135,7 @@ class AdminController extends Controller
             file_put_contents($path, $data);
 
             $img->removeattribute('src');
-            $img->setattribute('src', asset('/img/uploads/'.$image_name));
+            $img->setattribute('src', '/img/uploads/'.$image_name);
         }
 
         $question = $dom->savehtml();
@@ -227,5 +227,11 @@ class AdminController extends Controller
         $question = Question::where('id',$id)->with('options')->get();
 
         return response()->json($question[0]);
+    }
+
+    public function getResults() {
+        $subjects = Subject::get();
+        $classes = Classes::get();
+        return view('admin.results',compact('subjects','classes'));
     }
 }

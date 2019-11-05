@@ -51,10 +51,10 @@
                 <a class="nav-link active" href="{{route('dashboard')}}">Dashboard <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Results</a>
+            <a class="nav-link" href="{{route('results')}}">Results</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Pricing</a>
+            <a class="nav-link" href="{{route('dashboard')}}#students">Students</a>
             </li>
             </ul>
             <span class="navbar-text">
@@ -63,7 +63,7 @@
         </div>
     </nav>
 
-    <div class="container">
+    <div class="container" id="students">
 
         <main role="main" class="classes">
           <h1>Students</h1>
