@@ -12,7 +12,7 @@
     <link href="{{asset('css/font-awesome.min.css')}}" rel="stylesheet">
     <script src="{{asset('js/popper.min.js')}}"></script>
     <script src="{{asset('js/jquery.js')}}"></script>
-    <script src="{{asset('js/bootstrap.js')}}"></script>
+    <script src="{{asset('js/bootstrap.min.js')}}"></script>
     <script src="{{asset('/js/functions2.js')}}"></script>
     {{-- <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"> --}}
 
@@ -103,13 +103,13 @@
             </div>
         </div>
 
+
+
     <div class="col-md-10 question-body ">
-    {{-- <h3 class="text-secondary">Exam Duration And Allocatable Marks</h3> --}}
-    {{-- <form> --}}
-        <div class="row">
-            <span class="col-md-2"></span><span class="col-md-2"></span><button id="showModal" href="#" class="btn btn-primary col-md-2">Set</button>
-        </div>
-    {{-- </form> --}}
+            <div class="row">
+                <span class="col-md-2"></span><span class="col-md-2"></span><span class="col-md-2"></span><span class="col-md-2"></span><button id="showModal" style="float:right" href="#" class="btn btn-primary col-md-4" data-toggle="modal" data-target="#exampleModalCenter">SET EXAM TIME AND TOTAL SCORE</button>
+            </div>
+            <br>
 
     <form id="myForm" autocomplete="off" action="{{route('questions',['subject'=>$subject->alias,'class_id'=>$class_id])}}" method="post">
         @csrf
@@ -180,7 +180,7 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalCenterTitle">Modal title</h5>
+                  <h5 class="modal-title" id="exampleModalCenterTitle">SET EXAM TIME AND TOTAL SCORE</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
@@ -192,23 +192,23 @@
                       <label for="">Exam Duration</label>
                     </div>
                     <div class="col-sm-3">
-                      <input type="number" class="form-control" placeholder="Hour">
+                      <input type="number" required class="form-control hours" placeholder="Hour">
                     </div>
                     <div class="col-sm-3">
-                      <input type="number" class="form-control" placeholder="Minutes">
+                      <input type="number" required class="form-control minutes" placeholder="Minutes">
                     </div>
                   </div>
                   <div class="form-group row mt-3">
-                    <label for="colFormLabel" class="col-sm-5 col-form-label">Total Allotable Marks</label>
+                    <label for="colFormLabel" class="col-sm-5 col-form-label">Total Allocatable Marks</label>
                     <div class="col-sm-4">
-                      <input type="number" class="form-control" id="colFormLabel" placeholder="score">
+                      <input type="number" required class="form-control scores" id="colFormLabel" placeholder="Total Marks">
                     </div>
                   </div>
                 </form>
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary">Start Exam</button>
+                  <button type="button" data-button-type="set" class="btn btn-primary markSubmit">Submit</button>
                 </div>
               </div>
             </div>

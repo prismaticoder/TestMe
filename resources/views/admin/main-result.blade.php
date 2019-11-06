@@ -62,7 +62,7 @@
                   <th>Registration Number</th>
                   <th>Surname</th>
                   <th>First name</th>
-                  <th>Score</th>
+                  <th>Score (/{{$mark}})</th>
                 </tr>
               </thead>
               <tbody>

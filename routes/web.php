@@ -47,6 +47,7 @@ Route::post('/deleteStudent/{id}','AdminController@deleteStudent');
 Route::post('/restoreStudent/{id}','AdminController@restoreStudent');
 Route::post('/addStudent', 'AdminController@addStudent');
 Route::get('/submitQuestion','StudentController@submitQuestion');
+Route::post('/setSubjectMark','AdminController@setMark');
 // Route::post('/exam/{subject}','StudentController@getAjaxQuestions');
 
 Route::get('/success','StudentController@submitSuccess')->name('success');

@@ -256,7 +256,8 @@ $( function() {
             url:'/submitQuestion',
             data: {
                 subject:subject,
-                class_id:class_id
+                class_id:class_id,
+                count:count
             },
             method:'GET',
             success:function(response) {

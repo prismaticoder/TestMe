@@ -18,6 +18,34 @@ $(function() {
         getSelectedQuestion(id);
     })
 
+    $('.markSubmit').on('click',function() {
+        let buttonType = $(this).attr('data-button-type')
+        let hours = $('.hours').val()
+        let minutes = $('.minutes').val()
+        let score = $('.scores').val();
+        let subject_id = $('#subject_id').val();
+        let class_id = $('#class_id').val();
+        if (buttonType == 'set') {
+            $.ajax({
+                url:'/setSubjectMark',
+                method:'POST',
+                data: {
+                    hours:hours,
+                    minutes:minutes,
+                    mark:score,
+                    subject_id:subject_id,
+                    class_id:class_id
+                },
+                success:function(response) {
+                    console.log(response)
+                },
+                error:function(response) {
+                    console.log(response);
+                }
+            })
+        }
+    })
+
     $('.addBtn').click(function() {
         $('#summernote').summernote("reset");
         $('#summmernote').trigger("focus");
