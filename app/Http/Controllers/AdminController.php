@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Subject;
 use App\Classes;
+use App\Mark;
 use App\Question;
 use App\Option;
 use App\User;
@@ -98,11 +99,12 @@ class AdminController extends Controller
         $classes = Classes::all();
 
         if ($subject) {
+            $mark = (Mark::where('subject_id',$subject->id)->where('class_id',$class_id)->first())?Mark::where('subject_id',$subject_id)->where('class_id',$class_id)->first():"nil";
 
             $questions = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->with('options')->get();
             // $options = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->options;
 
-            return view('admin.questions', compact('questions','subject','class_id','classes'));
+            return view('admin.questions', compact('questions','subject','class_id','classes','mark'));
         }
 
         return abort('404','Page does not exist');
@@ -241,8 +243,9 @@ class AdminController extends Controller
         if ($subject) {
             $students = User::where('class_id',$class_id)->get();
             $selected_class = Classes::find($class_id);
+            $mark = (Mark::where('subject_id',$subject->id)->where('class_id',$class_id)->first())?Mark::where('subject_id',$subject->id)->where('class_id',$class_id)->first()->mark:50;
             $classes = Classes::get();
-            return view('admin.main-result',compact('students','subject','selected_class','classes'));
+            return view('admin.main-result',compact('students','subject','selected_class','classes','mark'));
         }
 
         return abort('404');
@@ -267,5 +270,38 @@ class AdminController extends Controller
         $subject->save();
 
         return redirect(route('dashboard'));
+    }
+
+    public function setMark(Request $request) {
+        $subject_id = $request->subject_id;
+        $class_id = $request->class_id;
+        $mark = $request->mark;
+        $hours = $request->hours;
+        $minutes = $request->minutes;
+
+        $table = new Mark;
+        $table->class_id = $class_id;
+        $table->subject_id = $subject_id;
+        $table->mark = $mark;
+        $table->hours = $hours;
+        $table->minutes = $minutes;
+        $table->save();
+
+        return response()->json('Details Saved Successfully!');
+    }
+
+    public function updateMark(Request $request) {
+        $id = $request->id;
+        $mark = $request->mark;
+        $hours = $request->hours;
+        $minutes = $request->minutes;
+
+        $table = Mark::find($id);
+        $table->mark = $mark;
+        $table->hours = $hours;
+        $table->minutes = $minutes;
+        $table->save();
+
+        return response()->json('Details Updated Successfully!');
     }
 }

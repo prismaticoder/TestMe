@@ -37,7 +37,27 @@ $(function() {
                     class_id:class_id
                 },
                 success:function(response) {
-                    console.log(response)
+                    alert(response);
+                    window.location.reload(true);
+                },
+                error:function(response) {
+                    console.log(response);
+                }
+            })
+        }
+        else {
+            $.ajax({
+                url:'/updateSubjectMark',
+                method:'POST',
+                data: {
+                    hours:hours,
+                    minutes:minutes,
+                    mark:score,
+                    id: $(this).attr('id')
+                },
+                success:function(response) {
+                    alert(response);
+                    window.location.reload(true);
                 },
                 error:function(response) {
                     console.log(response);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mark;
 use Illuminate\Http\Request;
 use Auth;
 use App\Question;
@@ -41,6 +42,9 @@ class StudentController extends Controller
             $name = $user->firstname . ' ' . $user->lastname;
 
             $subject = Subject::where('alias',$subject)->first();
+            $mark = Mark::where('subject_id',$subject->id)->where('class_id',$class_id)->first();
+            $hours = $mark->hours;
+            $minutes = $mark->minutes;
 
             // $seed = rand(0000,9999);
             // Session::put('seed', $seed);
@@ -52,7 +56,7 @@ class StudentController extends Controller
                 // session('scoreArray',[]);
                 $questions = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->with('options')->inRandomOrder($seed)->get();
 
-                return view('exam',compact('questions','name','user','subject'));
+                return view('exam',compact('questions','name','user','subject','hours','minutes'));
             }
 
             return abort('404');
@@ -133,8 +137,12 @@ class StudentController extends Controller
     public function submitQuestion(Request $request) {
         $subject = $request->subject;
         $class_id = $request->class_id;
+        $count = $request->count;
 
         $subject = Subject::where('alias',$subject)->first();
+        $mark = (Mark::where('subject_id',$subject->id)->where('class_id',$class_id)->first())?Mark::where('subject_id',$subject->id)->where('class_id',$class_id)->first()->mark:50;
+
+        $divisor = ($mark)/$count;
 
         $ara = [];
 
@@ -148,7 +156,7 @@ class StudentController extends Controller
         $scoreTable->subject_id = $subject->id;
         $scoreTable->class_id = $class_id;
         $scoreTable->user_id = Auth::user()->id;
-        $scoreTable->score = $score;
+        $scoreTable->score = $score * $divisor;
         $scoreTable->save();
 
         return response()->json('success');

@@ -66,7 +66,7 @@
             </li>
             </ul>
             <span class="navbar-text center" style="margin-right:40px;">
-                <h3>Timer: <span id="hours">0</span>h <span id="minutes">49</span>m <span id="seconds">59</span>s</h3>
+            <h3>Timer: <span id="hours">{{$hours}}</span>h <span id="minutes">{{$minutes}}</span>m <span id="seconds">0</span>s</h3>
             </span>
             <span class="navbar-text">
             <button class="nav-link newButton btn btn-primary submitBtn" disabled data-button-type="submit">SUBMIT EXAMINATION</button>

@@ -107,7 +107,12 @@
 
     <div class="col-md-10 question-body ">
             <div class="row">
+                @if ($mark != "nil")
+                <span class="col-md-2"></span><span class="col-md-2"></span><span class="col-md-2"></span><span class="col-md-2"></span><button id="showModal" style="float:right" href="#" class="btn btn-primary col-md-4" data-toggle="modal" data-target="#exampleModalCenter">UPDATE EXAM TIME AND TOTAL SCORE</button>
+
+                @else
                 <span class="col-md-2"></span><span class="col-md-2"></span><span class="col-md-2"></span><span class="col-md-2"></span><button id="showModal" style="float:right" href="#" class="btn btn-primary col-md-4" data-toggle="modal" data-target="#exampleModalCenter">SET EXAM TIME AND TOTAL SCORE</button>
+                @endif
             </div>
             <br>
 
@@ -176,6 +181,7 @@
 
     <br>
 
+    @if ($mark == "nil")
     <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
               <div class="modal-content">
@@ -213,6 +219,46 @@
               </div>
             </div>
           </div>
+        @else
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalCenterTitle">UPDATE EXAM TIME AND TOTAL SCORE</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                    <form>
+                      <div class="row">
+                      <div class="col-sm-5">
+                          <label for="">Exam Duration</label>
+                        </div>
+                        <div class="col-sm-3">
+                        <input type="number" required class="form-control hours" placeholder="Hour" value="{{$mark->hours}}">
+                        </div>
+                        <div class="col-sm-3">
+                          <input type="number" required class="form-control minutes" placeholder="Minutes" value="{{$mark->minutes}}">
+                        </div>
+                      </div>
+                      <div class="form-group row mt-3">
+                        <label for="colFormLabel" class="col-sm-5 col-form-label">Total Allocatable Marks</label>
+                        <div class="col-sm-4">
+                          <input type="number" required class="form-control scores" id="colFormLabel" placeholder="Total Marks" value="{{$mark->mark}}">
+                        </div>
+                      </div>
+                    </form>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" id="{{$mark->id}}" data-button-type="update" class="btn btn-primary markSubmit">Update</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+    @endif
+
 
 
     {{-- <ul>
