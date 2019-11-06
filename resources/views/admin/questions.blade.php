@@ -10,6 +10,7 @@
     <!-- include libraries(jQuery, bootstrap) -->
     <link href="{{asset('css/bootstrap.min.css')}}" rel="stylesheet">
     <link href="{{asset('css/font-awesome.min.css')}}" rel="stylesheet">
+    <script src="{{asset('js/popper.min.js')}}"></script>
     <script src="{{asset('js/jquery.js')}}"></script>
     <script src="{{asset('js/bootstrap.js')}}"></script>
     <script src="{{asset('/js/functions2.js')}}"></script>
@@ -104,27 +105,11 @@
 
     <div class="col-md-10 question-body ">
     {{-- <h3 class="text-secondary">Exam Duration And Allocatable Marks</h3> --}}
-    <form>
-        <div class="form-group row">
-
-            <label for="hours" class="col-sm-1 col-form-label">Hours</label>
-            <div class="col-sm-2">
-                    <input required type="number" name="hour" min="1" max="5">
-            {{-- <input type="email" class="form-control mr-3" id="hours" placeholder="Hours"> --}}
-            </div>
-            <label for="minutes" class="col-sm-1 col-form-label">Minutes</label>
-            <div class="col-sm-2">
-                    <input required type="number" name="minutes" min="1" max="59">
-            {{-- <input type="password" class="form-control mr-3" id="minutes" placeholder="Minutes"> --}}
-            </div>
-            <label for="scores" class="col-sm-3 col-form-label">Total Allocatable Marks</label>
-            <div class="col-sm-2">
-                    <input required type="number" name="scores" min="10" max="100">
-            {{-- <input type="password" class="form-control mr-3" id="minutes" placeholder="Minutes"> --}}
-            </div>
-            <span class="col-md-2"></span><span class="col-md-2"></span><button type="submit" class="btn btn-primary col-md-2">Set</button>
+    {{-- <form> --}}
+        <div class="row">
+            <span class="col-md-2"></span><span class="col-md-2"></span><button id="showModal" href="#" class="btn btn-primary col-md-2">Set</button>
         </div>
-    </form>
+    {{-- </form> --}}
 
     <form id="myForm" autocomplete="off" action="{{route('questions',['subject'=>$subject->alias,'class_id'=>$class_id])}}" method="post">
         @csrf
@@ -190,6 +175,46 @@
     </form>
 
     <br>
+
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalCenterTitle">Modal title</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                <form>
+                  <div class="row">
+                  <div class="col-sm-5">
+                      <label for="">Exam Duration</label>
+                    </div>
+                    <div class="col-sm-3">
+                      <input type="number" class="form-control" placeholder="Hour">
+                    </div>
+                    <div class="col-sm-3">
+                      <input type="number" class="form-control" placeholder="Minutes">
+                    </div>
+                  </div>
+                  <div class="form-group row mt-3">
+                    <label for="colFormLabel" class="col-sm-5 col-form-label">Total Allotable Marks</label>
+                    <div class="col-sm-4">
+                      <input type="number" class="form-control" id="colFormLabel" placeholder="score">
+                    </div>
+                  </div>
+                </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary">Start Exam</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
     {{-- <ul>
         @foreach ($questions as $question)
             <li><span class="questionBtn" id="{{$question->id}}">Question {{$loop->iteration}}</span></li>

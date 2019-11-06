@@ -5,6 +5,10 @@ $(function() {
         }
     })
 
+    $('#showModal').on('click', function() {
+        $('#exampleModalCenter').show();
+    })
+
     $('#summmernote').trigger("focus");
 
     $('#questionList').on('click','.questionBtn', function() {
