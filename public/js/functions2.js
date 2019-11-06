@@ -5,9 +5,9 @@ $(function() {
         }
     })
 
-    $('#showModal').on('click', function() {
-        $('#exampleModalCenter').show();
-    })
+    // $('#showModal').on('click', function() {
+    //     $('#exampleModalCenter').show();
+    // })
 
     $('#summmernote').trigger("focus");
 
