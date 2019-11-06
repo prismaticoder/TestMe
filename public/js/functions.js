@@ -18,6 +18,21 @@ $( function() {
     const minutes = $('#minutes').html();
     const seconds = $('#seconds').html();
 
+    const currentDay = new Date().toDateString();
+
+    const currentHour = new Date().getHours()
+    var futureHour = Number(currentHour) + Number(hours)
+
+    const currentMinute = new Date().getMinutes();
+    var futureMinute = Number(currentMinute) + Number(minutes);
+
+    const futureSecond = Number(seconds);
+
+    if (futureMinute > 60) {
+        futureMinute -= 60;
+        futureHour += 1
+    }
+
     $('.newButton').click(function() {
         id = $(this).attr('data-question');
         buttonType = $(this).attr('data-button-type');
@@ -80,13 +95,14 @@ $( function() {
 
                 }
                 else {
-                    const handle = setInterval(startTimer,1000);
+                    handle = setInterval(startTimer,1000);
                     $('.nxtButton').attr('data-button-type','next')
                     $('.nxtButton').html('Next Question');
                     $('.questionList').each(function() {
                         $(this).removeClass('disabled')
                     })
                     $('.prevButton').removeClass('disabled')
+                    $('.submitBtn').prop('disabled',false)
                 }
 
                 if ($('.nxtButton').html() != "Next Question") {
@@ -178,29 +194,12 @@ $( function() {
 
     function startTimer() {
         let currentTime = new Date().getTime();
-        let currentDay = new Date().toDateString();
-
-        let currentHour = new Date().getHours()
-        let futureHour = Number(currentHour) + Number(hours)
-
-        let currentMinute = new Date().getMinutes();
-        let futureMinute = Number(currentMinute) + Number(minutes);
-
-        let futureSecond = Number(seconds);
-
-        if (futureMinute > 60) {
-            futureMinute -= 60;
-            futureHour += 1
-            // else if (Number(hours) == 1) {
-            //     futureHour += 2
-            // }
-        }
 
         let futureTime = new Date(currentDay + " " + futureHour + ":" + futureMinute + ":" + futureSecond).getTime();
 
         let distance = futureTime - currentTime;
 
-        console.log(distance)
+        // console.log(distance)
 
         let newHours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         let newMinutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
@@ -212,8 +211,9 @@ $( function() {
 
 
         // If the count down is finished, write some text
-        if (distance < 0) {
+        if (distance <= 0) {
             clearInterval(handle);
+            submitQuestion();
             // document.getElementById("demo").innerHTML = "EXPIRED";
         }
 

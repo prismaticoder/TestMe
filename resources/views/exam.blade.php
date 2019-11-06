@@ -30,8 +30,8 @@
         }
 
         .radioBtn {
-            width: 20px;
-            height: 20px;
+            width: 15px;
+            height: 15px;
         }
         .sidebar {
             padding: 70px 0 20px;
@@ -64,12 +64,12 @@
             <li class="nav-item">
             <a class="nav-link" href="#">Exam No: {{$user->code}}</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Time: <span id="hours">1</span>h <span id="minutes">35</span>m <span id="seconds">59</span>s</a>
-            </li>
             </ul>
+            <span class="navbar-text center" style="margin-right:40px;">
+                <h3>Timer: <span id="hours">0</span>h <span id="minutes">49</span>m <span id="seconds">59</span>s</h3>
+            </span>
             <span class="navbar-text">
-            <a class="nav-link" href="{{route('logout')}}">Sign out</a>
+            <button class="nav-link newButton btn btn-primary submitBtn" disabled data-button-type="submit">SUBMIT EXAMINATION</button>
             </span>
         </div>
     </nav>
@@ -92,13 +92,13 @@
         <div class="card">
             <div class="card-body">
             <h5 class="card-title">Question No <span class="questionNo">0</span> of <span class="questionCount">{{$questions->count()}}</span></h5>
-                <p class="card-text question">Who is the Father of Computer?</p>
+                <p class="card-text question">Click the "<strong>START</strong>" button to begin your examination</p>
             </div>
             <ul class="list-group list-group-flush">
-                    <label for="radio1"><li class="list-group-item radios"><input type="radio" id="radio1" data-option-id="1" name="options" class="radioBtn" value="0">A. <span class="options"> Bill Gates</span></li></label>
-                    <label for="radio2"><li class="list-group-item radios"><input type="radio" id="radio2" data-option-id="2" name="options" class="radioBtn" value="1">B. <span class="options"> Charles Babbage</span></li></label>
-                    <label for="radio3"><li class="list-group-item radios"><input type="radio" id="radio3" data-option-id="3" name="options" class="radioBtn" value="2">C. <span class="options"> Keifer Sutherland</span></li></label>
-                    <label for="radio4"><li class="list-group-item radios"><input type="radio" id="radio4" data-option-id="4" name="options" class="radioBtn" value="3">D. <span class="options"> James Naismith</span></li></label>
+                    <label for="radio1"><li class="list-group-item radios"><input type="radio" id="radio1" data-option-id="1" name="options" class="radioBtn" value="0"><span class="options"> -</span></li></label>
+                    <label for="radio2"><li class="list-group-item radios"><input type="radio" id="radio2" data-option-id="2" name="options" class="radioBtn" value="1"><span class="options"> -</span></li></label>
+                    <label for="radio3"><li class="list-group-item radios"><input type="radio" id="radio3" data-option-id="3" name="options" class="radioBtn" value="2"><span class="options"> -</span></li></label>
+                    <label for="radio4"><li class="list-group-item radios"><input type="radio" id="radio4" data-option-id="4" name="options" class="radioBtn" value="3"><span class="options"> -</span></li></label>
             </ul>
             <div class="card-body">
                 <button data-button-type="next" class="btn btn-secondary card-link prevButton newButton disabled">Previous Question</button>
@@ -111,7 +111,7 @@
 
     </div>
 
-        <p id="demo"></p>
+        {{-- <p id="demo"></p>
 
         <script>
         // Set the date we're counting down to
@@ -142,7 +142,7 @@
             document.getElementById("demo").innerHTML = "EXPIRED";
           }
         }, 1000);
-        </script>
+        </script> --}}
 
 
 
