@@ -48,21 +48,21 @@
 </head>
 <body class="container-fluid">
 <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
-    <a class="navbar-brand" href="{{route('dashboard')}}">OASIS ROYAL ACADEMY</a>
+    <a class="navbar-brand navbar-text" style="color:white">OASIS ROYAL ACADEMY</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-            <a class="nav-link" href="{{Request::url()}}"><span>{{strtoupper($subject->subject_name)}}</span> JSS<span class="class">{{$user->class_id}}</span> <span class="sr-only">(current)</span></a>
+            <a class="nav-link"><span>{{strtoupper($subject->subject_name)}}</span> JSS<span class="class">{{$user->class_id}}</span> <span class="sr-only">(current)</span></a>
             </li>
             <span style="display:none" class="subject">{{strtoupper($subject->alias)}}</span>
             <li class="nav-item">
-            <a class="nav-link" href="#">{{$name}}</a>
+            <a class="nav-link">{{$name}}</a>
             </li>
             <li class="nav-item">
-            <a class="nav-link" href="#">Exam No: {{$user->code}}</a>
+            <a class="nav-link">Exam No: {{$user->code}}</a>
             </li>
             </ul>
             <span class="navbar-text center" style="margin-right:40px;">
@@ -71,6 +71,7 @@
             <span class="navbar-text">
             <button class="nav-link newButton btn btn-primary submitBtn" disabled data-button-type="submit">SUBMIT EXAMINATION</button>
             </span>
+            <input type="hidden" name="" class="reloader" value="0">
         </div>
     </nav>
 

@@ -9,9 +9,22 @@ $( function() {
     // const userAnswers = new Array();
 
     // let id = (window.location.hash)?location.hash.substring(1):1; //this.id;
-
+    var handle;
 
     // getQuestion(id);
+
+    if (localStorage.getItem('distance')) {
+        let distance = localStorage.getItem('distance')
+        let newHours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        let newMinutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        let newSeconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        $('#hours').html(newHours)
+        $('#minutes').html(newMinutes)
+        $('#seconds').html(newSeconds)
+
+        handle = setInterval(startTimer,1000);
+    }
 
 
     const hours = $('#hours').html();
@@ -32,6 +45,8 @@ $( function() {
         futureMinute -= 60;
         futureHour += 1
     }
+
+
 
     $('.newButton').click(function() {
         id = $(this).attr('data-question');
@@ -98,6 +113,7 @@ $( function() {
                     handle = setInterval(startTimer,1000);
                     $('.nxtButton').attr('data-button-type','next')
                     $('.nxtButton').html('Next Question');
+                    $('.reloader').val("1")
                     $('.questionList').each(function() {
                         $(this).removeClass('disabled')
                     })
@@ -197,9 +213,13 @@ $( function() {
 
         let futureTime = new Date(currentDay + " " + futureHour + ":" + futureMinute + ":" + futureSecond).getTime();
 
-        let distance = futureTime - currentTime;
+        let reloader = $('.reloader').val()
+
+
+        let distance = (reloader=="1")?futureTime - currentTime:localStorage.getItem('distance');
 
         // console.log(distance)
+        localStorage.setItem('distance',distance)
 
         let newHours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         let newMinutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
