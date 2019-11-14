@@ -6,7 +6,7 @@ $(function() {
     })
 
     $('.updateBtn').click(function() {
-        let id = this.id;
+        var id = this.id;
         updateStudent(id);
     })
 
@@ -15,12 +15,12 @@ $(function() {
     })
 
     $('.deleteBtn').click(function() {
-        let id = this.id;
+        var id = this.id;
         deleteStudent(id);
     })
 
     $('.restoreBtn').click(function() {
-        let id = this.id;
+        var id = this.id;
         restoreStudent(id);
     })
 
@@ -44,8 +44,8 @@ $(function() {
     }
 
     function deleteStudent(id) {
-        let firstname = $('.firstname'+id).html();
-        let lastname = $('.lastname'+id).html()
+        var firstname = $('.firstname'+id).html();
+        var lastname = $('.lastname'+id).html()
         if (confirm('Are you sure you want to delete ' + firstname.toUpperCase() + ' ' + lastname.toUpperCase() +' from the exam sheet thereby disabling his/her access to the examination?')) {
             $.ajax({
                 url: '/deleteStudent/'+id,
@@ -62,8 +62,8 @@ $(function() {
     }
 
     function restoreStudent(id) {
-        let firstname = $('.firstname'+id).html();
-        let lastname = $('.lastname'+id).html()
+        var firstname = $('.firstname'+id).html();
+        var lastname = $('.lastname'+id).html()
         if (confirm('Are you sure you want to restore ' + firstname.toUpperCase() + ' ' + lastname.toUpperCase() +' to the examination sheet thereby making him/her eligible to write the examination?')) {
             $.ajax({
                 url: '/restoreStudent/'+id,
@@ -80,9 +80,9 @@ $(function() {
     }
 
     function addStudent() {
-        let firstname = $('#addFirstname').val();
-        let lastname = $('#addLastname').val();
-        let class_id = $('#class_id').text();
+        var firstname = $('#addFirstname').val();
+        var lastname = $('#addLastname').val();
+        var class_id = $('#class_id').text();
 
         $.ajax({
             url:'/addStudent',

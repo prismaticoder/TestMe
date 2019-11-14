@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Welcome Page</title>
+    <title>Submission Successful!</title>
 
 
     <!-- Bootstrap core CSS -->
@@ -144,9 +144,8 @@
     <div class="inner">
       <h3 class="masthead-brand">Oasis Royal Academy</h3>
       <nav class="nav nav-masthead justify-content-center">
-        <a class="nav-link active" href="#">Home</a>
-        <a class="nav-link" href="#">Features</a>
-        <a class="nav-link" href="#">Contact</a>
+        <a class="nav-link active" href="{{route('home')}}">Home</a>
+
       </nav>
     </div>
   </header>

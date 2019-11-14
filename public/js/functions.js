@@ -6,18 +6,18 @@ $( function() {
     })
 
 
-    // const userAnswers = new Array();
+    // var userAnswers = new Array();
 
-    // let id = (window.location.hash)?location.hash.substring(1):1; //this.id;
+    // var id = (window.location.hash)?location.hash.substring(1):1; //this.id;
     var handle;
 
     // getQuestion(id);
 
     if (localStorage.getItem('distance')) {
-        let distance = localStorage.getItem('distance')
-        let newHours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        let newMinutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        let newSeconds = Math.floor((distance % (1000 * 60)) / 1000);
+        var distance = localStorage.getItem('distance')
+        var newHours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var newMinutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var newSeconds = Math.floor((distance % (1000 * 60)) / 1000);
 
         $('#hours').html(newHours)
         $('#minutes').html(newMinutes)
@@ -27,19 +27,19 @@ $( function() {
     }
 
 
-    const hours = $('#hours').html();
-    const minutes = $('#minutes').html();
-    const seconds = $('#seconds').html();
+     window.hours = $('#hours').html();
+     window.minutes = $('#minutes').html();
+     window.seconds = $('#seconds').html();
 
-    const currentDay = new Date().toDateString();
+     window.currentDay = new Date().toDateString();
 
-    const currentHour = new Date().getHours()
-    var futureHour = Number(currentHour) + Number(hours)
+     window.currentHour = new Date().getHours()
+     window.futureHour = Number(currentHour) + Number(hours)
 
-    const currentMinute = new Date().getMinutes();
-    var futureMinute = Number(currentMinute) + Number(minutes);
+     window.currentMinute = new Date().getMinutes();
+     window.futureMinute = Number(currentMinute) + Number(minutes);
 
-    const futureSecond = Number(seconds);
+     window.futureSecond = Number(seconds);
 
     if (futureMinute > 60) {
         futureMinute -= 60;
@@ -69,12 +69,12 @@ $( function() {
     // });
 
     function getQuestion(id,buttonType) {
-        let questionID = $('.question').attr('id');
-        let subject = $('.subject').html().toLowerCase();
-        let class_id = $('.class').html();
-        let count = $('.questionCount').text();
-        let answerExists = $('input[name="options"]:checked').val();
-        let answer = $('input[name="options"]:checked').attr('data-option-id');
+        var questionID = $('.question').attr('id');
+        var subject = $('.subject').html().toLowerCase();
+        var class_id = $('.class').html();
+        var count = $('.questionCount').text();
+        var answerExists = $('input[name="options"]:checked').val();
+        var answer = $('input[name="options"]:checked').attr('data-option-id');
         $.ajax({
             url:'/getQuestions',
             method: 'GET',
@@ -85,20 +85,21 @@ $( function() {
             },
             success:function(response) {
                 // window.location.hash = id;
-                let selected = $('.options');
+                var selected = $('.options');
                 // selected.checked = false;
                 console.log(response);
 
-                let chosenOption = localStorage.getItem('option'+response.id)
+                var chosenOption = localStorage.getItem('option'+response.id)
                 if (chosenOption != undefined) {
                     document.getElementsByName('options')[chosenOption].checked = true
                 }
                 else {
-                    let arr1 = document.getElementsByName('options');
+                    var arr1 = document.getElementsByName('options');
 
-                    arr1.forEach(element => {
+                    for (var index = 0; index < arr1.length; index++) {
+                        var element = arr1[index];
                         element.checked = false
-                    });
+                    }
                 }
 
 
@@ -125,10 +126,10 @@ $( function() {
                     $('.nxtButton').html("Next Question")
                     $('.nxtButton').attr("data-button-type",'next')
                 }
-                let length = response.options.length;
+                var length = response.options.length;
                 $('.question').html(response.question)
 
-                let shuffledOptions = response.options;
+                var shuffledOptions = response.options;
 
                 if (length >= 4) {
                     $('.options').each(function(index) {
@@ -209,21 +210,21 @@ $( function() {
     }
 
     function startTimer() {
-        let currentTime = new Date().getTime();
+        var currentTime = new Date().getTime();
 
-        let futureTime = new Date(currentDay + " " + futureHour + ":" + futureMinute + ":" + futureSecond).getTime();
+        var futureTime = new Date(currentDay + " " + futureHour + ":" + futureMinute + ":" + futureSecond).getTime();
 
-        let reloader = $('.reloader').val()
+        var reloader = $('.reloader').val()
 
 
-        let distance = (reloader=="1")?futureTime - currentTime:localStorage.getItem('distance');
+        var distance = futureTime - currentTime;
 
         // console.log(distance)
         localStorage.setItem('distance',distance)
 
-        let newHours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        let newMinutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        let newSeconds = Math.floor((distance % (1000 * 60)) / 1000);
+        var newHours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var newMinutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var newSeconds = Math.floor((distance % (1000 * 60)) / 1000);
 
         $('#hours').html(newHours)
         $('#minutes').html(newMinutes)
@@ -242,12 +243,12 @@ $( function() {
     }
 
     function submitQuestion() {
-        let questionID = $('.question').attr('id');
-        let count = $('.questionCount').text();
-        let subject = $('.subject').html().toLowerCase();
-        let class_id = $('.class').html();
-        let answerExists = $('input[name="options"]:checked').val();
-        let answer = $('input[name="options"]:checked').attr('data-option-id');
+        var questionID = $('.question').attr('id');
+        var count = $('.questionCount').text();
+        var subject = $('.subject').html().toLowerCase();
+        var class_id = $('.class').html();
+        var answerExists = $('input[name="options"]:checked').val();
+        var answer = $('input[name="options"]:checked').attr('data-option-id');
         if (answerExists!=undefined) {
             calculateScore(questionID,answer)
         }
@@ -261,9 +262,9 @@ $( function() {
             },
             method:'GET',
             success:function(response) {
-                localStorage.clear();
                 // console.log(response);
-                window.location.href = "/success"
+                window.location.href = "/success";
+                localStorage.clear();
             },
             error:function(response) {
                 console.log(response);

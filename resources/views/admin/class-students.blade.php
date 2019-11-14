@@ -37,15 +37,15 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            <li class="nav-item">
+                <a class="nav-link" href="{{route('dashboard')}}">Dashboard </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Features</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Pricing</a>
-            </li>
+                    <a class="nav-link" href="{{route('results')}}">Results</a>
+                    </li>
+                    <li class="nav-item active">
+                    <a class="nav-link active" href="{{route('dashboard')}}#students">Students</a>
+                    </li>
             </ul>
             <span class="navbar-text">
             <a class="nav-link" href="{{route('admin-logout')}}">Sign out</a>

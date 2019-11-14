@@ -150,8 +150,8 @@
   </header>
 
   <main role="main" class="inner cover">
-    <h1 class="cover-heading">OASIS SCHOOLS CBT</h1>
-    <p class="lead">Welcome to the Oasis Schools Computer Based Test, do follow instructions and goodluck in your exams.</p>
+    <h1 class="cover-heading">OASIS ROYAL ACADEMY CBT</h1>
+    <p class="lead">Welcome to the Oasis Royal Academy Computer Based Testing Platform, do follow instructions and goodluck in your exams.</p>
     <p class="lead">
           @if (Route::has('login'))
                 <div class="top-right links">
@@ -167,7 +167,7 @@
                     @endauth
                 </div>
             @endif
-            
+
     </p>
   </main>
 

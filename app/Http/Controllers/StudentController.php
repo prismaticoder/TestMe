@@ -156,6 +156,7 @@ class StudentController extends Controller
         $scoreTable->subject_id = $subject->id;
         $scoreTable->class_id = $class_id;
         $scoreTable->user_id = Auth::user()->id;
+        $scoreTable->original = $score;
         $scoreTable->score = $score * $divisor;
         $scoreTable->save();
 

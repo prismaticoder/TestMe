@@ -93,7 +93,7 @@
             </div>
             <div class="card-footer">
               <small class="text-muted">
-              <a href="{{route('host-exam', ['subject'=>$subject->alias])}}" class="btn btn-primary">Start Exam</a>
+              <a href="" class="btn btn-primary host-exam" id="{{$subject->alias}}">Start Exam</a>
               <a href="{{route('questions',['subject'=>$subject->alias,'class_id'=>1])}}" class="btn btn-secondary">JSS 1</a>
               <a href="{{route('questions',['subject'=>$subject->alias,'class_id'=>2])}}" class="btn btn-secondary">JSS 2</a>
               <a href="{{route('questions',['subject'=>$subject->alias,'class_id'=>3])}}" class="btn btn-secondary">JSS 3</a>
@@ -155,9 +155,29 @@
     <script src="{{asset('js/bootstrap.min.js')}}"></script>
 
     <!-- Icons -->
-    <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+    {{-- <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script> --}}
     <script>
-      feather.replace()
+    //   feather.replace()
+      $('.host-exam').on('click',function(event) {
+          event.preventDefault();
+          var id = $(this).attr('id');
+          $.ajax({
+              url:'/checkMark/'+id,
+              method:'GET',
+              success:function(response) {
+                  if (response == 'Yes') {
+                      window.location.href = "/admin/"+id+"/hostexam";
+                  }
+                  else {
+                      alert('You are not allowed to start this examination because the time duration has not been set for one or more of the classes that would be taking this exam. Check through the classes and set the duration where necessary')
+                  }
+              },
+              error:function(response) {
+                  console.log(response);
+              }
+
+          })
+      })
     </script>
 
   </body>

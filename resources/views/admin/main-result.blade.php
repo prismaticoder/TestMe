@@ -31,7 +31,7 @@
   <body>
 
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
-    <a class="navbar-brand" href="{{route('dashboard')}}">OASIS-CBT ADMIN</a>
+    <a class="navbar-brand" href="{{route('dashboard')}}">OASIS-CBT ADMIN (Go To Dashboard)</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
