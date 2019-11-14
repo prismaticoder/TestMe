@@ -58,7 +58,10 @@ $( function() {
             getQuestion(id,'start');
         }
         else {
-            submitQuestion();
+            if (confirm("Are you sure you are ready to submit your examination?")) {
+                localStorage.clear();
+                submitQuestion();
+            }
         }
 
     });
@@ -233,6 +236,7 @@ $( function() {
 
         // If the count down is finished, write some text
         if (distance <= 0) {
+            localStorage.clear();
             clearInterval(handle);
             submitQuestion();
             // document.getElementById("demo").innerHTML = "EXPIRED";
