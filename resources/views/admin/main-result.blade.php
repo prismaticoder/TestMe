@@ -62,6 +62,7 @@
                   <th>Registration Number</th>
                   <th>Surname</th>
                   <th>First name</th>
+                  <th>Actual Score</th>
                   <th>Score (/{{$mark}})</th>
                 </tr>
               </thead>
@@ -72,6 +73,7 @@
                         <td>{{$student->code}}</td>
                         <td>{{$student->lastname}}</td>
                         <td>{{$student->firstname}}</td>
+                        <td >{{($student->scores()->where('subject_id',$subject->id)->first())?$student->scores()->where('subject_id',$subject->id)->first()->original:"-"}}</td>
                         <td >{{($student->scores()->where('subject_id',$subject->id)->first())?$student->scores()->where('subject_id',$subject->id)->first()->score:"-"}}</td>
                     </tr>
                   @endforeach

@@ -143,7 +143,6 @@ class AdminController extends Controller
         $question = $dom->savehtml();
 
 
-
         DB::transaction(function() use($class_id,$subject_id,$question,$options,$correctAnswer) {
             Question::create([
                 'subject_id' => $subject_id,
@@ -151,6 +150,29 @@ class AdminController extends Controller
                 'question' => $question,
             ]);
             foreach ($options as $key=>$option) {
+                $dom = new \domdocument();
+                $dom->loadHtml($option, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+                $images = $dom->getelementsbytagname('img');
+
+                //loop over img elements, decode their base64 src and save them to public folder,
+                //and then replace base64 src with stored image URL.
+                foreach($images as $k => $img){
+                    $data = $img->getattribute('src');
+
+                    list($type, $data) = explode(';', $data);
+                    list(, $data)      = explode(',', $data);
+
+                    $data = base64_decode($data);
+                    $image_name= $key.time().$k.'.png';
+                    $path = public_path() .'/img/uploads/'. $image_name;
+
+                    file_put_contents($path, $data);
+
+                    $img->removeattribute('src');
+                    $img->setattribute('src', '/img/uploads/'.$image_name);
+                }
+
+                $option = $dom->savehtml();
                 Question::orderBy('created_at','desc')->first()->options()->create([
                     'body' => $option,
                     'isCorrect' => ($correctAnswer == $key)?1:0
@@ -253,15 +275,29 @@ class AdminController extends Controller
 
     public function hostExam($subject) {
         $subject = Subject::where('alias',$subject)->first();
+        $marks = Mark::where('subject_id',$subject->id)->orderBy('class_id')->get();
+
 
         if ($subject) {
             $subject->isHosted = 1;
             $subject->save();
 
-            return view('admin.host-exam',compact('subject'));
+            return view('admin.host-exam',compact('subject','marks'));
         }
 
         return abort('404');
+    }
+
+    public function checkMark($id) {
+        $subject = Subject::where('alias',$id)->first();
+        $marks = Mark::where('subject_id',$subject->id)->orderBy('class_id')->get();
+
+        if ($marks->count() < 3) {
+            return response()->json('No');
+        }
+        else {
+            return response()->json('Yes');
+        }
     }
 
     public function endExam($subject) {
