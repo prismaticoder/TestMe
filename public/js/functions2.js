@@ -18,13 +18,14 @@ $(function() {
         getSelectedQuestion(id);
     })
 
-    $('.markSubmit').on('click',function() {
-        let buttonType = $(this).attr('data-button-type')
-        let hours = $('.hours').val()
-        let minutes = $('.minutes').val()
-        let score = $('.scores').val();
-        let subject_id = $('#subject_id').val();
-        let class_id = $('#class_id').val();
+    $('.markSubmit').on('click',function(event) {
+        event.preventDefault();
+        var buttonType = $(this).attr('data-button-type')
+        var hours = $('.hours').val()
+        var minutes = $('.minutes').val()
+        var score = $('.scores').val();
+        var subject_id = $('#subject_id').val();
+        var class_id = $('#class_id').val();
         if (buttonType == 'set') {
             $.ajax({
                 url:'/setSubjectMark',
@@ -68,6 +69,9 @@ $(function() {
 
     $('.addBtn').click(function() {
         $('#summernote').summernote("reset");
+        $('.option').each(function() {
+            $(this).summernote("reset");
+        });
         $('#summmernote').trigger("focus");
         document.getElementById('myForm').reset();
         $('.submitBtn').html('Submit Question');
@@ -79,8 +83,8 @@ $(function() {
 
     $('.submitBtn').on('click',function(event) {
         event.preventDefault();
-        let type = $(this).attr('data-button-type');
-        let id = $(this).attr('id');
+        var type = $(this).attr('data-button-type');
+        var id = $(this).attr('id');
         if (type == 'question-update') {
             // alert(id);
             updateQuestion(id);
@@ -91,7 +95,7 @@ $(function() {
     })
 
     $('#questionList').on('click','.deleteBtn', function() {
-        let id = this.id;
+        var id = this.id;
         deleteQuestion(id);
     })
 
@@ -106,11 +110,11 @@ $(function() {
                 $('.submitBtn').attr('id', id);
                 $('.addBtn').attr('disabled',false)
                 console.log(response);
-                let length = response.options.length;
+                var length = response.options.length;
 
                 if (length >= 4) {
                     $('.option').each(function(index) {
-                        $(this).val(response.options[index].body)
+                        $(this).summernote('code',response.options[index].body)
                         $(this).attr('data-option-id', response.options[index].id)
                     })
                 }
@@ -118,20 +122,22 @@ $(function() {
                 else {
                     $('.option').each(function(index) {
                         if (index <= length-1) {
-                            $(this).val(response.options[index].body)
+                            $(this).summernote('code',response.options[index].body)
+                            $(this).attr('data-option-id', response.options[index].id)
                         }
                         else {
-                            $(this).val('No Option')
+                            $(this).summernote('code','No Option')
                         }
                     })
                 }
 
-                response.options.forEach(function(element,index) {
+                for (var index = 0; index < response.options.length; index++) {
+                    var element = response.options[index];
                     if (element.isCorrect == 1) {
-                        let options = document.getElementsByName('correct');
+                        var options = document.getElementsByName('correct');
                         options[index].checked = true;
                     }
-                });
+                }
             },
             error: function(response) {
                 console.log(response)
@@ -141,13 +147,13 @@ $(function() {
 
     //Update Existing Question
     function updateQuestion(id) {
-        let question = $('#summernote').val();
-        let options1 = $('.option');
-        let options = [];
+        var question = $('#summernote').val();
+        var options1 = $('.option');
+        var options = [];
         options1.each(function() {
-            options.push({id:$(this).attr('data-option-id'), value:$(this).val()})
+            options.push({id:$(this).attr('data-option-id'), value:$(this).summernote('code')})
         })
-        let correct = $('input[name="correct"]:checked').val();
+        var correct = $('input[name="correct"]:checked').val();
         $.ajax({
             url: '/updateQuestion/' + id,
             method: 'POST',
@@ -166,15 +172,16 @@ $(function() {
     }
 
     function addQuestion() {
-        let question = $('#summernote').val();
-        let options1 = $('.option');
-        let options = [];
-        let subject_id = $('#subject_id').val();
-        let class_id = $('#class_id').val();
+        var question = $('#summernote').val();
+        var options1 = $('.option');
+        var options = [];
+        var subject_id = $('#subject_id').val();
+        var class_id = $('#class_id').val();
         options1.each(function() {
-            options.push($(this).val())
+            options.push($(this).summernote('code'))
         })
-        let correct = $('input[name="correct"]:checked').val();
+        console.log(options)
+        var correct = $('input[name="correct"]:checked').val();
         $.ajax({
             url: '/addQuestion',
             method: 'POST',
@@ -190,7 +197,11 @@ $(function() {
                 console.log(response)
                 $('.list-group').append("<span class=\"questionBtn list-group-item list-group-item-action\" id=\""+response.question.id+"\">Question "+response.count+" <i id=\""+response.question.id+"\" title=\"Delete Question\" class=\"deleteBtn fa fa-2x fa-close\" style=\"float:right\"></i></span>")
                 document.getElementById('myForm').reset();
+                $('.option').each(function() {
+                    $(this).summernote("reset");
+                });
                 $('#summernote').summernote("reset");
+                window.location.href = '#top'
             },
             error:function(response) {
                 console.log(response)

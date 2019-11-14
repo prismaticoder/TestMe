@@ -34,6 +34,13 @@
                         ['insert', ['picture']],
                         ],
             });
+
+            $('.option').summernote({
+                    minHeight: 150,
+                    toolbar: [
+                        ['style', ['bold', 'underline','italic']],
+                        ],
+            });
             })
     </script>
     <style>
@@ -72,7 +79,7 @@
     </head>
 <body class="container-fluid">
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
-        <a class="navbar-brand" href="{{route('dashboard')}}">OASIS-CBT ADMIN</a>
+        <a class="navbar-brand" href="{{route('dashboard')}}">OASIS-CBT ADMIN (Go To Dashboard)</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -92,6 +99,7 @@
             </span>
         </div>
     </nav>
+    <span id="top"></span>
 
     <div class="row">
         <div class="col-md-2 sidebar">
@@ -123,25 +131,25 @@
             <div class="form-group row">
                 <label for="optionA" class="col-sm-2 col-form-label">Option A</label>
                 <div class="col-sm-10">
-                <input type="text" required class="option form-control"  data-option-id="" id="optionA" name="optionA" placeholder="Option A">
+                <input type="text" required class="option form-control"  data-option-id="" id="optionA" name="optionA">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="optionB" class="col-sm-2 col-form-label">Option B</label>
                 <div class="col-sm-10">
-                <input type="text" required class="option form-control" data-option-id="" id="optionB" name="optionB" placeholder="Option B">
+                <input type="text" required class="option form-control" data-option-id="" id="optionB" name="optionB">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="optionC" class="col-sm-2 col-form-label">Option C</label>
                 <div class="col-sm-10">
-                <input type="text" required class="option form-control" data-option-id="" id="optionC" name="optionC" placeholder="Option C">
+                <input type="text" required class="option form-control" data-option-id="" id="optionC" name="optionC">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="optionD" class="col-sm-2 col-form-label">Option D</label>
                 <div class="col-sm-10">
-                <input type="text" required class="option form-control" data-option-id="" id="optionD" name="optionD" placeholder="Option D">
+                <input type="text" required class="option form-control" data-option-id="" id="optionD" name="optionD">
                 </div>
             </div>
         </div>
@@ -198,24 +206,25 @@
                       <label for="">Exam Duration</label>
                     </div>
                     <div class="col-sm-3">
-                      <input type="number" required class="form-control hours" placeholder="Hour">
+                      <input type="number" required min="0" max="5" required class="form-control hours" placeholder="Hour">
                     </div>
                     <div class="col-sm-3">
-                      <input type="number" required class="form-control minutes" placeholder="Minutes">
+                      <input type="number" required min="0" max="59" required class="form-control minutes" placeholder="Minutes">
                     </div>
                   </div>
                   <div class="form-group row mt-3">
                     <label for="colFormLabel" class="col-sm-5 col-form-label">Total Allocatable Marks</label>
                     <div class="col-sm-4">
-                      <input type="number" required class="form-control scores" id="colFormLabel" placeholder="Total Marks">
+                      <input type="number" required min="10" max="100" class="form-control scores" id="colFormLabel" placeholder="Total Marks">
                     </div>
                   </div>
-                </form>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <button type="button" data-button-type="set" class="btn btn-primary markSubmit">Submit</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <input type="submit" data-button-type="set" class="btn btn-primary markSubmit" value="Submit">
                 </div>
+            </form>
+
               </div>
             </div>
           </div>
@@ -236,23 +245,24 @@
                           <label for="">Exam Duration</label>
                         </div>
                         <div class="col-sm-3">
-                        <input type="number" required class="form-control hours" placeholder="Hour" value="{{$mark->hours}}">
+                        <input type="number" required min="0" max="5" required class="form-control hours" placeholder="Hour" value="{{$mark->hours}}">
                         </div>
                         <div class="col-sm-3">
-                          <input type="number" required class="form-control minutes" placeholder="Minutes" value="{{$mark->minutes}}">
+                          <input type="number" required min="0" max="59" required class="form-control minutes" placeholder="Minutes" value="{{$mark->minutes}}">
                         </div>
                       </div>
                       <div class="form-group row mt-3">
                         <label for="colFormLabel" class="col-sm-5 col-form-label">Total Allocatable Marks</label>
                         <div class="col-sm-4">
-                          <input type="number" required class="form-control scores" id="colFormLabel" placeholder="Total Marks" value="{{$mark->mark}}">
+                          <input type="number" required min="10" max="100" required class="form-control scores" id="colFormLabel" placeholder="Total Marks" value="{{$mark->mark}}">
                         </div>
                       </div>
-                    </form>
                     </div>
                     <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" id="{{$mark->id}}" data-button-type="update" class="btn btn-primary markSubmit">Update</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <input type="submit" data-button-type="update" class="btn btn-primary markSubmit" id="{{$mark->id}}" value="Submit">
+                    </div>
+                </form>
                     </div>
                   </div>
                 </div>
