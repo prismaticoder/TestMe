@@ -201,7 +201,7 @@ $(function() {
                     $(this).summernote("reset");
                 });
                 $('#summernote').summernote("reset");
-                window.location.href = '#top'
+                window.location.hash = '#top'
             },
             error:function(response) {
                 console.log(response)
