@@ -60,6 +60,7 @@
                     minHeight: 150,
                     toolbar: [
                         ['style', ['bold', 'underline','italic']],
+                        ['insert', [ 'specialchars' ]],
                         ],
                     cleaner: {
                         action: 'paste', // both|button|paste 'button' only cleans via toolbar button, 'paste' only clean when pasting content, both does both options.
