@@ -117,8 +117,10 @@ class AdminController extends Controller
         $options = $request->options;
         $correctAnswer = $request->correct;
 
-
-        $dom = new \domdocument();
+        // converts all special characters to utf-8
+        $question = mb_convert_encoding($question, 'HTML-ENTITIES', 'UTF-8');
+        $dom = new \domdocument('1.0', 'utf-8');
+        // $dom->encoding = 'utf-8';
         $dom->loadHtml($question, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
         $images = $dom->getelementsbytagname('img');
 
@@ -150,7 +152,8 @@ class AdminController extends Controller
                 'question' => $question,
             ]);
             foreach ($options as $key=>$option) {
-                $dom = new \domdocument();
+                $option = mb_convert_encoding($option, 'HTML-ENTITIES', 'UTF-8');
+                $dom = new \domdocument('1.0', 'utf-8');
                 $dom->loadHtml($option, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
                 $images = $dom->getelementsbytagname('img');
 
@@ -194,7 +197,8 @@ class AdminController extends Controller
         $correctAnswer = $request->correct;
         $questionDB = Question::where('id',$id)->first();
 
-        $dom = new \domdocument();
+        $question = mb_convert_encoding($question, 'HTML-ENTITIES', 'UTF-8');
+        $dom = new \domdocument('1.0', 'utf-8');
         $dom->loadHtml($question, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
         $images = $dom->getelementsbytagname('img');
 
@@ -226,7 +230,34 @@ class AdminController extends Controller
             ]);
             foreach ($options as $key => $option) {
                 $optionFind = Option::find($option['id']);
-                $optionFind->body = $option['value'];
+
+                $option_body = $option['value'];
+                $option_body = mb_convert_encoding($option_body, 'HTML-ENTITIES', 'UTF-8');
+                $dom = new \domdocument('1.0', 'utf-8');
+                $dom->loadHtml($option_body, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+                $images = $dom->getelementsbytagname('img');
+
+                //loop over img elements, decode their base64 src and save them to public folder,
+                //and then replace base64 src with stored image URL.
+                foreach($images as $k => $img){
+                    $data = $img->getattribute('src');
+
+                    list($type, $data) = explode(';', $data);
+                    list(, $data)      = explode(',', $data);
+
+                    $data = base64_decode($data);
+                    $image_name= $key.time().$k.'.png';
+                    $path = public_path() .'/img/uploads/'. $image_name;
+
+                    file_put_contents($path, $data);
+
+                    $img->removeattribute('src');
+                    $img->setattribute('src', '/img/uploads/'.$image_name);
+                }
+
+                $option_body = $dom->savehtml();
+
+                $optionFind->body = $option_body;
                 $optionFind->isCorrect = ($correctAnswer == $key)?1:0;
                 $optionFind->save();
             }
