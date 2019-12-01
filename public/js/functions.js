@@ -13,8 +13,8 @@ $( function() {
 
     // getQuestion(id);
 
-    if (localStorage.getItem('distance')) {
-        var distance = localStorage.getItem('distance')
+    if (sessionStorage.getItem('distance')) {
+        var distance = sessionStorage.getItem('distance')
         var newHours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         var newMinutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         var newSeconds = Math.floor((distance % (1000 * 60)) / 1000);
@@ -59,7 +59,7 @@ $( function() {
         }
         else {
             if (confirm("Are you sure you are ready to submit your examination?")) {
-                localStorage.clear();
+                sessionStorage.clear();
                 submitQuestion();
             }
         }
@@ -92,7 +92,7 @@ $( function() {
                 // selected.checked = false;
                 console.log(response);
 
-                var chosenOption = localStorage.getItem('option'+response.id)
+                var chosenOption = sessionStorage.getItem('option'+response.id)
                 if (chosenOption != undefined) {
                     document.getElementsByName('options')[chosenOption].checked = true
                 }
@@ -108,7 +108,7 @@ $( function() {
 
                 if (buttonType == 'next') {
                     if (answerExists != undefined) {
-                        localStorage.setItem('option'+questionID,answerExists)
+                        sessionStorage.setItem('option'+questionID,answerExists)
                         calculateScore(questionID,answer)
                     }
 
@@ -223,7 +223,7 @@ $( function() {
         var distance = futureTime - currentTime;
 
         // console.log(distance)
-        localStorage.setItem('distance',distance)
+        sessionStorage.setItem('distance',distance)
 
         var newHours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         var newMinutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
@@ -236,7 +236,7 @@ $( function() {
 
         // If the count down is finished, write some text
         if (distance <= 0) {
-            localStorage.clear();
+            sessionStorage.clear();
             clearInterval(handle);
             submitQuestion();
             // document.getElementById("demo").innerHTML = "EXPIRED";
@@ -268,7 +268,7 @@ $( function() {
             success:function(response) {
                 // console.log(response);
                 window.location.href = "/success";
-                localStorage.clear();
+                sessionStorage.clear();
             },
             error:function(response) {
                 console.log(response);
