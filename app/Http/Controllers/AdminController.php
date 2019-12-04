@@ -146,11 +146,17 @@ class AdminController extends Controller
 
 
         DB::transaction(function() use($class_id,$subject_id,$question,$options,$correctAnswer) {
-            Question::create([
-                'subject_id' => $subject_id,
-                'class_id' => $class_id,
-                'question' => $question,
-            ]);
+            $createdQuestion = new Question;
+
+            $createdQuestion->subject_id = $subject_id;
+            $createdQuestion->class_id = $class_id;
+            $createdQuestion->question = $question;
+            $createdQuestion->save();
+            // Question::create([
+            //     'subject_id' => $subject_id,
+            //     'class_id' => $class_id,
+            //     'question' => $question,
+            // ]);
             foreach ($options as $key=>$option) {
                 $option = mb_convert_encoding($option, 'HTML-ENTITIES', 'UTF-8');
                 $dom = new \domdocument('1.0', 'utf-8');
@@ -176,10 +182,16 @@ class AdminController extends Controller
                 }
 
                 $option = $dom->savehtml();
-                Question::orderBy('created_at','desc')->first()->options()->create([
-                    'body' => $option,
-                    'isCorrect' => ($correctAnswer == $key)?1:0
-                ]);
+
+                $createdOption = new Option;
+                $createdOption->body = $option;
+                $createdOption->isCorrect = ($correctAnswer == $key)?1:0;
+
+                $createdQuestion->options()->save($createdOption);
+                // create([
+                //     'body' => $option,
+                //     'isCorrect' => ($correctAnswer == $key)?1:0
+                // ]);
             }
         });
 
