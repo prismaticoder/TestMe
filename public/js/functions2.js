@@ -18,9 +18,9 @@ $(function() {
         getSelectedQuestion(id);
     })
 
-    $('.markSubmit').on('click',function(event) {
+    $('.markSubmit').on('submit',function(event) {
         event.preventDefault();
-        var buttonType = $(this).attr('data-button-type')
+        var buttonType = $(this).attr('data-form-type')
         var hours = $('.hours').val()
         var minutes = $('.minutes').val()
         var score = $('.scores').val();

@@ -239,7 +239,7 @@
                   </button>
                 </div>
                 <div class="modal-body">
-                <form>
+                <form data-form-type="set" class="markSubmit">
                   <div class="row">
                   <div class="col-sm-5">
                       <label for="">Exam Duration</label>
@@ -260,7 +260,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <input type="submit" data-button-type="set" class="btn btn-primary markSubmit" value="Submit">
+                    <input type="submit" class="btn btn-primary" value="Submit">
                 </div>
             </form>
 
@@ -278,7 +278,7 @@
                       </button>
                     </div>
                     <div class="modal-body">
-                    <form>
+                    <form data-form-type="update" id="{{$mark->id}}" class="markSubmit">
                       <div class="row">
                       <div class="col-sm-5">
                           <label for="">Exam Duration</label>
@@ -299,7 +299,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <input type="submit" data-button-type="update" class="btn btn-primary markSubmit" id="{{$mark->id}}" value="Submit">
+                    <input type="submit" class="btn btn-primary" value="Submit">
                     </div>
                 </form>
                     </div>
