@@ -3,13 +3,13 @@
         <div class="col-md-2 sidebar">
             <h4 class="mt-3 mb-3 ml-3">Questions List</h4>
             <div class="list-group">
-                <a href="#" v-for="(question, index) in questions" :key="question.id" class="list-group-item list-group-item-action" v-bind:class="{'disabled' : !currentQuestion, 'active': questionNumber == index + 1}" @click.prevent="goToQuestion(index)">
+                <a href="#" v-for="(question, index) in questions" :key="question.id" class="list-group-item list-group-item-action" v-bind:class="{'disabled' : !currentQuestion, 'active': questionNumber == index + 1, 'text-danger': hasBeenAnswered(index+1)}" @click.prevent="storeChoice('random', currentSelection, questionNumber, index)">
                     Question {{index + 1}}
                 </a>
             </div>
         </div>
         <div class="col-md-10 question-body">
-            <SingleQuestion v-if="currentQuestion" :question="currentQuestion" :totalCount="questions.length" :number="questionNumber" />
+            <SingleQuestion v-if="currentQuestion" :question="currentQuestion" :totalCount="questions.length" :selectedOption="selectedOption" :number="questionNumber" @storeChoice="storeChoice" @updateSelection="val => currentSelection = val"/>
 
             <div class="card" v-else>
                 <div class="card-body">
@@ -31,7 +31,8 @@
                         <label for="radio4"><li class="list-group-item radios"><input type="radio" name="options" class="radioBtn" value="3"><span class="options"> -</span></li></label>
                 </ul>
                 <div class="card-body">
-                    <button data-button-type="start" class="btn btn-primary card-link" @click="startExam">START EXAM</button>
+                    <button v-if="!hasStarted" class="btn btn-primary card-link" @click="startExam">START EXAM</button>
+                    <button v-else class="btn btn-primary card-link" @click="startExam">CONTINUE</button>
                 </div>
             </div>
         </div>
@@ -49,17 +50,73 @@ export default {
     props: ['questions', 'hours', 'minutes'],
     data() {
         return {
-            // questions: null,
             currentQuestion: sessionStorage.getItem('current') || null,
             questionNumber: null,
-            // hours: null,
-            // minutes: null
+            currentSelection: null,
+            hasStarted: sessionStorage.getItem('hasStarted') || false,
+            choices: JSON.parse(sessionStorage.getItem('choices')) || [],
+            selectedOption: null
         }
     },
     methods: {
         startExam() {
             this.currentQuestion = this.questions[0]
             this.questionNumber = 1
+            sessionStorage.setItem('hasStarted', true)
+            this.getChosenOption()
+        },
+        getChosenOption() {
+            let selectedArray = this.choices.filter(choice => choice.question == this.questionNumber)
+            let selectedOption = selectedArray.length > 0 ? selectedArray[0].choice : null
+
+            this.selectedOption = selectedOption;
+        },
+        hasBeenAnswered(questionNumber) {
+            let check = this.choices.filter(choice => choice.question == questionNumber)
+            if (check.length > 0) {
+                if (check[0].choice) {
+                    return true
+                }
+                else {
+                    console.log(check[0].choice)
+                    return false
+                }
+            }
+            else {
+                return false
+            }
+        },
+        storeChoice(type, selected, questionNumber, index=undefined) {
+            this.choices = this.choices.filter(choice => choice.question !== questionNumber)
+            this.choices.push({question: questionNumber, choice: selected})
+            sessionStorage.setItem('choices', JSON.stringify(this.choices))
+
+            if (['next','previous'].includes(type)) {
+
+                 if (type == 'next') {
+                    this.questionNumber += 1;
+                    this.currentQuestion = this.questions[this.questionNumber - 1]
+                }
+
+                else {
+                    this.questionNumber -= 1;
+                    this.currentQuestion = this.questions[this.questionNumber - 1]
+                }
+
+                this.getChosenOption()
+            }
+
+            else if (type == 'random') {
+                this.questionNumber = index + 1;
+                this.currentQuestion = this.questions[this.questionNumber - 1]
+
+                this.getChosenOption()
+            }
+
+            else {
+                this.dialog = false
+                this.submitPage = true
+            }
         }
     },
     computed: {

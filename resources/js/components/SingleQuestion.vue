@@ -5,16 +5,17 @@
             <p v-html="question.question"></p>
         </div>
         <ul class="list-group list-group-flush">
-            <label v-for="option in question.options" :key="option.id">
+            <label v-for="(option,index) in question.options" :key="option.id">
                 <li class="list-group-item radios">
-                    <input type="radio" id="radio" data-option-id="" name="options" class="radioBtn" value="0">
-                    <span class="options"> {{option.body}}</span>
+                    <input type="radio" v-model="selected" name="options" class="radioBtn" :value="index">
+                    <span v-html="option.body"></span>
                 </li>
             </label>
         </ul>
         <div class="card-body">
-            <button data-button-type="next" class="btn btn-secondary card-link">Previous Question</button>
-            <button data-button-type="start" data-question="1"  class="btn btn-primary card-link">Next Question</button>
+            <button class="btn btn-secondary card-link" @click="$emit('storeChoice', 'previous', newSelection, number)">Previous Question</button>
+            <button v-if="number !== totalCount" @click="$emit('storeChoice', 'next', newSelection, number)"  class="btn btn-primary card-link">Next Question</button>
+            <button v-else @click="$emit('storeChoice', 'submit', newSelection, number)"  class="btn btn-primary card-link">Submit</button>
         </div>
     </div>
 </template>
@@ -22,7 +23,29 @@
 <script>
 export default {
     name: "SingleQuestion",
-    props: ['question', 'number', 'totalCount']
+    props: ['question', 'number', 'totalCount', 'selectedOption'],
+    data() {
+        return {
+            newSelection: this.selectedOption || null,
+        }
+    },
+    computed: {
+        selected: {
+            get() {
+                return this.selectedOption
+            },
+            set(newValue) {
+                this.newSelection = newValue
+                this.$emit('updateSelection', newValue)
+            }
+
+        }
+    },
+    watch: {
+        'question.id'() {
+            this.newSelection = this.selectedOption
+        }
+    }
 }
 </script>
 

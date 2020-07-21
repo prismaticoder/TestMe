@@ -8,8 +8,8 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
-import Vuetify from 'vuetify/lib';
-import 'vuetify/dist/v'
+import Vuetify from 'vuetify';
+// import 'vuetify/dist/v'
 
 Vue.use(Vuetify)
 
@@ -25,6 +25,7 @@ Vue.use(Vuetify)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+Vue.component('Questions', require('./components/Questions.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
