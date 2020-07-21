@@ -51,6 +51,7 @@ class StudentController extends Controller
 
             if ($subject) {
                 $subject_id = $subject->id;
+                // where is  code coming from ?
                 $seed = Auth::user()->code;
                 // Session::put('scoreArray', []);
                 // session('scoreArray',[]);
@@ -63,9 +64,6 @@ class StudentController extends Controller
         }
 
         return abort('401');
-
-
-
     }
 
     public function getAjaxQuestions(Request $request) {

@@ -9,7 +9,9 @@ use App\Mark;
 use App\Question;
 use App\Option;
 use App\User;
+use Gate;
 use DB;
+use Auth;
 use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
@@ -25,8 +27,18 @@ class AdminController extends Controller
     }
 
     public function dashboard() {
-        $subjects = Subject::get();
-        $classes = Classes::get();
+        // to authorize admin as the super admin
+        
+        if(Gate::denies('superAdminGate')){
+            $getAdminSubject_id = Auth::user()->adminSubjectId;
+            $getAdminSubject = Subject::where('id' , $getAdminSubject_id)->get();
+
+            $getAdminClass_id = Auth::user()->adminClassId;
+            $getAdminClass = Classes::where('id' , $getAdminClass_id)->get();
+        return view('admin.dashboard',compact('getAdminClass','getAdminSubject'));
+        }
+            $subjects = Subject::get();
+            $classes = Classes::get();
         return view('admin.dashboard',compact('subjects','classes'));
     }
 

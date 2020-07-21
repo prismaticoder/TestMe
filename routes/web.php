@@ -17,6 +17,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::post('register/institution', function(){
+    return view('register.institution');
+});
+
 Route::get('/singleresult', function() {
     return view('admin.main-result');
 });
@@ -25,11 +29,13 @@ Route::get('/hostexam', function() {
     return view('admin.host-exam');
 });
 
+
 Route::get('/login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('/login', 'Auth\LoginController@login');
 Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 
 Route::get('/exam/{subject}','StudentController@getExamQuestions')->name('exam');
+
 
 // Auth::routes();
 
@@ -63,6 +69,12 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/results','AdminController@getResults')->name('results');
     Route::get('/{subject}/hostexam','AdminController@hostExam')->name('host-exam');
     Route::get('/{subject}/endexam','AdminController@endExam')->name('end-exam');
+    //new route has been added 
+    Route::get('/edit-admin/','Admin\AdminSectionController@edit')->name('edit-admin');
+    Route::get('/adminsection/','Admin\AdminSectionController@index')->name('Admins-section');
+    Route::post('/update-admin/','Admin\AdminSectionController@update')->name('update-admin');
+    Route::post('/delete-admin/','Admin\AdminSectionController@destroy')->name('destroy-admin');
+    Route::post('/add-admin/','Admin\AdminSectionController@create')->name('add-admin');
 
     Route::group(['prefix' => 'subjects'], function() {
         Route::get('/{subject}/{class_id}/questions', 'AdminController@getAllQuestions')->name('questions');

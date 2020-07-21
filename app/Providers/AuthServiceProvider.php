@@ -1,6 +1,7 @@
 <?php
-
+use App\Admin;
 namespace App\Providers;
+use Auth;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
@@ -25,6 +26,16 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        //to define gate for authorizing admin that has different roles
+        Gate::define('superAdminGate', function(){
+
+
+            if(Auth::user()->AdminRoleId  == null ){
+                return True;
+            }
+            return false;
+        });
     }
 }
+
+

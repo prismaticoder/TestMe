@@ -16,7 +16,7 @@ class Admin extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'username', 'password'
+        'username', 'password','adminClassId','AdminRoleId','adminSubjectId '
     ];
 
     /**
@@ -36,4 +36,26 @@ class Admin extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function subjects(){
+        return $this->hasMany(Subject::class);
+    }
+
+    public function classes(){
+        return $this->hasMany(Classes::class);
+    }
+
+    public function roles() {
+        return $this->belongsTo(Role::class);
+        }
+    public function adminRole($role) {
+        if($this->roles()->where('id', $role)->first()){
+            return True;
+        }
+        return false;
+    }
 }
+
+
+
+
