@@ -16,7 +16,7 @@ class Classes extends Model
         return $this->belongsToMany(Subject::class, 'questions');
     }
 
-    public function admins(){
+    public function admin(){
         return $this->belongsTo(Classes::class);
     }
 }
