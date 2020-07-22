@@ -18,9 +18,7 @@ class CreateAdminsTable extends Migration
             $table->string('username');
             $table->string('password');
             $table->integer('AdminRoleId')->unsigned();
-            $table->foreign('AdminRoleId')->references('id')->on('roles')->nullable();
-            $table->integer('adminClassId')->unsigned();
-            $table->foreign('adminClassId')->references('id')->on('classes')->nullable();
+            $table->foreign('AdminRoleId')->references('id')->on('roles');
             $table->integer('adminSubjectId')->unsigned();
             $table->foreign('adminSubjectId')->references('id')->on('subjects')->nullable();
         });
