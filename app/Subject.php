@@ -22,4 +22,11 @@ class Subject extends Model
     public function classes() {
         return $this->belongsToMany(Classes::class, 'questions');
     }
+
+    public function admins() {
+        return $this->belongsTo(Admin::class);
+    }
 }
+
+
+

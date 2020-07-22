@@ -9,7 +9,9 @@ use App\Mark;
 use App\Question;
 use App\Option;
 use App\User;
+use Gate;
 use DB;
+use Auth;
 use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
@@ -25,8 +27,18 @@ class AdminController extends Controller
     }
 
     public function dashboard() {
-        $subjects = Subject::get();
-        $classes = Classes::get();
+        // to authorize admin as the super admin
+        
+        if(Gate::denies('superAdminGate')){
+            $getAdminSubject_id = Auth::user()->adminSubjectId;
+            $getAdminSubject = Subject::where('id' , $getAdminSubject_id)->get();
+
+            $classes = Classes::get();
+            
+        return view('admin.dashboard',compact('classes','getAdminSubject'));
+        }
+            $subjects = Subject::get();
+            $classes = Classes::get();
         return view('admin.dashboard',compact('subjects','classes'));
     }
 
@@ -297,6 +309,13 @@ class AdminController extends Controller
     }
 
     public function getResults() {
+        if(Gate::denies('superAdminGate')){
+            $getAdminSubject_id = Auth::user()->adminSubjectId;
+            $getAdminSubject = Subject::where('id' , $getAdminSubject_id)->get();
+            $classes = Classes::get();
+
+        return view('admin.results',compact('classes','getAdminSubject'));
+        }
         $subjects = Subject::get();
         $classes = Classes::get();
         return view('admin.results',compact('subjects','classes'));
@@ -383,4 +402,5 @@ class AdminController extends Controller
 
         return response()->json('Details Updated Successfully!');
     }
+    
 }

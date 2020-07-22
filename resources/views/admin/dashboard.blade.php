@@ -56,6 +56,11 @@
             <li class="nav-item">
             <a class="nav-link" href="{{route('dashboard')}}#students">Students</a>
             </li>
+            @can('superAdminGate')
+            <li class="nav-item">
+            <a class="nav-link" href="{{route('Admins-section')}}">Admins Section</a>
+            </li>
+            @endcan
             </ul>
             <span class="navbar-text">
             <a class="nav-link" href="{{route('admin-logout')}}">Sign out</a>
@@ -64,10 +69,11 @@
     </nav>
 
     <div class="container" id="students">
-
+     @can('superAdminGate')
         <main role="main" class="classes">
           <h1>Students</h1>
           <div class="card-deck">
+            
               @foreach ($classes as $class)
                 <div class="card">
                     <div class="card-body">
@@ -80,12 +86,17 @@
                     </div>
                 </div>
               @endforeach
+           
           </div>
           </main>
-
+       
+        
         <h1 style="margin-top:50px;">Subjects</h1>
 
         <main class="card-columns">
+
+        
+
           @foreach ($subjects as $subject)
           <div class="card">
             <div class="card-body">
@@ -101,8 +112,58 @@
             </div>
           </div>
           @endforeach
-        </main>
 
+         
+        </main>
+      @endcan
+
+      @cannot('superAdminGate')
+        <main role="main" class="classes">
+          <h1>Students</h1>
+          <div class="card-deck">
+            
+              @foreach ($classes as $class)
+                <div class="card">
+                    <div class="card-body">
+                    <a href="{{route('class-students',['class'=>$class->class])}}" class="text-dark">
+                      <h5 class="card-title">Junior Secondary School {{$class->id}}</h5>
+                      <p class="card-text">{{$class->students()->count()}} Students</P>
+                    </div>
+                    <div class="card-footer">
+                    <small class="text-muted"><a href="{{route('class-students',['class'=>$class->class])}}">See Student List</a></small>
+                    </div>
+                </div>
+              @endforeach
+           
+          </div>
+        </main>
+       
+        
+        <h1 style="margin-top:50px;">Subjects</h1>
+
+        <main class="card-columns">
+
+        
+
+          @foreach ($getAdminSubject as $subject)
+          <div class="card">
+            <div class="card-body">
+              <p class="card-text">{{strtoupper($subject->alias)}}</p>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">
+              <a href="" class="btn btn-primary host-exam" id="{{$subject->alias}}">Start Exam</a>
+              <a href="{{route('questions',['subject'=>$subject->alias,'class_id'=>1])}}" class="btn btn-secondary">JSS 1</a>
+              <a href="{{route('questions',['subject'=>$subject->alias,'class_id'=>2])}}" class="btn btn-secondary">JSS 2</a>
+              <a href="{{route('questions',['subject'=>$subject->alias,'class_id'=>3])}}" class="btn btn-secondary">JSS 3</a>
+              </small>
+            </div>
+          </div>
+          @endforeach
+
+         
+        </main>
+      @endcannot
         </div>
 
         <!-- Modal -->
