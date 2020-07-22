@@ -30,9 +30,9 @@ export default {
       },
       endExam({commit}) {
         return new Promise((resolve, reject) => {
-          localStorage.setItem('exam_params', JSON.stringify({start: true, end: true}))
           commit('END_EXAM')
           localStorage.removeItem('exam_params')
+          localStorage.removeItem('choices')
           window.location.href = '/success'
           resolve()
         })
