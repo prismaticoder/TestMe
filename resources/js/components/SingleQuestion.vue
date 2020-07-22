@@ -2,6 +2,7 @@
     <div class="card">
         <div class="card-body">
         <h5 class="card-title">Question No <span class="questionNo">{{number}}</span> of <span class="questionCount">{{totalCount}}</span></h5>
+        <hr>
             <p v-html="question.question"></p>
         </div>
         <ul class="list-group list-group-flush">
