@@ -1937,6 +1937,9 @@ __webpack_require__.r(__webpack_exports__);
       sessionStorage.setItem('hasStarted', true);
       this.getChosenOption();
     },
+    updateSelection: function updateSelection(val) {
+      this.currentSelection = val;
+    },
     getChosenOption: function getChosenOption() {
       var _this = this;
 
@@ -1946,16 +1949,15 @@ __webpack_require__.r(__webpack_exports__);
       var selectedOption = selectedArray.length > 0 ? selectedArray[0].choice : null;
       this.selectedOption = selectedOption;
     },
-    hasBeenAnswered: function hasBeenAnswered(questionNumber) {
+    hasNotBeenAnswered: function hasNotBeenAnswered(questionNumber) {
       var check = this.choices.filter(function (choice) {
         return choice.question == questionNumber;
       });
 
       if (check.length > 0) {
-        if (check[0].choice) {
+        if (check[0].choice == null) {
           return true;
         } else {
-          console.log(check[0].choice);
           return false;
         }
       } else {
@@ -2008,6 +2010,11 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       return time;
+    }
+  },
+  watch: {
+    questionNumber: function questionNumber() {
+      this.currentSelection = this.selectedOption;
     }
   }
 });
@@ -38346,9 +38353,14 @@ var render = function() {
               class: {
                 disabled: !_vm.currentQuestion,
                 active: _vm.questionNumber == index + 1,
-                "text-danger": _vm.hasBeenAnswered(index + 1)
+                "text-danger":
+                  _vm.hasNotBeenAnswered(index + 1) &&
+                  _vm.questionNumber !== index + 1
               },
-              attrs: { href: "#" },
+              attrs: {
+                href: "#",
+                title: { You: _vm.hasNotBeenAnswered(index + 1) }
+              },
               on: {
                 click: function($event) {
                   $event.preventDefault()
@@ -38388,9 +38400,7 @@ var render = function() {
               },
               on: {
                 storeChoice: _vm.storeChoice,
-                updateSelection: function(val) {
-                  return (_vm.currentSelection = val)
-                }
+                updateSelection: _vm.updateSelection
               }
             })
           : _c("div", { staticClass: "card" }, [

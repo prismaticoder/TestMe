@@ -3,13 +3,13 @@
         <div class="col-md-2 sidebar">
             <h4 class="mt-3 mb-3 ml-3">Questions List</h4>
             <div class="list-group">
-                <a href="#" v-for="(question, index) in questions" :key="question.id" class="list-group-item list-group-item-action" v-bind:class="{'disabled' : !currentQuestion, 'active': questionNumber == index + 1, 'text-danger': hasBeenAnswered(index+1)}" @click.prevent="storeChoice('random', currentSelection, questionNumber, index)">
+                <a href="#" v-for="(question, index) in questions" :key="question.id" class="list-group-item list-group-item-action" v-bind:class="{'disabled' : !currentQuestion, 'active': questionNumber == index + 1, 'text-danger': hasNotBeenAnswered(index+1) && questionNumber !== index + 1}" v-bind:title="{'You': hasNotBeenAnswered(index+1)}" @click.prevent="storeChoice('random', currentSelection, questionNumber, index)">
                     Question {{index + 1}}
                 </a>
             </div>
         </div>
         <div class="col-md-10 question-body">
-            <SingleQuestion v-if="currentQuestion" :question="currentQuestion" :totalCount="questions.length" :selectedOption="selectedOption" :number="questionNumber" @storeChoice="storeChoice" @updateSelection="val => currentSelection = val"/>
+            <SingleQuestion v-if="currentQuestion" :question="currentQuestion" :totalCount="questions.length" :selectedOption="selectedOption" :number="questionNumber" @storeChoice="storeChoice" v-on:updateSelection="updateSelection"/>
 
             <div class="card" v-else>
                 <div class="card-body">
@@ -65,20 +65,23 @@ export default {
             sessionStorage.setItem('hasStarted', true)
             this.getChosenOption()
         },
+        updateSelection(val) {
+            this.currentSelection = val;
+        },
+
         getChosenOption() {
             let selectedArray = this.choices.filter(choice => choice.question == this.questionNumber)
             let selectedOption = selectedArray.length > 0 ? selectedArray[0].choice : null
 
             this.selectedOption = selectedOption;
         },
-        hasBeenAnswered(questionNumber) {
+        hasNotBeenAnswered(questionNumber) {
             let check = this.choices.filter(choice => choice.question == questionNumber)
             if (check.length > 0) {
-                if (check[0].choice) {
+                if (check[0].choice == null) {
                     return true
                 }
                 else {
-                    console.log(check[0].choice)
                     return false
                 }
             }
@@ -136,6 +139,11 @@ export default {
             }
 
             return time
+        },
+    },
+    watch: {
+        questionNumber() {
+            this.currentSelection = this.selectedOption
         }
     }
 }
