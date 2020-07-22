@@ -47,8 +47,12 @@
 
 </head>
 <body class="container-fluid">
+    <div id="app" data-app="true">
 <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
-    <a class="navbar-brand navbar-text" style="color:white">OASIS ROYAL ACADEMY</a>
+<a class="navbar-brand navbar-text" style="color:white">{{env('SCHOOL_NAME')}}</a>
+<div class="order-5">
+    <Timer :hours="{{$hours}}" :minutes="{{$minutes}}"></Timer>
+</div>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -65,23 +69,18 @@
             <a class="nav-link">Exam No: {{$user->code}}</a>
             </li>
             </ul>
-            <span class="navbar-text center" style="margin-right:40px;">
-            <h3>Timer: <span id="hours">{{$hours}}</span>h <span id="minutes">{{$minutes}}</span>m <span id="seconds">0</span>s</h3>
-            </span>
-            <span class="navbar-text">
-            <button class="nav-link newButton btn btn-primary submitBtn" disabled data-button-type="submit">SUBMIT EXAMINATION</button>
-            </span>
             <input type="hidden" name="" class="reloader" value="0">
         </div>
     </nav>
 
-    <div id="app">
+    <div>
         <Questions :questions="{{$questions}}" :hours="{{$hours}}" :minutes="{{$minutes}}"></Questions>
+        {{-- <Timer :hours="{{$hours}}" :minutes="{{$minutes}}"></Timer> --}}
     </div>
-
-    <script src="{{asset('/js/app.js')}}"></script>
-
-    <script src="{{asset('/js/jquery.js')}}"></script>
     {{-- <script src="{{asset('/js/functions.js')}}"></script> --}}
+</div>
+<script src="{{asset('/js/app.js')}}"></script>
+
+<script src="{{asset('/js/jquery.js')}}"></script>
 </body>
 </html>

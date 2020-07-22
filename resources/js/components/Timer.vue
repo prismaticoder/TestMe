@@ -17,8 +17,25 @@
 
         </span>
 
+        <v-dialog v-model="dialog" persistent max-width="350">
+            <v-card>
+                <v-card-title class="headline">Submit Examination?</v-card-title>
+                <v-card-text>
+                Are you sure you are ready to submit your examination?
+                Doing so would mean you will not be able to return to check your answers.
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn :disabled="btnLoading" color="green darken-1" text @click="dialog = false">No</v-btn>
+                    <v-btn :loading="btnLoading" :disabled="btnLoading" color="green darken-1" text @click="submitExam">Yes, Submit</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
         <span class="navbar-text">
-            <button class="nav-link btn btn-primary" :disabled="!hasStarted" data-button-type="submit">SUBMIT EXAMINATION</button>
+            <v-btn tile class="nav-link" color="bg-warning" :disabled="!hasStarted" @click="dialog = true">
+                SUBMIT
+            </v-btn>
         </span>
 
     </div>
@@ -34,7 +51,9 @@ export default {
             currentMinute: this.hasStarted ? '-' :this.minutes,
             currentSecond: this.hasStarted ? '-' : 0,
             interval: null,
-            x: null
+            x: null,
+            dialog: false,
+            btnLoading: false
         }
     },
     computed: {
@@ -78,6 +97,13 @@ export default {
             this.currentMinute =  Math.floor((this.interval % (1000*60*60*24)) % (1000*60*60) / (1000*60))
             this.currentSecond = Math.floor((this.interval % (1000*60*60*24)) % (1000*60*60) % (1000*60) / 1000)
         },
+        submitExam() {
+            this.btnLoading = true;
+            this.$store.dispatch('endExam')
+            .then(() => {
+                console.log("Submission successful!")
+            })
+        }
     },
     mounted() {
         this.setInterval()
