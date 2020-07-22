@@ -3,7 +3,7 @@
         <div class="col-md-2 sidebar">
             <h4 class="mt-3 mb-3 ml-3">Questions List</h4>
             <div class="list-group">
-                <a href="#" v-for="(question, index) in questions" :key="question.id" class="list-group-item list-group-item-action" v-bind:class="{'disabled' : !currentQuestion, 'active': questionNumber == index + 1, 'text-danger': hasNotBeenAnswered(index+1) && questionNumber !== index + 1}" :title="hasNotBeenAnswered(index + 1) ? 'You have not responded to this question' : ''" @click.prevent="storeChoice('random', currentSelection, questionNumber, index)">
+                <a href="#question" v-for="(question, index) in questions" :key="question.id" class="list-group-item list-group-item-action" v-bind:class="{'disabled' : !currentQuestion, 'active': questionNumber == index + 1, 'text-danger': hasNotBeenAnswered(index+1) && questionNumber !== index + 1}" :title="hasNotBeenAnswered(index + 1) ? 'You have not responded to this question' : ''" @click.prevent="storeChoice('random', currentSelection, questionNumber, index)">
                     Question {{index + 1}}
                 </a>
             </div>
@@ -14,7 +14,8 @@
             <div class="card" v-else>
                 <div class="card-body">
                 <h5 class="card-title">Question No <span class="questionNo">0</span> of <span class="questionCount">{{questions.length}}</span></h5>
-                    <p class="card-text question">
+                <hr>
+                    <span class="card-text question">
                         <h5>INSTRUCTIONS</h5>
                         <ul>
                             <li>This exam will last for <strong>{{examtime}}</strong></li>
@@ -22,7 +23,7 @@
                             <li>Manage your time well</li>
                             <li>Good luck!</li>
                         </ul>
-                    </p>
+                    </span>
                 </div>
                 <ul class="list-group list-group-flush">
                         <label for="radio1"><li class="list-group-item radios"><input type="radio" name="options" class="radioBtn" value="0"><span class="options"> -</span></li></label>
@@ -41,6 +42,7 @@
 
 <script>
 import SingleQuestion from './SingleQuestion'
+import Timer from './Timer'
 
 export default {
     name: "Questions",
@@ -50,20 +52,32 @@ export default {
     props: ['questions', 'hours', 'minutes'],
     data() {
         return {
-            currentQuestion: sessionStorage.getItem('current') || null,
+            currentQuestion: localStorage.getItem('current') || null,
             questionNumber: null,
             currentSelection: null,
-            hasStarted: sessionStorage.getItem('hasStarted') || false,
-            choices: JSON.parse(sessionStorage.getItem('choices')) || [],
+            choices: JSON.parse(localStorage.getItem('choices')) || [],
             selectedOption: null
         }
     },
     methods: {
         startExam() {
-            this.currentQuestion = this.questions[0]
-            this.questionNumber = 1
-            sessionStorage.setItem('hasStarted', true)
-            this.getChosenOption()
+            if (!this.hasStarted) {
+                this.$store.dispatch('startExam', {hours: this.hours, minutes: this.minutes})
+                .then(() => {
+                    this.currentQuestion = this.questions[0]
+                    this.questionNumber = 1
+                    this.getChosenOption()
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+            }
+
+            else {
+                this.currentQuestion = this.questions[0]
+                this.questionNumber = 1
+                this.getChosenOption()
+            }
         },
         updateSelection(val) {
             this.currentSelection = val;
@@ -92,7 +106,7 @@ export default {
         storeChoice(type, selected, questionNumber, index=undefined) {
             this.choices = this.choices.filter(choice => choice.question !== questionNumber)
             this.choices.push({question: questionNumber, choice: selected})
-            sessionStorage.setItem('choices', JSON.stringify(this.choices))
+            localStorage.setItem('choices', JSON.stringify(this.choices))
 
             if (['next','previous'].includes(type)) {
 
@@ -140,6 +154,12 @@ export default {
 
             return time
         },
+        hasStarted() {
+            return this.$store.getters.hasStarted
+        },
+        hasEnded() {
+            return this.$store.getters.hasEnded
+        }
     },
     watch: {
         questionNumber() {

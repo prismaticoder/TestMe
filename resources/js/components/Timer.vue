@@ -2,8 +2,8 @@
     <div>
         <span class="navbar-text center" style="margin-right:40px;">
 
-            <h3>
-                Timer:
+            <h4>
+                    TIME LEFT:
                 <span id="hours">
                     {{currentHour}}h
                 </span>
@@ -13,12 +13,12 @@
                 <span id="seconds">
                     {{currentSecond}}s
                 </span>
-            </h3>
+            </h4>
 
         </span>
 
         <span class="navbar-text">
-            <button class="nav-link newButton btn btn-primary submitBtn" disabled data-button-type="submit">SUBMIT EXAMINATION</button>
+            <button class="nav-link btn btn-primary" :disabled="!hasStarted" data-button-type="submit">SUBMIT EXAMINATION</button>
         </span>
 
     </div>
@@ -30,9 +30,9 @@ export default {
     props: ['hours', 'minutes'],
     data() {
         return {
-            currentHour: this.hours,
-            currentMinute: this.minutes,
-            currentSecond: 0,
+            currentHour: this.hasStarted ? '-' : this.hours,
+            currentMinute: this.hasStarted ? '-' :this.minutes,
+            currentSecond: this.hasStarted ? '-' : 0,
             interval: null,
             x: null
         }
@@ -55,6 +55,9 @@ export default {
                 })
                 .catch(() => console.log('ended'))
             }
+        },
+        hasStarted(newValue) {
+            this.setInterval()
         }
     },
     methods: {
