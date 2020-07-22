@@ -65,15 +65,14 @@
 
 
                 <tr>
-                    <td><b>{{$role->admins->username}}</b></td>   
+                    <td><b>{{$role->admin->username}}</b></td>   
                     <td><b>{{$role->role}}</b></td>
                     <td>
-                        <a href =" {{route('edit-admin', ['id'=> $role->admins->id])}} " type ="button" class = "btn btn-primary">Edit</a>
+                        <a href =" {{route('edit-admin', ['id'=> $role->admin->id])}} " type ="button" class = "btn btn-primary">Edit</a>
                         <a href =" {{route('destroy-admin')}} " type ="button" class = "btn btn-warning">Delete</a>
                     </td>
                 </tr>
                 
-
 
                 @endforeach
             </table>

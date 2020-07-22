@@ -67,6 +67,7 @@
         <h1 style="margin-top:120px;">Exam Results Page</h1>
 
         <main class="card-columns mt-3">
+        @can('superAdminGate')
             @foreach ($subjects as $subject)
             <div class="card">
                     <div class="card-body">
@@ -82,6 +83,25 @@
                     </div>
             </div>
             @endforeach
+        @endcan
+
+        @cannot('superAdminGate')
+            @foreach ($getAdminSubject as $subject)
+            <div class="card">
+                    <div class="card-body">
+                      <p class="card-text">{{strtoupper($subject->alias)}}</p>
+                    </div>
+                    <div class="card-footer">
+                      {{-- <small class="text-muted"> --}}
+                      Class results >
+                      @foreach ($classes as $class)
+                      <a href="{{route('singleresult',['subject'=>$subject->alias,'class_id'=>$class->id])}}" class="btn btn-secondary">JSS {{$class->id}}</a>
+                      @endforeach
+                      {{-- </small> --}}
+                    </div>
+            </div>
+            @endforeach
+        @endcannot
         </main>
         </div>
         </div>

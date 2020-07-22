@@ -122,7 +122,7 @@
           <h1>Students</h1>
           <div class="card-deck">
             
-              @foreach ($getAdminClass as $class)
+              @foreach ($classes as $class)
                 <div class="card">
                     <div class="card-body">
                     <a href="{{route('class-students',['class'=>$class->class])}}" class="text-dark">
@@ -136,7 +136,7 @@
               @endforeach
            
           </div>
-          </main>
+        </main>
        
         
         <h1 style="margin-top:50px;">Subjects</h1>

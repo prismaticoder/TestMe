@@ -70,6 +70,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/{subject}/hostexam','AdminController@hostExam')->name('host-exam');
     Route::get('/{subject}/endexam','AdminController@endExam')->name('end-exam');
     //new route has been added 
+
     Route::get('/edit-admin/','Admin\AdminSectionController@edit')->name('edit-admin');
     Route::get('/adminsection/','Admin\AdminSectionController@index')->name('Admins-section');
     Route::post('/update-admin/','Admin\AdminSectionController@update')->name('update-admin');

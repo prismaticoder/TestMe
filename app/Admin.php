@@ -1,7 +1,7 @@
 <?php
 
 namespace App;
-
+use Auth;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -16,7 +16,7 @@ class Admin extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'username', 'password','adminClassId','AdminRoleId','adminSubjectId '
+        'username', 'password','adminRoleId','adminSubjectId '
     ];
 
     /**
@@ -41,18 +41,20 @@ class Admin extends Authenticatable
         return $this->hasMany(Subject::class);
     }
 
-    public function classes(){
-        return $this->hasMany(Classes::class);
-    }
+    
 
-    public function roles() {
+    public function role() {
         return $this->belongsTo(Role::class);
         }
-    public function adminRole($role) {
-        if($this->roles()->where('id', $role)->first()){
-            return True;
-        }
-        return false;
+    // i link this with gate
+    public function superAdminRole($role) {
+        $role = Role::where('role', 'superadmin')->first();
+            
+            $adminrole = $role->id;
+            if(Auth::user()->AdminRoleId  == $adminrole ){
+                return True;
+            }
+            return false;
     }
 }
 

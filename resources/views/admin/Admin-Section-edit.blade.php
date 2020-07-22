@@ -76,10 +76,11 @@
                 <tr>
                     <th>Role</th>
                 </tr>
-                <form action = "{{route('update-admin')}}" method = 'POST'>
+                @foreach($roles as $role)
+                <form action = "{{route('update-admin', ['id' => $role->admin->id])}}" method = 'POST'>
                 @csrf
                 {{ method_field ('POST')}}
-                @foreach($roles as $role)
+
                 <tr>  
                     <td>
                         <input type = "checkbox" name = "role">{{$role->role}}     
@@ -87,6 +88,7 @@
                 </tr>
                 @endforeach
                 <input type = "submit" name = "submit" value ="update">
+
                 </form> 
             </table>
           </div>

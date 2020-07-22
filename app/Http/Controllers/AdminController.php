@@ -33,9 +33,9 @@ class AdminController extends Controller
             $getAdminSubject_id = Auth::user()->adminSubjectId;
             $getAdminSubject = Subject::where('id' , $getAdminSubject_id)->get();
 
-            $getAdminClass_id = Auth::user()->adminClassId;
-            $getAdminClass = Classes::where('id' , $getAdminClass_id)->get();
-        return view('admin.dashboard',compact('getAdminClass','getAdminSubject'));
+            $classes = Classes::get();
+            
+        return view('admin.dashboard',compact('classes','getAdminSubject'));
         }
             $subjects = Subject::get();
             $classes = Classes::get();
@@ -309,6 +309,13 @@ class AdminController extends Controller
     }
 
     public function getResults() {
+        if(Gate::denies('superAdminGate')){
+            $getAdminSubject_id = Auth::user()->adminSubjectId;
+            $getAdminSubject = Subject::where('id' , $getAdminSubject_id)->get();
+            $classes = Classes::get();
+
+        return view('admin.results',compact('classes','getAdminSubject'));
+        }
         $subjects = Subject::get();
         $classes = Classes::get();
         return view('admin.results',compact('subjects','classes'));
@@ -395,4 +402,5 @@ class AdminController extends Controller
 
         return response()->json('Details Updated Successfully!');
     }
+    
 }
