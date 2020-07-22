@@ -1,5 +1,6 @@
 <?php
 use App\Admin;
+use App\Role;
 namespace App\Providers;
 use Auth;
 
@@ -28,9 +29,10 @@ class AuthServiceProvider extends ServiceProvider
 
         //to define gate for authorizing admin that has different roles
         Gate::define('superAdminGate', function(){
-
-
-            if(Auth::user()->AdminRoleId  == null ){
+            $role = Role::where('role', 'superadmin')->first();
+            
+            $adminrole = $role->id;
+            if(Auth::user()->AdminRoleId  == $adminrole ){
                 return True;
             }
             return false;
