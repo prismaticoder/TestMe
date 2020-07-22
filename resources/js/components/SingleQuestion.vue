@@ -14,7 +14,7 @@
             </label>
         </ul>
         <div class="card-body">
-            <button class="btn btn-secondary card-link" @click="$emit('storeChoice', 'previous', newSelection, number)">Previous Question</button>
+            <button :disabled="number == 1" class="btn btn-secondary card-link" @click="$emit('storeChoice', 'previous', newSelection, number)">Previous Question</button>
             <button v-if="number !== totalCount" @click="$emit('storeChoice', 'next', newSelection, number)"  class="btn btn-primary card-link">Next Question</button>
             <button v-else @click="$emit('storeChoice', 'submit', newSelection, number)"  class="btn btn-primary card-link">Submit</button>
         </div>
