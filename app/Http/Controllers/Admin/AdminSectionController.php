@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Support\Facades\Log;
 use App\Role;
+use Illuminate\Support\Facades\Auth;
 use App\Admin;
+use App\User;
 use App\Subject;
 use App\Classes;
 use Gate;
@@ -19,6 +21,18 @@ class AdminSectionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    protected function validator(array $data)
+    {
+        $this->validate($request, [
+            'username' => ['required', 'string'],
+            'password' => ['required', 'string'],
+            'subject' => ['required', 'integer'],
+        ]);
+            
+      
+    }
+
     public function index()
     {
         if(Gate::denies('superAdminGate')){
@@ -39,15 +53,21 @@ class AdminSectionController extends Controller
      */
     public function create(Request $request)
     {
+        $this->validate($request, [
+            'username' => ['required', 'string'],
+            'password' => ['required', 'string'],
+            'subject' => ['required', 'integer'],
+        ]);
         $newAdmin = new Admin;
         $newAdmin->username = $request->input('username');
         $newAdmin->password = $request->input('password');
-        $newAdmin->subject = $request->input('subject');
-        // i didn't added the class , because you said the input should just be the above
-        $subjectid = Subject::where('subject_name', $request->input('subject'));
+       
+        $subjectid = Subject::where('subject_name', $request->input('subject'))->first();
         $newAdmin->adminSubjectId = $subjectid->id;
-        $roleid = Role::find(1);
-        $newAdmin->adminRoleId = $roleid->id;
+        
+        $role = Role::where('role', 'teacher')->first();
+        $adminRoleId = $role->id;
+        $newAdmin->adminRoleId = $adminRoleId;
 
         $newAdmin->save();
 
@@ -79,8 +99,8 @@ class AdminSectionController extends Controller
     public function edit(Request $request)
     {
         // roles and admin => one to one relationship
-        $roles = Role::get();
-       // $request->flashOnly($roles->id);
+        $roles = Role::all();
+        // $request->flashOnly($roles->id);
         return view('admin.Admin-Section-edit')->with(
             ['roles' => $roles]
         );
@@ -95,8 +115,13 @@ class AdminSectionController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request)
-    {
+    {   
        
+        $admin = Admin::where('id', $request->id)->first();
+        $admin->username = $request->username;
+        $admin->password = $request->password;
+        $admin->save();
+
     }
 
     /**
@@ -107,8 +132,14 @@ class AdminSectionController extends Controller
      */
     public function destroy(Request $request)
     {
-        $roles = Role::get();
-        $roles->admins()->dissociate();
+
+        $roles = Role::where('id', $request->id)->first();
+        $roles->delete();
+
     }
+
+
 }
+
+
 
