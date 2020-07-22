@@ -28,6 +28,10 @@ class User extends Authenticatable
         return $this->hasMany(Score::class);
     }
 
+    public function getFullName() {
+        return $this->firstname . ' ' . $this->lastname;
+    }
+
     /**
      * The attributes that should be hidden for arrays.
      *
