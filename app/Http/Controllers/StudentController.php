@@ -39,8 +39,6 @@ class StudentController extends Controller
             $user = Auth::user();
             $class_id = $user->class_id;
 
-            $name = $user->firstname . ' ' . $user->lastname;
-
             $subject = Subject::where('alias',$subject)->first();
             $mark = Mark::where('subject_id',$subject->id)->where('class_id',$class_id)->first();
             $hours = $mark->hours;
@@ -57,7 +55,7 @@ class StudentController extends Controller
                 // session('scoreArray',[]);
                 $questions = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->with('options')->inRandomOrder($seed)->get();
 
-                return view('exam',compact('questions','name','user','subject','hours','minutes'));
+                return view('exam',compact('questions','user','subject','hours','minutes'));
             }
 
             return abort('404');
