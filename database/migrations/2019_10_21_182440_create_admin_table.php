@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-class CreateAdminsTable extends Migration
+class CreateAdminTable extends Migration
 {
     /**
      * Run the migrations.
@@ -17,10 +17,6 @@ class CreateAdminsTable extends Migration
             $table->increments('id');
             $table->string('username');
             $table->string('password');
-            $table->integer('AdminRoleId')->unsigned();
-            $table->foreign('AdminRoleId')->references('id')->on('roles');
-            $table->integer('adminSubjectId')->unsigned();
-            $table->foreign('adminSubjectId')->references('id')->on('subjects')->nullable();
         });
     }
 
