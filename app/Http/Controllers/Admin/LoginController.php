@@ -34,8 +34,6 @@ class LoginController extends Controller
         $credentials = $request->only('username','password');
 
         if(Auth::guard('admins')->attempt($credentials)) {
-            $Admindata = Admin::where('username',$credentials['username'])->where('password', $credentials['password'])->get();
-            session()->put('Adminrole', $Admindata);
             return redirect()->intended(route('dashboard'));
         }
 
