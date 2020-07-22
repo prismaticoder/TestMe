@@ -10,6 +10,7 @@
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="{{asset('/css/bootstrap.min.css')}}">
+    <script src="{{asset('/js/jquery-3.4.1.min.js')}}"></script>
 
 
     <style>
@@ -135,14 +136,12 @@
         }
 
     </style>
-    <!-- Custom styles for this template -->
-    <link href="cover.css" rel="stylesheet">
   </head>
   <body class="text-center">
     <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
   <header class="masthead mb-auto">
     <div class="inner">
-      <h3 class="masthead-brand">Oasis Royal Academy</h3>
+      <h3 class="masthead-brand">{{env('SCHOOL_NAME')}}</h3>
       <nav class="nav nav-masthead justify-content-center">
         <a class="nav-link active" href="{{route('home')}}">Home</a>
 
@@ -155,17 +154,27 @@
 
 
   <h1 class="cover-heading">Hey <strong style="color:orange">{{Auth::user()->firstname}}</strong>, Your submission was successful!</h1>
-    <p class="lead">Oasis Royal Academy wishes you luck in the exam, you will be notified when your result is out.</p>
+    <p class="lead">{{env('SCHOOL_NAME')}} wishes you luck in the exam, you will be notified when your result is out.</p>
     <p class="lead">
-            <a href="{{route('logout')}}" class="btn btn-lg btn-secondary">Sign Out</a>
+            <a href="" id="signOutBtn" class="btn btn-lg btn-secondary">Sign Out</a>
     </p>
   </main>
 
   <footer class="mastfoot mt-auto">
     <div class="inner">
-      <p>&copy;{{date('Y')}} Oasis Royal Academy</p>
+      <p>&copy;{{date('Y')}} {{env('SCHOOL_NAME')}}</p>
     </div>
   </footer>
 </div>
+
+<script>
+//Clear the session storage if something is there before logging the user out
+$('#signOutBtn').click(function(event) {
+    event.preventDefault();
+    sessionStorage.clear();
+    window.location = '/logout';
+})
+
+</script>
 </body>
 </html>

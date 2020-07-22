@@ -133,8 +133,6 @@
         }
 
     </style>
-    <!-- Custom styles for this template -->
-    <link href="cover.css" rel="stylesheet">
   </head>
   <body class="text-center">
     <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
@@ -150,8 +148,8 @@
   </header>
 
   <main role="main" class="inner cover">
-    <h1 class="cover-heading">OASIS ROYAL ACADEMY CBT</h1>
-    <p class="lead">Welcome to the Oasis Royal Academy Computer Based Testing Platform, do follow instructions and goodluck in your exams.</p>
+    <h1 class="cover-heading">{{env('SCHOOL_NAME')}} CBT</h1>
+    <p class="lead">Welcome to the {{env('SCHOOL_NAME')}} Computer Based Testing Platform, do follow instructions and goodluck in your exams.</p>
     <p class="lead">
           @if (Route::has('login'))
                 <div class="top-right links">
