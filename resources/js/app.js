@@ -10,6 +10,7 @@ window.Vue = require('vue');
 
 import Vuetify from 'vuetify';
 Vue.use(Vuetify)
+import 'vuetify/dist/vuetify.min.css'
 
 //support vuex
 import Vuex from 'vuex'
@@ -35,6 +36,7 @@ const store = new Vuex.Store(
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('Questions', require('./components/Questions.vue').default);
+Vue.component('Timer', require('./components/Timer.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
