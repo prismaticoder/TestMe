@@ -3,7 +3,7 @@
         <div class="col-md-2 sidebar">
             <h4 class="mt-3 mb-3 ml-3">Questions List</h4>
             <div class="list-group">
-                <a href="#" v-for="(question, index) in questions" :key="question.id" class="list-group-item list-group-item-action" v-bind:class="{'disabled' : !currentQuestion, 'active': questionNumber == index + 1, 'text-danger': hasNotBeenAnswered(index+1) && questionNumber !== index + 1}" v-bind:title="{'You': hasNotBeenAnswered(index+1)}" @click.prevent="storeChoice('random', currentSelection, questionNumber, index)">
+                <a href="#" v-for="(question, index) in questions" :key="question.id" class="list-group-item list-group-item-action" v-bind:class="{'disabled' : !currentQuestion, 'active': questionNumber == index + 1, 'text-danger': hasNotBeenAnswered(index+1) && questionNumber !== index + 1}" :title="hasNotBeenAnswered(index + 1) ? 'You have not responded to this question' : ''" @click.prevent="storeChoice('random', currentSelection, questionNumber, index)">
                     Question {{index + 1}}
                 </a>
             </div>
@@ -86,7 +86,7 @@ export default {
                 }
             }
             else {
-                return false
+                return true
             }
         },
         storeChoice(type, selected, questionNumber, index=undefined) {
