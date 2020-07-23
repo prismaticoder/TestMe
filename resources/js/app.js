@@ -8,6 +8,11 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+//axios
+import axios from 'axios';
+Vue.prototype.$http = axios
+
+//vuetify
 import Vuetify from 'vuetify';
 Vue.use(Vuetify)
 import 'vuetify/dist/vuetify.min.css'

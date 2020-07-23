@@ -1922,13 +1922,12 @@ __webpack_require__.r(__webpack_exports__);
   components: {
     SingleQuestion: _SingleQuestion__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
-  props: ['questions', 'hours', 'minutes'],
+  props: ['questions', 'hours', 'minutes', 'subject', 'classId'],
   data: function data() {
     return {
       currentQuestion: localStorage.getItem('current') || null,
       questionNumber: null,
-      currentSelection: null,
-      choices: JSON.parse(localStorage.getItem('choices')) || [],
+      choices: this.$store.state.choices,
       selectedOption: null
     };
   },
@@ -1939,8 +1938,11 @@ __webpack_require__.r(__webpack_exports__);
       if (!this.hasStarted) {
         this.$store.dispatch('startExam', {
           hours: this.hours,
-          minutes: this.minutes
+          minutes: this.minutes,
+          subjectId: this.subject,
+          classId: this.classId
         }).then(function () {
+          console.log(_this.classId);
           _this.currentQuestion = _this.questions[0];
           _this.questionNumber = 1;
 
@@ -1949,13 +1951,15 @@ __webpack_require__.r(__webpack_exports__);
           console.log(err);
         });
       } else {
+        console.log(this.classId);
+        console.log(this.subject);
         this.currentQuestion = this.questions[0];
         this.questionNumber = 1;
         this.getChosenOption();
       }
     },
     updateSelection: function updateSelection(val) {
-      this.currentSelection = val;
+      this.$store.commit('UPDATE_SELECTION', val);
     },
     getChosenOption: function getChosenOption() {
       var _this2 = this;
@@ -1965,6 +1969,11 @@ __webpack_require__.r(__webpack_exports__);
       });
       var selectedOption = selectedArray.length > 0 ? selectedArray[0].choice : null;
       this.selectedOption = selectedOption;
+      this.$store.commit('STORE_CHOICE', {
+        choices: this.choices,
+        currentQuestionNumber: this.questionNumber,
+        currentSelectedOption: this.selectedOption
+      });
     },
     hasNotBeenAnswered: function hasNotBeenAnswered(questionNumber) {
       var check = this.choices.filter(function (choice) {
@@ -1990,7 +1999,6 @@ __webpack_require__.r(__webpack_exports__);
         question: questionNumber,
         choice: selected
       });
-      localStorage.setItem('choices', JSON.stringify(this.choices));
 
       if (['next', 'previous'].includes(type)) {
         if (type == 'next') {
@@ -2028,16 +2036,14 @@ __webpack_require__.r(__webpack_exports__);
 
       return time;
     },
+    currentSelection: function currentSelection() {
+      return this.$store.state.currentSelectedOption;
+    },
     hasStarted: function hasStarted() {
       return this.$store.getters.hasStarted;
     },
     hasEnded: function hasEnded() {
       return this.$store.getters.hasEnded;
-    }
-  },
-  watch: {
-    questionNumber: function questionNumber() {
-      this.currentSelection = this.selectedOption;
     }
   }
 });
@@ -2182,10 +2188,8 @@ __webpack_require__.r(__webpack_exports__);
         this.currentHour = 0;
         this.currentMinute = 0;
         this.currentSecond = 0;
-        this.$store.dispatch('endExam').then(function () {
-          console.log('done');
-        })["catch"](function () {
-          return console.log('ended');
+        this.submitExam().then(function () {
+          console.log('submission successful!');
         });
       }
     },
@@ -2222,7 +2226,9 @@ __webpack_require__.r(__webpack_exports__);
     submitExam: function submitExam() {
       this.btnLoading = true;
       this.$store.dispatch('endExam').then(function () {
-        console.log("Submission successful!");
+        window.location.href = '/success';
+      })["catch"](function (err) {
+        console.log(err);
       });
     }
   },
@@ -96131,12 +96137,14 @@ module.exports = function(module) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vuetify__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuetify */ "./node_modules/vuetify/dist/vuetify.js");
-/* harmony import */ var vuetify__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vuetify__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var vuetify_dist_vuetify_min_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuetify/dist/vuetify.min.css */ "./node_modules/vuetify/dist/vuetify.min.css");
-/* harmony import */ var vuetify_dist_vuetify_min_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vuetify_dist_vuetify_min_css__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
-/* harmony import */ var _store_index__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./store/index */ "./resources/js/store/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var vuetify__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuetify */ "./node_modules/vuetify/dist/vuetify.js");
+/* harmony import */ var vuetify__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vuetify__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var vuetify_dist_vuetify_min_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuetify/dist/vuetify.min.css */ "./node_modules/vuetify/dist/vuetify.min.css");
+/* harmony import */ var vuetify_dist_vuetify_min_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vuetify_dist_vuetify_min_css__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _store_index__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./store/index */ "./resources/js/store/index.js");
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -96144,15 +96152,19 @@ __webpack_require__.r(__webpack_exports__);
  */
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
-window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js"); //axios
 
-Vue.use(vuetify__WEBPACK_IMPORTED_MODULE_0___default.a);
+
+Vue.prototype.$http = axios__WEBPACK_IMPORTED_MODULE_0___default.a; //vuetify
+
+
+Vue.use(vuetify__WEBPACK_IMPORTED_MODULE_1___default.a);
  //support vuex
 
 
-Vue.use(vuex__WEBPACK_IMPORTED_MODULE_2__["default"]);
+Vue.use(vuex__WEBPACK_IMPORTED_MODULE_3__["default"]);
 
-var store = new vuex__WEBPACK_IMPORTED_MODULE_2__["default"].Store(_store_index__WEBPACK_IMPORTED_MODULE_3__["default"]);
+var store = new vuex__WEBPACK_IMPORTED_MODULE_3__["default"].Store(_store_index__WEBPACK_IMPORTED_MODULE_4__["default"]);
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -96175,7 +96187,7 @@ Vue.component('Timer', __webpack_require__(/*! ./components/Timer.vue */ "./reso
 var vuetifyOptions = {};
 var app = new Vue({
   el: '#app',
-  vuetify: new vuetify__WEBPACK_IMPORTED_MODULE_0___default.a(vuetifyOptions),
+  vuetify: new vuetify__WEBPACK_IMPORTED_MODULE_1___default.a(vuetifyOptions),
   store: store
 });
 
@@ -96529,11 +96541,19 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   state: {
     examStarted: localStorage.getItem('exam_params') ? JSON.parse(localStorage.getItem('exam_params')).start || false : false,
     examEnded: localStorage.getItem('exam_params') ? JSON.parse(localStorage.getItem('exam_params')).end || false : false,
-    endTime: localStorage.getItem('exam_params') ? JSON.parse(localStorage.getItem('exam_params')).time || null : null
+    endTime: localStorage.getItem('exam_params') ? JSON.parse(localStorage.getItem('exam_params')).time || null : null,
+    subjectId: localStorage.getItem('exam_params') ? JSON.parse(localStorage.getItem('exam_params')).subject_id || null : null,
+    classId: localStorage.getItem('exam_params') ? JSON.parse(localStorage.getItem('exam_params')).class_id || null : null,
+    choices: localStorage.getItem('choices') ? JSON.parse(localStorage.getItem('choices')) : [],
+    currentQuestionNumber: null,
+    currentSelectedOption: null
   },
   getters: {
     hasStarted: function hasStarted(state) {
@@ -96544,12 +96564,32 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mutations: {
-    START_EXAM: function START_EXAM(state, time) {
+    START_EXAM: function START_EXAM(state, data) {
       state.examStarted = true;
-      state.endTime = time;
+      state.endTime = data.time;
+      state.subjectId = data.subjectId;
+      state.classId = data.classId;
     },
     END_EXAM: function END_EXAM(state) {
       state.examEnded = true;
+    },
+    UPDATE_SELECTION: function UPDATE_SELECTION(state, newValue) {
+      state.currentSelectedOption = newValue;
+    },
+    STORE_CHOICE: function STORE_CHOICE(state, data) {
+      localStorage.setItem('choices', JSON.stringify(data.choices));
+      state.choices = data.choices;
+      state.currentQuestionNumber = data.currentQuestionNumber;
+      state.currentSelectedOption = data.currentSelectedOption;
+    },
+    STORE_LAST_CHOICE: function STORE_LAST_CHOICE(state) {
+      state.choices = state.choices.filter(function (choice) {
+        return choice.question !== state.currentQuestionNumber;
+      });
+      state.choices.push({
+        question: state.currentQuestionNumber,
+        choice: state.currentSelectedOption
+      });
     }
   },
   actions: {
@@ -96557,21 +96597,47 @@ __webpack_require__.r(__webpack_exports__);
       var commit = _ref.commit;
       return new Promise(function (resolve, reject) {
         var hours = data.hours,
-            minutes = data.minutes;
+            minutes = data.minutes,
+            subjectId = data.subjectId,
+            classId = data.classId;
         var timeExamEnds = new Date().getTime() + hours * 60 * 60 * 1000 + minutes * 60 * 1000;
         localStorage.setItem('exam_params', JSON.stringify({
           start: true,
           end: false,
-          time: timeExamEnds
+          time: timeExamEnds,
+          subject_id: subjectId,
+          class_id: classId
         }));
-        commit('START_EXAM', timeExamEnds);
+        commit('START_EXAM', {
+          time: timeExamEnds,
+          subjectId: subjectId,
+          classId: classId
+        });
         resolve();
       });
     },
-    endExam: function endExam(_ref2) {
+    endExam: function endExam(context) {
+      return new Promise(function (resolve, reject) {
+        //   commit('END_EXAM')
+        //first store the last question in the choices
+        context.commit('STORE_LAST_CHOICE');
+        axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('http://localhost:8000/submitExam', {
+          choices: JSON.stringify(context.state.choices),
+          subject_id: context.state.subjectId,
+          class_id: context.state.classId
+        }).then(function () {
+          localStorage.removeItem('exam_params');
+          localStorage.removeItem('choices');
+          resolve();
+        })["catch"](function (err) {
+          reject(err);
+        }); //   window.location.href = '/success'
+      });
+    },
+    storeChoice: function storeChoice(_ref2, data) {
       var commit = _ref2.commit;
       return new Promise(function (resolve, reject) {
-        commit('END_EXAM');
+        commit('STORE_CHOICE');
         localStorage.removeItem('exam_params');
         localStorage.removeItem('choices');
         window.location.href = '/success';

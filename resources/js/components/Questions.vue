@@ -49,21 +49,21 @@ export default {
     components: {
         SingleQuestion
     },
-    props: ['questions', 'hours', 'minutes'],
+    props: ['questions', 'hours', 'minutes', 'subject', 'classId'],
     data() {
         return {
             currentQuestion: localStorage.getItem('current') || null,
             questionNumber: null,
-            currentSelection: null,
-            choices: JSON.parse(localStorage.getItem('choices')) || [],
+            choices: this.$store.state.choices,
             selectedOption: null
         }
     },
     methods: {
         startExam() {
             if (!this.hasStarted) {
-                this.$store.dispatch('startExam', {hours: this.hours, minutes: this.minutes})
+                this.$store.dispatch('startExam', {hours: this.hours, minutes: this.minutes, subjectId: this.subject, classId: this.classId})
                 .then(() => {
+                    console.log(this.classId)
                     this.currentQuestion = this.questions[0]
                     this.questionNumber = 1
                     this.getChosenOption()
@@ -74,13 +74,15 @@ export default {
             }
 
             else {
+                console.log(this.classId)
+                console.log(this.subject)
                 this.currentQuestion = this.questions[0]
                 this.questionNumber = 1
                 this.getChosenOption()
             }
         },
         updateSelection(val) {
-            this.currentSelection = val;
+            this.$store.commit('UPDATE_SELECTION', val)
         },
 
         getChosenOption() {
@@ -88,6 +90,9 @@ export default {
             let selectedOption = selectedArray.length > 0 ? selectedArray[0].choice : null
 
             this.selectedOption = selectedOption;
+
+            this.$store.commit('STORE_CHOICE', {choices: this.choices, currentQuestionNumber: this.questionNumber, currentSelectedOption: this.selectedOption})
+
         },
         hasNotBeenAnswered(questionNumber) {
             let check = this.choices.filter(choice => choice.question == questionNumber)
@@ -106,7 +111,6 @@ export default {
         storeChoice(type, selected, questionNumber, index=undefined) {
             this.choices = this.choices.filter(choice => choice.question !== questionNumber)
             this.choices.push({question: questionNumber, choice: selected})
-            localStorage.setItem('choices', JSON.stringify(this.choices))
 
             if (['next','previous'].includes(type)) {
 
@@ -154,6 +158,9 @@ export default {
 
             return time
         },
+        currentSelection() {
+            return this.$store.state.currentSelectedOption
+        },
         hasStarted() {
             return this.$store.getters.hasStarted
         },
@@ -161,11 +168,6 @@ export default {
             return this.$store.getters.hasEnded
         }
     },
-    watch: {
-        questionNumber() {
-            this.currentSelection = this.selectedOption
-        }
-    }
 }
 </script>
 

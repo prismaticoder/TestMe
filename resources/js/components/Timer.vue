@@ -68,11 +68,10 @@ export default {
                 this.currentHour = 0;
                 this.currentMinute = 0;
                 this.currentSecond = 0;
-                this.$store.dispatch('endExam')
+                this.submitExam()
                 .then(() => {
-                    console.log('done')
+                    console.log('submission successful!')
                 })
-                .catch(() => console.log('ended'))
             }
         },
         hasStarted(newValue) {
@@ -101,7 +100,10 @@ export default {
             this.btnLoading = true;
             this.$store.dispatch('endExam')
             .then(() => {
-                console.log("Submission successful!")
+                window.location.href = '/success'
+            })
+            .catch(err => {
+                console.log(err)
             })
         }
     },
