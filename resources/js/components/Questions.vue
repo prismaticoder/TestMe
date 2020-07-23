@@ -3,8 +3,18 @@
         <div class="col-md-2 sidebar">
             <h4 class="mt-3 mb-3 ml-3">Questions List</h4>
             <div class="list-group">
-                <a href="#question" v-for="(question, index) in questions" :key="question.id" class="list-group-item list-group-item-action" v-bind:class="{'disabled' : !currentQuestion, 'active': questionNumber == index + 1, 'text-danger': hasNotBeenAnswered(index+1) && questionNumber !== index + 1}" :title="hasNotBeenAnswered(index + 1) ? 'You have not responded to this question' : ''" @click.prevent="storeChoice('random', currentSelection, questionNumber, index)">
+                <a href="#question" v-for="(question, index) in questions" :key="question.id" class="list-group-item list-group-item-action" v-bind:class="{'disabled' : !currentQuestion, 'active': questionNumber == index + 1}" :title="hasNotBeenAnswered(index + 1) ? 'You have not responded to this question' : ''" @click.prevent="storeChoice('random', currentSelection, questionNumber, index)">
                     Question {{index + 1}}
+                    <span v-if="!hasNotBeenAnswered(index+1)" class="badge badge-primary text-light badge-pill float-right">
+                        <v-icon small class="text-light">
+                            mdi-check
+                        </v-icon>
+                    </span>
+                    <span v-else class="badge badge-danger text-light badge-pill float-right">
+                        <v-icon small class="text-light">
+                            mdi-exclamation
+                        </v-icon>
+                    </span>
                 </a>
             </div>
         </div>
@@ -17,11 +27,11 @@
                 <hr>
                     <span class="card-text question">
                         <h5>INSTRUCTIONS</h5>
-                        <ul>
-                            <li>This exam will last for <strong>{{examtime}}</strong></li>
-                            <li>Read every question carefully</li>
-                            <li>Manage your time well</li>
-                            <li>Good luck!</li>
+                        <ul class="list-group">
+                            <li class="list-group-item">This exam will last for <strong>{{examtime}}</strong></li>
+                            <li class="list-group-item">Read every question carefully</li>
+                            <li class="list-group-item">Manage your time well</li>
+                            <li class="list-group-item">Good luck!</li>
                         </ul>
                     </span>
                 </div>
@@ -63,7 +73,6 @@ export default {
             if (!this.hasStarted) {
                 this.$store.dispatch('startExam', {hours: this.hours, minutes: this.minutes, subjectId: this.subject, classId: this.classId})
                 .then(() => {
-                    console.log(this.classId)
                     this.currentQuestion = this.questions[0]
                     this.questionNumber = 1
                     this.getChosenOption()
@@ -74,8 +83,6 @@ export default {
             }
 
             else {
-                console.log(this.classId)
-                console.log(this.subject)
                 this.currentQuestion = this.questions[0]
                 this.questionNumber = 1
                 this.getChosenOption()

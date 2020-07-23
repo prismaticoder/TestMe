@@ -56,7 +56,7 @@ export default {
         //first store the last question in the choices
             context.commit('STORE_LAST_CHOICE');
 
-            axios.post('http://localhost:8000/submitExam', {choices: JSON.stringify(context.state.choices), subject_id: context.state.subjectId, class_id: context.state.classId})
+            axios.post('submitExam', {choices: JSON.stringify(context.state.choices), subject_id: context.state.subjectId, class_id: context.state.classId})
             .then(() => {
                 localStorage.removeItem('exam_params')
                 localStorage.removeItem('choices')

@@ -16,8 +16,23 @@
         <div class="card-body">
             <button :disabled="number == 1" class="btn btn-secondary card-link" @click="$emit('storeChoice', 'previous', newSelection, number)">Previous Question</button>
             <button v-if="number !== totalCount" @click="$emit('storeChoice', 'next', newSelection, number)"  class="btn btn-primary card-link">Next Question</button>
-            <button v-else @click="$emit('storeChoice', 'submit', newSelection, number)"  class="btn btn-primary card-link">Submit</button>
+            <button v-else @click="dialog = true"  class="btn btn-primary card-link">Submit</button>
         </div>
+
+        <v-dialog v-model="dialog" persistent max-width="350">
+            <v-card>
+                <v-card-title class="headline">Submit Examination?</v-card-title>
+                <v-card-text>
+                Are you sure you are ready to submit your examination?
+                Doing so would mean you will not be able to return to check your answers.
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn :disabled="btnLoading" color="green darken-1" text @click="dialog = false">No</v-btn>
+                    <v-btn :loading="btnLoading" :disabled="btnLoading" color="green darken-1" text @click="submitExam">Yes, Submit</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </div>
 </template>
 
@@ -28,6 +43,20 @@ export default {
     data() {
         return {
             newSelection: this.selectedOption || null,
+            dialog: false,
+            btnLoading: false
+        }
+    },
+    methods: {
+        submitExam() {
+            this.btnLoading = true;
+            this.$store.dispatch('endExam')
+            .then(() => {
+                window.location.href = '/success'
+            })
+            .catch(err => {
+                console.log(err)
+            })
         }
     },
     computed: {
