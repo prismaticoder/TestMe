@@ -3,8 +3,18 @@
         <div class="col-md-2 sidebar">
             <h4 class="mt-3 mb-3 ml-3">Questions List</h4>
             <div class="list-group">
-                <a href="#question" v-for="(question, index) in questions" :key="question.id" class="list-group-item list-group-item-action" v-bind:class="{'disabled' : !currentQuestion, 'active': questionNumber == index + 1, 'text-danger': hasNotBeenAnswered(index+1) && questionNumber !== index + 1}" :title="hasNotBeenAnswered(index + 1) ? 'You have not responded to this question' : ''" @click.prevent="storeChoice('random', currentSelection, questionNumber, index)">
+                <a href="#question" v-for="(question, index) in questions" :key="question.id" class="list-group-item list-group-item-action" v-bind:class="{'disabled' : !currentQuestion, 'active': questionNumber == index + 1}" :title="hasNotBeenAnswered(index + 1) ? 'You have not responded to this question' : ''" @click.prevent="storeChoice('random', currentSelection, questionNumber, index)">
                     Question {{index + 1}}
+                    <span v-if="!hasNotBeenAnswered(index+1)" class="badge badge-primary text-light badge-pill float-right">
+                        <v-icon small class="text-light">
+                            mdi-check
+                        </v-icon>
+                    </span>
+                    <span v-else class="badge badge-danger text-light badge-pill float-right">
+                        <v-icon small class="text-light">
+                            mdi-exclamation
+                        </v-icon>
+                    </span>
                 </a>
             </div>
         </div>
@@ -17,11 +27,11 @@
                 <hr>
                     <span class="card-text question">
                         <h5>INSTRUCTIONS</h5>
-                        <ul>
-                            <li>This exam will last for <strong>{{examtime}}</strong></li>
-                            <li>Read every question carefully</li>
-                            <li>Manage your time well</li>
-                            <li>Good luck!</li>
+                        <ul class="list-group">
+                            <li class="list-group-item">This exam will last for <strong>{{examtime}}</strong></li>
+                            <li class="list-group-item">Read every question carefully</li>
+                            <li class="list-group-item">Manage your time well</li>
+                            <li class="list-group-item">Good luck!</li>
                         </ul>
                     </span>
                 </div>
@@ -49,20 +59,19 @@ export default {
     components: {
         SingleQuestion
     },
-    props: ['questions', 'hours', 'minutes'],
+    props: ['questions', 'hours', 'minutes', 'subject', 'classId'],
     data() {
         return {
             currentQuestion: localStorage.getItem('current') || null,
             questionNumber: null,
-            currentSelection: null,
-            choices: JSON.parse(localStorage.getItem('choices')) || [],
+            choices: this.$store.state.choices,
             selectedOption: null
         }
     },
     methods: {
         startExam() {
             if (!this.hasStarted) {
-                this.$store.dispatch('startExam', {hours: this.hours, minutes: this.minutes})
+                this.$store.dispatch('startExam', {hours: this.hours, minutes: this.minutes, subjectId: this.subject, classId: this.classId})
                 .then(() => {
                     this.currentQuestion = this.questions[0]
                     this.questionNumber = 1
@@ -80,7 +89,7 @@ export default {
             }
         },
         updateSelection(val) {
-            this.currentSelection = val;
+            this.$store.commit('UPDATE_SELECTION', val)
         },
 
         getChosenOption() {
@@ -88,6 +97,9 @@ export default {
             let selectedOption = selectedArray.length > 0 ? selectedArray[0].choice : null
 
             this.selectedOption = selectedOption;
+
+            this.$store.commit('STORE_CHOICE', {choices: this.choices, currentQuestionNumber: this.questionNumber, currentSelectedOption: this.selectedOption})
+
         },
         hasNotBeenAnswered(questionNumber) {
             let check = this.choices.filter(choice => choice.question == questionNumber)
@@ -106,7 +118,6 @@ export default {
         storeChoice(type, selected, questionNumber, index=undefined) {
             this.choices = this.choices.filter(choice => choice.question !== questionNumber)
             this.choices.push({question: questionNumber, choice: selected})
-            localStorage.setItem('choices', JSON.stringify(this.choices))
 
             if (['next','previous'].includes(type)) {
 
@@ -154,6 +165,9 @@ export default {
 
             return time
         },
+        currentSelection() {
+            return this.$store.state.currentSelectedOption
+        },
         hasStarted() {
             return this.$store.getters.hasStarted
         },
@@ -161,11 +175,6 @@ export default {
             return this.$store.getters.hasEnded
         }
     },
-    watch: {
-        questionNumber() {
-            this.currentSelection = this.selectedOption
-        }
-    }
 }
 </script>
 

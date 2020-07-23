@@ -53,6 +53,7 @@ Route::post('/deleteStudent/{id}','AdminController@deleteStudent');
 Route::post('/restoreStudent/{id}','AdminController@restoreStudent');
 Route::post('/addStudent', 'AdminController@addStudent');
 Route::get('/submitQuestion','StudentController@submitQuestion');
+Route::post('/submitExam', 'StudentController@submitExam');
 Route::post('/setSubjectMark','AdminController@setMark');
 Route::post('/updateSubjectMark','AdminController@updateMark');
 Route::get('/checkMark/{id}','AdminController@checkMark');
@@ -69,7 +70,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/results','AdminController@getResults')->name('results');
     Route::get('/{subject}/hostexam','AdminController@hostExam')->name('host-exam');
     Route::get('/{subject}/endexam','AdminController@endExam')->name('end-exam');
-    //new route has been added 
+    //new route has been added
 
     Route::get('/edit-admin/','Admin\AdminSectionController@edit')->name('edit-admin');
     Route::get('/adminsection/','Admin\AdminSectionController@index')->name('Admins-section');

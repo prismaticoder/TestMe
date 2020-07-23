@@ -74,10 +74,9 @@
     </nav>
 
     <div>
-        <Questions :questions="{{$questions}}" :hours="{{$hours}}" :minutes="{{$minutes}}"></Questions>
-        {{-- <Timer :hours="{{$hours}}" :minutes="{{$minutes}}"></Timer> --}}
+        {{-- made it class-id(kebab-case) because HTML converts it to lowercase automatically --}}
+    <Questions :questions="{{$questions}}" :hours="{{$hours}}" :minutes="{{$minutes}}" :subject="{{$subject->id}}" :class-id="{{$user->class_id}}"></Questions>
     </div>
-    {{-- <script src="{{asset('/js/functions.js')}}"></script> --}}
 </div>
 <script src="{{asset('/js/app.js')}}"></script>
 

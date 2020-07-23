@@ -130,6 +130,49 @@ class StudentController extends Controller
         return response()->json($score);
     }
 
+    public function submitExam(Request $request) {
+        $choices = json_decode($request->choices);
+        $subject_id = $request->subject_id;
+        $class_id = $request->class_id;
+
+
+        //first mark all the answers
+        $seed = Auth::user()->code;
+
+        $questions = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->with('options')->inRandomOrder($seed)->get();
+
+        $mark = (Mark::where('subject_id',$subject_id)->where('class_id',$class_id)->first()) ? Mark::where('subject_id',$subject_id)->where('class_id',$class_id)->first()->mark : 50;
+
+        $divisor = ($mark)/count($questions);
+        //Now mark in Accordance
+        $score = 0;
+        foreach ($choices as $choice) {
+            $corresponding_question = $questions[$choice->question - 1];
+
+            if ($choice->choice) {
+                //check if the answer is correct
+                if ($corresponding_question->options[$choice->choice]->isCorrect) {
+                    $score += 1;
+                }
+            }
+
+            else {
+                continue;
+            }
+        }
+
+        $scoreTable = new Score;
+        $scoreTable->subject_id = $subject_id;
+        $scoreTable->class_id = $class_id;
+        $scoreTable->user_id = Auth::user()->id;
+        $scoreTable->original = $score;
+        $scoreTable->score = $score * $divisor;
+        $scoreTable->save();
+
+        return response()->json('submission successful');
+
+    }
+
     public function submitQuestion(Request $request) {
         $subject = $request->subject;
         $class_id = $request->class_id;

@@ -8,9 +8,16 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+//axios
+import axios from 'axios';
+Vue.prototype.$http = axios
+Vue.prototype.$http.defaults.baseURL = `${process.env.MIX_APP_URL}`
+
+//vuetify
 import Vuetify from 'vuetify';
 Vue.use(Vuetify)
 import 'vuetify/dist/vuetify.min.css'
+import '@mdi/font/css/materialdesignicons.css';
 
 //support vuex
 import Vuex from 'vuex'
