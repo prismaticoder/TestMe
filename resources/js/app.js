@@ -30,6 +30,16 @@ const store = new Vuex.Store(
  )
 
 
+//quill editor
+import VueQuillEditor from 'vue-quill-editor'
+
+import 'quill/dist/quill.core.css' // import styles
+import 'quill/dist/quill.snow.css' // for snow theme
+import 'quill/dist/quill.bubble.css' // for bubble theme
+
+Vue.use(VueQuillEditor)
+
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -44,6 +54,7 @@ const store = new Vuex.Store(
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('Questions', require('./components/Questions.vue').default);
 Vue.component('Timer', require('./components/Timer.vue').default);
+Vue.component('add-question', require('./components/admin/AddQuestion.vue').default)
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
