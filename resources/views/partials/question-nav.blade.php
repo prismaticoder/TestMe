@@ -3,24 +3,23 @@
         <img src="{{asset('/img/logo.png')}}" class="mr-2" height="45" width="45">
     </a>
     <a class="navbar-brand" href="{{route('dashboard')}}">
-        {{config('app.name')}} | {{config('app.schoolAlias')}} ADMIN
+        {{config('app.name')}} | {{config('app.schoolAlias')}} ADMIN (Go To Dashboard)
     </a>
+
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
+
     <div class="collapse navbar-collapse" id="navbarText">
-        <ul class="navbar-nav mx-auto col-md-3">
+        <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+            <a class="nav-link" href="#">{{strtoupper($subject->alias)}} <span class="sr-only">(current)</span></a>
+        </li>
+        @foreach ($classes as $class)
             <li class="nav-item">
-                <a class="nav-link {{ (\Request::route()->getName() == 'dashboard') ? 'active' : '' }}" href="{{route('dashboard')}}">Main Dashboard</a>
+            <a class="nav-link {{ (request()->segment(4) == $class->id) ? 'active' : '' }}" href="{{route('questions',['subject'=>$subject->alias,'class_id'=>$class->id])}}">JSS {{$class->id}}</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link {{ (\Request::route()->getName() == 'results') ? 'active' : '' }}" href="{{route('results')}}">Results</a>
-            </li>
-            @can('superAdminGate')
-            <li class="nav-item">
-                <a class="nav-link {{ (\Request::route()->getName() == 'teachers') ? 'active' : '' }}" href="{{route('teachers')}}">Teachers</a>
-            </li>
-            @endcan
+        @endforeach
         </ul>
         <span>
             <a class="mt-2 nav-link logoutBtn" href="{{route('admin-logout')}}">Sign Out</a>
