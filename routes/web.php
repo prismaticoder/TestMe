@@ -72,11 +72,13 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/{subject}/endexam','AdminController@endExam')->name('end-exam');
     //new route has been added
 
-    Route::get('/edit-admin/','Admin\AdminSectionController@edit')->name('edit-admin');
-    Route::get('/adminsection/','Admin\AdminSectionController@index')->name('Admins-section');
-    Route::post('/update-admin/','Admin\AdminSectionController@update')->name('update-admin');
-    Route::post('/delete-admin/','Admin\AdminSectionController@destroy')->name('destroy-admin');
-    Route::post('/add-admin/','Admin\AdminSectionController@create')->name('add-admin');
+    Route::group(['prefix' => 'teachers', 'middleware' => ['auth:admins','can:superAdminGate']], function() {
+        Route::get('/edit-admin','Admin\AdminSectionController@edit')->name('edit-admin');
+        Route::get('/','Admin\AdminSectionController@index')->name('teachers');
+        Route::post('/update-admin','Admin\AdminSectionController@update')->name('update-admin');
+        Route::post('/delete-admin','Admin\AdminSectionController@destroy')->name('destroy-admin');
+        Route::post('/add-admin','Admin\AdminSectionController@create')->name('add-admin');
+    });
 
     Route::group(['prefix' => 'subjects'], function() {
         Route::get('/{subject}/{class_id}/questions', 'AdminController@getAllQuestions')->name('questions');
