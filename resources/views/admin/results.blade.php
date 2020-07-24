@@ -1,13 +1,8 @@
 @extends('layouts.main')
 @section('title', 'Results')
+@section('pageHeader', 'View Student Results')
 @section('content')
-<div class="container">
-
-
-
-    <h1 style="margin-top:120px;">Exam Results Page</h1>
-
-    <main class="card-columns mt-3">
+    <main class="card-columns mt-4">
         @foreach ($subjects as $subject)
             <div class="card">
                 <div class="card-body">
@@ -22,7 +17,5 @@
             </div>
         @endforeach
     </main>
-
-</div>
 
 @endsection
