@@ -23,22 +23,19 @@ class AuthServiceProvider extends ServiceProvider
      *
      * @return void
      */
-   
+
     public function boot()
     {
         $this->registerPolicies();
-        
+
         //to define gate for authorizing admin that has different roles
         Gate::define('superAdminGate', function($admin){
-            
-            return $admin->superAdminRole('superadmin');
-           // $role = Role::where('role', 'superadmin')->first();
-            
-         //   $adminrole = $role->id;
-         //   if(Auth::user()->AdminRoleId  == $adminrole ){
-            //    return True;
-         //   }
-        //    return false;
+            return $admin->isSuperAdmin();
+        });
+
+        //admin should only view questions of his own subject
+        Gate::define('view-subject-details', function($admin, $subject) {
+            return $admin->isSuperAdmin() || $admin->subject_id === $subject->id;
         });
     }
 }

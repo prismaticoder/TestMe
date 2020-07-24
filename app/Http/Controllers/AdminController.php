@@ -28,17 +28,18 @@ class AdminController extends Controller
 
     public function dashboard() {
         // to authorize admin as the super admin
-        
-        if(Gate::denies('superAdminGate')){
-            $getAdminSubject_id = Auth::user()->adminSubjectId;
-            $getAdminSubject = Subject::where('id' , $getAdminSubject_id)->get();
 
-            $classes = Classes::get();
-            
-        return view('admin.dashboard',compact('classes','getAdminSubject'));
+        $classes = Classes::get();
+
+        if(Gate::denies('superAdminGate')){
+            //Only return the subject of that user
+            $subjects = Subject::where('id', Auth::user()->subject_id)->get();
         }
-            $subjects = Subject::get();
-            $classes = Classes::get();
+
+        else {
+            $subjects = Subject::all();
+        }
+
         return view('admin.dashboard',compact('subjects','classes'));
     }
 
@@ -111,12 +112,17 @@ class AdminController extends Controller
         $classes = Classes::all();
 
         if ($subject) {
-            $mark = (Mark::where('subject_id',$subject->id)->where('class_id',$class_id)->first())?Mark::where('subject_id',$subject_id)->where('class_id',$class_id)->first():"nil";
 
-            $questions = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->with('options')->get();
-            // $options = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->options;
+            if (Gate::allows('view-subject-details', $subject)) {
+                $mark = (Mark::where('subject_id',$subject->id)->where('class_id',$class_id)->first())?Mark::where('subject_id',$subject_id)->where('class_id',$class_id)->first():"nil";
 
-            return view('admin.questions', compact('questions','subject','class_id','classes','mark'));
+                $questions = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->with('options')->get();
+                // $options = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->options;
+
+                return view('admin.questions', compact('questions','subject','class_id','classes','mark'));
+            }
+
+            return abort('404','Page does not exist');
         }
 
         return abort('404','Page does not exist');
@@ -309,15 +315,17 @@ class AdminController extends Controller
     }
 
     public function getResults() {
-        if(Gate::denies('superAdminGate')){
-            $getAdminSubject_id = Auth::user()->adminSubjectId;
-            $getAdminSubject = Subject::where('id' , $getAdminSubject_id)->get();
-            $classes = Classes::get();
-
-        return view('admin.results',compact('classes','getAdminSubject'));
-        }
-        $subjects = Subject::get();
         $classes = Classes::get();
+
+        if(Gate::denies('superAdminGate')){
+            //Only return the subject of that user
+            $subjects = Subject::where('id', Auth::user()->subject_id)->get();
+        }
+
+        else {
+            $subjects = Subject::all();
+        }
+
         return view('admin.results',compact('subjects','classes'));
     }
 
@@ -325,11 +333,15 @@ class AdminController extends Controller
         $subject = Subject::where('alias',$subject)->first();
 
         if ($subject) {
-            $students = User::where('class_id',$class_id)->get();
-            $selected_class = Classes::find($class_id);
-            $mark = (Mark::where('subject_id',$subject->id)->where('class_id',$class_id)->first())?Mark::where('subject_id',$subject->id)->where('class_id',$class_id)->first()->mark:50;
-            $classes = Classes::get();
-            return view('admin.main-result',compact('students','subject','selected_class','classes','mark'));
+            if (Gate::allows('view-subject-details', $subject)) {
+                $students = User::where('class_id',$class_id)->get();
+                $selected_class = Classes::find($class_id);
+                $mark = (Mark::where('subject_id',$subject->id)->where('class_id',$class_id)->first())?Mark::where('subject_id',$subject->id)->where('class_id',$class_id)->first()->mark:50;
+                $classes = Classes::get();
+                return view('admin.main-result',compact('students','subject','selected_class','classes','mark'));
+            }
+
+            return  abort('404');
         }
 
         return abort('404');
@@ -402,5 +414,5 @@ class AdminController extends Controller
 
         return response()->json('Details Updated Successfully!');
     }
-    
+
 }
