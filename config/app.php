@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'TestMe'),
 
     /*
     |--------------------------------------------------------------------------
@@ -27,6 +27,8 @@ return [
     */
 
     'env' => env('APP_ENV', 'production'),
+    'schoolName' => env('SCHOOL_NAME', 'NEW SCHOOL'),
+    'schoolAlias' => env('SCHOOL_SHORT_NAME', 'NS'),
     'log'=> 'errorlog',
 
     /*

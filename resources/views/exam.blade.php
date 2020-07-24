@@ -49,7 +49,7 @@
 <body class="container-fluid">
     <div id="app" data-app="true">
 <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
-<a class="navbar-brand navbar-text" style="color:white">{{env('SCHOOL_NAME')}}</a>
+<a class="navbar-brand navbar-text" style="color:white">{{config('app.schoolName')}}</a>
 <div class="order-5">
     <Timer :hours="{{$hours}}" :minutes="{{$minutes}}"></Timer>
 </div>

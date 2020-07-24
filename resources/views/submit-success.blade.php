@@ -141,7 +141,7 @@
     <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
   <header class="masthead mb-auto">
     <div class="inner">
-      <h3 class="masthead-brand">{{env('SCHOOL_NAME')}}</h3>
+      <h3 class="masthead-brand">{{config('app.schoolName')}}</h3>
       <nav class="nav nav-masthead justify-content-center">
         <a class="nav-link active" href="{{route('home')}}">Home</a>
 
@@ -154,7 +154,7 @@
 
 
   <h1 class="cover-heading">Hey <strong style="color:orange">{{Auth::user()->firstname}}</strong>, Your submission was successful!</h1>
-    <p class="lead">{{env('SCHOOL_NAME')}} wishes you luck in the exam, you will be notified when your result is out.</p>
+    <p class="lead">{{config('app.schoolName')}} wishes you luck in the exam, you will be notified when your result is out.</p>
     <p class="lead">
             <a href="" id="signOutBtn" class="btn btn-lg btn-secondary">Sign Out</a>
     </p>
@@ -162,7 +162,7 @@
 
   <footer class="mastfoot mt-auto">
     <div class="inner">
-      <p>&copy;{{date('Y')}} {{env('SCHOOL_NAME')}}</p>
+      <p>&copy;{{date('Y')}} {{config('app.schoolName')}}</p>
     </div>
   </footer>
 </div>
