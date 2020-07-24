@@ -16,7 +16,7 @@ class Admin extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'username', 'password','adminRoleId','adminSubjectId '
+        'username', 'password','role_id','subject_id '
     ];
 
     /**
@@ -37,24 +37,17 @@ class Admin extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function subjects(){
-        return $this->hasMany(Subject::class);
+    public function subject(){
+        return $this->hasOne(Subject::class);
     }
-
-    
 
     public function role() {
         return $this->belongsTo(Role::class);
         }
+
     // i link this with gate
-    public function superAdminRole($role) {
-        $role = Role::where('role', 'superadmin')->first();
-            
-            $adminrole = $role->id;
-            if(Auth::user()->AdminRoleId  == $adminrole ){
-                return True;
-            }
-            return false;
+    public function isSuperAdmin() {
+        return $this->role_id === 1;
     }
 }
 
