@@ -146,57 +146,53 @@ class AdminController extends Controller
         //and then replace base64 src with stored image URL.
         foreach($images as $k => $img){
             $data = $img->getattribute('src');
+            if (strpos($data, 'data:image')!==false) {
+                list($type, $data) = explode(';', $data);
+                list(, $data)      = explode(',', $data);
 
-            list($type, $data) = explode(';', $data);
-            list(, $data)      = explode(',', $data);
+                $data = base64_decode($data);
+                $image_name= time().$k.'.png';
+                $path = public_path() .'/img/uploads/'. $image_name;
 
-            $data = base64_decode($data);
-            $image_name= time().$k.'.png';
-            $path = public_path() .'/img/uploads/'. $image_name;
+                file_put_contents($path, $data);
 
-            file_put_contents($path, $data);
-
-            $img->removeattribute('src');
-            $img->setattribute('src', '/img/uploads/'.$image_name);
+                $img->removeattribute('src');
+                $img->setattribute('src', '/img/uploads/'.$image_name);
+            }
         }
 
         $question = $dom->savehtml();
 
-
-        DB::transaction(function() use($class_id,$subject_id,$question,$options,$correctAnswer) {
-            $createdQuestion = new Question;
+        $createdQuestion = new Question;
+        DB::transaction(function() use($class_id,$subject_id,$question,$options,$correctAnswer, &$createdQuestion) {
 
             $createdQuestion->subject_id = $subject_id;
             $createdQuestion->class_id = $class_id;
             $createdQuestion->question = $question;
             $createdQuestion->save();
-            // Question::create([
-            //     'subject_id' => $subject_id,
-            //     'class_id' => $class_id,
-            //     'question' => $question,
-            // ]);
+
             foreach ($options as $key=>$option) {
                 $option = mb_convert_encoding($option, 'HTML-ENTITIES', 'UTF-8');
                 $dom = new \domdocument('1.0', 'utf-8');
                 $dom->loadHtml($option, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
                 $images = $dom->getelementsbytagname('img');
 
-                //loop over img elements, decode their base64 src and save them to public folder,
-                //and then replace base64 src with stored image URL.
+
                 foreach($images as $k => $img){
                     $data = $img->getattribute('src');
+                    if (strpos($data, 'data:image')!==false) {
+                        list($type, $data) = explode(';', $data);
+                        list(, $data)      = explode(',', $data);
 
-                    list($type, $data) = explode(';', $data);
-                    list(, $data)      = explode(',', $data);
+                        $data = base64_decode($data);
+                        $image_name= $key.time().$k.'.png';
+                        $path = public_path() .'/img/uploads/'. $image_name;
 
-                    $data = base64_decode($data);
-                    $image_name= $key.time().$k.'.png';
-                    $path = public_path() .'/img/uploads/'. $image_name;
+                        file_put_contents($path, $data);
 
-                    file_put_contents($path, $data);
-
-                    $img->removeattribute('src');
-                    $img->setattribute('src', '/img/uploads/'.$image_name);
+                        $img->removeattribute('src');
+                        $img->setattribute('src', '/img/uploads/'.$image_name);
+                    }
                 }
 
                 $option = $dom->savehtml();
@@ -206,26 +202,18 @@ class AdminController extends Controller
                 $createdOption->isCorrect = ($correctAnswer == $key)?1:0;
 
                 $createdQuestion->options()->save($createdOption);
-                // create([
-                //     'body' => $option,
-                //     'isCorrect' => ($correctAnswer == $key)?1:0
-                // ]);
             }
         });
 
-        $newQuestion = Question::orderBy('created_at','desc')->first();
-        $count = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->count();
-
-        Log::info($newQuestion);
-
-        return response()->json(['question'=>$newQuestion,'count'=>$count]);
+        $newQuestion = Question::where('id', $createdQuestion->id)->with('options')->first();
+        return response()->json(['question'=>$newQuestion, 'message'=>'Question Added Successfully!']);
     }
 
     public function updateQuestion(Request $request, $id) {
         $question = $request->question;
         $options = $request->options;
         $correctAnswer = $request->correct;
-        $questionDB = Question::where('id',$id)->first();
+        $questionDB = Question::where('id',$id)->with('options')->first();
 
         $question = mb_convert_encoding($question, 'HTML-ENTITIES', 'UTF-8');
         $dom = new \domdocument('1.0', 'utf-8');
@@ -236,25 +224,24 @@ class AdminController extends Controller
         //and then replace base64 src with stored image URL.
         foreach($images as $k => $img){
             $data = $img->getattribute('src');
+            if (strpos($data, 'data:image')!==false){
+                list($type, $data) = explode(';', $data);
+                list(, $data)      = explode(',', $data);
 
-            list($type, $data) = explode(';', $data);
-            list(, $data)      = explode(',', $data);
+                $data = base64_decode($data);
+                $image_name= time().$k.$id.'.png';
+                $path = public_path() .'/img/uploads/'. $image_name;
 
-            $data = base64_decode($data);
-            $image_name= time().$k.'.png';
-            $path = public_path() .'/img/uploads/'. $image_name;
+                file_put_contents($path, $data);
 
-            file_put_contents($path, $data);
-
-            $img->removeattribute('src');
-            $img->setattribute('src', asset('/img/uploads/'.$image_name));
+                $img->removeattribute('src');
+                $img->setattribute('src', asset('/img/uploads/'.$image_name));
+            }
         }
 
         $question = $dom->savehtml();
 
-        Log::info($options);
-
-        DB::transaction(function() use($question,$options,$correctAnswer,$questionDB) {
+        DB::transaction(function() use($question,$options,$correctAnswer,&$questionDB) {
             $questionDB->update([
                 'question' => $question,
             ]);
@@ -267,22 +254,21 @@ class AdminController extends Controller
                 $dom->loadHtml($option_body, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
                 $images = $dom->getelementsbytagname('img');
 
-                //loop over img elements, decode their base64 src and save them to public folder,
-                //and then replace base64 src with stored image URL.
                 foreach($images as $k => $img){
                     $data = $img->getattribute('src');
+                    if (strpos($data, 'data:image')!==false){
+                        list($type, $data) = explode(';', $data);
+                        list(, $data)      = explode(',', $data);
 
-                    list($type, $data) = explode(';', $data);
-                    list(, $data)      = explode(',', $data);
+                        $data = base64_decode($data);
+                        $image_name= $key.time().$k.'.png';
+                        $path = public_path() .'/img/uploads/'. $image_name;
 
-                    $data = base64_decode($data);
-                    $image_name= $key.time().$k.'.png';
-                    $path = public_path() .'/img/uploads/'. $image_name;
+                        file_put_contents($path, $data);
 
-                    file_put_contents($path, $data);
-
-                    $img->removeattribute('src');
-                    $img->setattribute('src', '/img/uploads/'.$image_name);
+                        $img->removeattribute('src');
+                        $img->setattribute('src', '/img/uploads/'.$image_name);
+                    }
                 }
 
                 $option_body = $dom->savehtml();
@@ -291,21 +277,19 @@ class AdminController extends Controller
                 $optionFind->isCorrect = ($correctAnswer == $key)?1:0;
                 $optionFind->save();
             }
+
+            $questionDB->refresh();
         });
 
-        return response()->json('Question Updated Succesfully');
+        return response()->json(['question'=>$questionDB, 'message'=>'Question Updated Successfully!']);
 
     }
 
     public function deleteQuestion($id) {
-        DB::transaction(function () use($id){
-            $options = Option::where('question_id',$id);
-            $options->delete();
-            $question = Question::find($id);
-            $question->delete();
-        });
+        $question = Question::find($id);
+        $question->delete();
 
-        return response()->json('Question Deleted Successfully!');
+        return response()->json(['message'=>'Question Deleted Successfully!']);
     }
 
     public function findOneQuestion(Request $request, $id) {
