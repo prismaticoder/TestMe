@@ -2,8 +2,8 @@
 @section('title', 'Main Dashboard')
 @section('content')
     {{-- <span id="top"></span> --}}
-    <div id="app">
-        <add-question :questions="{{$questions}}">
+    <div id="app" data-app="true">
+        <add-question :questions="{{$questions}}" :subject="{{$subject->id}}" :class-id="{{$class_id}}">
 
         </add-question>
     </div>
