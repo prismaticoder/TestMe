@@ -42,6 +42,9 @@
         </v-snackbar>
 
         <div class="col-md-10 bg-white">
+
+            <Params :params="paramArray" :subject="subject" :classId="classId" @setParams="setParams"/>
+
             <div class="container">
                 <h3 class="text-center">Question</h3>
                 <quill-editor class="questions container" :options="editorOption" v-model="question" />
@@ -49,7 +52,7 @@
             </div>
 
             <h3 class="text-center">Options</h3>
-            <p class="text-center text-danger"><small>(Note: Click the checkbox beside an option to mark it as the correct option)</small></p>
+            <p class="text-center" style="color: #ff5500"><small>(Note: Click the checkbox beside an option to mark it as the correct option)</small></p>
             <hr>
 
             <div class="row">
@@ -110,14 +113,20 @@
 </template>
 
 <script>
+import Params from './Params'
+
 export default {
     name: "AddQuestion",
-    props: ['questions', 'subject', 'classId'],
+    props: ['questions', 'subject', 'classId', 'params'],
+    components: {
+        Params
+    },
     data() {
         return {
             questionArray: this.questions,
             currentQuestion: null,
             options: ['A','B','C','D'],
+            paramArray: this.params,
             question: null,
             optionA: null,
             optionB: null,
@@ -230,6 +239,14 @@ export default {
                 console.log(err.response.data);
                 alert("There was an error updating this question, please try again.")
             })
+        },
+        setParams(type, paramObject) {
+            if (type == 'create') {
+                this.paramArray.push(paramObject)
+            }
+            else {
+                this.paramArray.splice(0,1,paramObject)
+            }
         }
     },
     watch: {
@@ -252,7 +269,7 @@ export default {
         noChange() {
             console.log(this.question == this.currentQuestion.question, this.optionA == this.currentQuestion.options[0].body)
           return (this.question == this.currentQuestion.question && this.optionA == this.currentQuestion.options[0].body && this.optionB == this.currentQuestion.options[1].body && this.optionC == this.currentQuestion.options[2].body && this.optionD == this.currentQuestion.options[3].body)
-        }
+        },
     }
 }
 </script>

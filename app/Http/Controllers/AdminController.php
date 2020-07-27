@@ -114,7 +114,7 @@ class AdminController extends Controller
         if ($subject) {
 
             if (Gate::allows('view-subject-details', $subject)) {
-                $mark = (Mark::where('subject_id',$subject->id)->where('class_id',$class_id)->first())?Mark::where('subject_id',$subject_id)->where('class_id',$class_id)->first():"nil";
+                $mark = Mark::where('subject_id',$subject->id)->where('class_id',$class_id)->get();
 
                 $questions = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->with('options')->get();
                 // $options = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->options;
@@ -381,11 +381,11 @@ class AdminController extends Controller
         $table->minutes = $minutes;
         $table->save();
 
-        return response()->json('Details Saved Successfully!');
+        return response()->json(['params' => $table, 'message' => 'Details added successfully']);
     }
 
-    public function updateMark(Request $request) {
-        $id = $request->id;
+    public function updateMark(Request $request, $id) {
+        // $id = $request->id;
         $mark = $request->mark;
         $hours = $request->hours;
         $minutes = $request->minutes;
@@ -396,7 +396,7 @@ class AdminController extends Controller
         $table->minutes = $minutes;
         $table->save();
 
-        return response()->json('Details Updated Successfully!');
+        return response()->json(['params' => $table, 'message' => 'Update successful']);
     }
 
 }

@@ -54,8 +54,8 @@ Route::post('/restoreStudent/{id}','AdminController@restoreStudent');
 Route::post('/addStudent', 'AdminController@addStudent');
 Route::get('/submitQuestion','StudentController@submitQuestion');
 Route::post('/submitExam', 'StudentController@submitExam');
-Route::post('/setSubjectMark','AdminController@setMark');
-Route::post('/updateSubjectMark','AdminController@updateMark');
+Route::post('/params','AdminController@setMark');
+Route::put('/params/{id}','AdminController@updateMark');
 Route::get('/checkMark/{id}','AdminController@checkMark');
 // Route::post('/exam/{subject}','StudentController@getAjaxQuestions');
 
