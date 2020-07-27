@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="text-center" v-if="params.length > 0">
-            Exam Duration: <strong>{{examtime}}</strong> (<a href="#change" @click.prevent="dialog = true">Change</a>)
+            Exam Duration (Aggregate Score): <strong>{{examtime}} ({{totalMarks}} marks)</strong> (<a href="#change" @click.prevent="dialog = true">Change</a>)
         </div>
 
         <div class="text-center" v-else>
@@ -160,6 +160,6 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 
 </style>
