@@ -57,6 +57,8 @@ Route::post('/submitExam', 'StudentController@submitExam');
 Route::post('/params','AdminController@setMark');
 Route::put('/params/{id}','AdminController@updateMark');
 Route::get('/checkMark/{id}','AdminController@checkMark');
+Route::patch('/start-exam','AdminController@startExam');
+Route::patch('/end-exam','AdminController@endExam');
 // Route::post('/exam/{subject}','StudentController@getAjaxQuestions');
 
 Route::get('/success','StudentController@submitSuccess')->name('success');

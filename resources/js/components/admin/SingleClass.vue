@@ -11,21 +11,92 @@
         </div>
         <div class="col-1"></div>
         <div class="col-5">
-            <v-btn v-if="!single.startedExams[subject.subject_name]" :disabled="!single.examsWithParamsSet[subject.subject_name]" small :title="single.examsWithParamsSet[subject.subject_name] ? 'Start Exam' : 'You cannot start this exam because exam duration has not been set'" :color="yellow">
+            <v-btn v-if="!examStarted" @click="dialog = true" :disabled="!single.examsWithParamsSet[subject.subject_name]" small :title="single.examsWithParamsSet[subject.subject_name] ? 'Start Exam' : 'You cannot start this exam because exam duration has not been set'" :color="yellow">
                 Begin Exam
             </v-btn>
-            <v-btn v-else small tile title="End Exam" :color="yellow">
+            <v-btn v-else @click="dialog = true" small title="End Exam" :color="yellow">
                 End Exam
             </v-btn>
         </div>
         <hr>
+
+        <v-dialog v-model="dialog" max-width="350">
+            <v-card>
+                <v-card-title v-if="!examStarted" class="headline">Start Exam?</v-card-title>
+                <v-card-title v-else class="headline">End Exam?</v-card-title>
+                <v-card-text v-if="!examStarted">
+                Please confirm that you want to start this exam: <strong>{{subject.subject_name}} ({{single.class}})</strong>
+                </v-card-text>
+                <v-card-text v-else>
+                Please confirm that you want to put an end to this exam: <strong>{{subject.subject_name}} ({{single.class}})</strong>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn :disabled="loading" color="green darken-1" text @click="dialog = false">No</v-btn>
+                    <v-btn :loading="loading" :disabled="loading" color="green darken-1" text @click="examStarted ? endExam() : startExam()">Yes</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </div>
 </template>
 
 <script>
 export default {
     name: "SingleClass",
-    props: ['single', 'subject', 'yellow']
+    props: ['single', 'subject', 'yellow', 'exams'],
+    data() {
+        return {
+            loading: false,
+            dialog: false
+        }
+    },
+    methods: {
+        startExam() {
+            this.loading = true
+
+            this.$http.patch('start-exam', {
+                class_id: this.single.id,
+                subject_id: this.subject.id
+            })
+            .then(res => {
+                this.loading = false
+                this.dialog = false
+                this.$emit('startNewExam', res.data.exam)
+            })
+            .catch(err => {
+                this.loading = false
+                this.dialog = false
+                console.error(err.response.data)
+                alert("There was an error starting this exam, please try again")
+            })
+        },
+        endExam() {
+            this.loading = true
+
+            this.$http.patch('end-exam', {
+                class_id: this.single.id,
+                subject_id: this.subject.id
+            })
+            .then(res => {
+                this.loading = false
+                this.dialog = false
+                this.$emit('endExam', res.data.exam.id)
+            })
+            .catch(err => {
+                this.loading = false
+                this.dialog = false
+                console.error(err.response.data)
+                alert("There was an error ending this exam, please try again")
+            })
+        }
+    },
+    computed: {
+        examStarted() {
+            let check = this.exams.filter(exam => exam.subject == this.subject.subject_name && exam.class == this.single.class)
+
+            return check.length > 0 ? true : false;
+        }
+    }
 }
 </script>
 

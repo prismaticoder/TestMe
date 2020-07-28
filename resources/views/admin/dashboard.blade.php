@@ -24,30 +24,8 @@
         </div>
     </main>
     <hr>
-    <h4>Exams in progress...</h4>
-    <hr>
-    <p>There are currently no examinations in progress</p>
-    <hr>
-    <h4>Subjects</h4>
-    <hr>
-    <div class="container" id="app">
-
-            {{-- @foreach ($subjects as $subject)
-            <div class="card">
-                <div class="card-body">
-                <p class="card-text">{{strtoupper($subject->alias)}}</p>
-                </div>
-                <div class="card-footer">
-                <small class="text-muted">
-                <a href="" class="btn btn-primary host-exam" id="{{$subject->alias}}">Start Exam</a>
-                <a href="{{route('questions',['subject'=>$subject->alias,'class_id'=>1])}}" class="btn btn-secondary">JSS 1</a>
-                <a href="{{route('questions',['subject'=>$subject->alias,'class_id'=>2])}}" class="btn btn-secondary">JSS 2</a>
-                <a href="{{route('questions',['subject'=>$subject->alias,'class_id'=>3])}}" class="btn btn-secondary">JSS 3</a>
-                </small>
-                </div>
-            </div>
-            @endforeach --}}
-        <subjects :subjects="{{$subjects}}" :classes="{{$classes}}"></subjects>
+    <div id="app" data-app="true">
+        <subjects :subjects="{{$subjects}}" :exams="{{$exams}}" :classes="{{$classes}}"></subjects>
     </div>
 
 </div>

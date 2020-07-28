@@ -1,29 +1,55 @@
 <template>
-  <div class="container">
-      <v-expansion-panels accordion hover focusable>
-          <v-expansion-panel class="col-md-4" v-for="subject in subjects" :key="subject.id">
-                <v-expansion-panel-header><h5>{{subject.alias.toUpperCase()}}</h5></v-expansion-panel-header>
-                    <v-expansion-panel-content>
-                        <SingleClass :single="single" :subject="subject" :yellow="yellow" v-for="single in classes" :key="single.id" />
-                    </v-expansion-panel-content>
-          </v-expansion-panel>
-      </v-expansion-panels>
-  </div>
+    <div>
+        <h4>Exams in progress...</h4>
+        <hr>
+        <div v-if="exams.length > 0" class="container">
+            <div class="row">
+                <span v-for="exam in allExams" :key="exam.id" class="col-md-4">
+                    {{exam.subject}}, {{exam.class}}
+                </span>
+            </div>
+        </div>
+        <p v-else>There are currently no examinations in progress</p>
+        <hr>
+        <h4>Subjects</h4>
+        <hr>
+        <div class="container">
+            <v-expansion-panels accordion hover focusable>
+                <v-expansion-panel class="col-md-4" v-for="subject in subjects" :key="subject.id">
+                        <v-expansion-panel-header><h5>{{subject.alias.toUpperCase()}}</h5></v-expansion-panel-header>
+                            <v-expansion-panel-content>
+                                <SingleClass :single="single" :subject="subject" :exams="allExams" :yellow="yellow" @startNewExam="startNewExam" @endExam="endExam" v-for="single in classes" :key="single.id" />
+                            </v-expansion-panel-content>
+                </v-expansion-panel>
+            </v-expansion-panels>
+        </div>
+    </div>
 </template>
 
 <script>
 import SingleClass from './SingleClass';
 export default {
     name: "Subjects",
-    props: ['subjects', 'classes'],
+    props: ['subjects', 'classes', 'exams'],
     data() {
         return {
             yellow: "#e67d23",
-            dark: "#343a40"
+            dark: "#343a40",
+            allExams: this.exams
         }
     },
     components: {
         SingleClass
+    },
+    methods: {
+        startNewExam(exam) {
+            let newExam = {id: exam.id, subject: exam.getSubject, class: exam.getClass}
+            this.allExams.push(newExam)
+        },
+
+        endExam(id) {
+            this.allExams = this.allExams.filter(exam => exam.id !== id)
+        }
     }
 }
 </script>
