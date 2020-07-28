@@ -2,11 +2,9 @@
     <div>
         <h4>Exams in progress...</h4>
         <hr>
-        <div v-if="exams.length > 0" class="container">
+        <div v-if="allExams.length > 0" class="container">
             <div class="row">
-                <span v-for="exam in allExams" :key="exam.id" class="col-md-4">
-                    {{exam.subject}}, {{exam.class}}
-                </span>
+                <StartedExam v-for="exam in allExams" :key="exam.id" :exam="exam" :yellow="yellow" @endExam="endExam"/>
             </div>
         </div>
         <p v-else>There are currently no examinations in progress</p>
@@ -28,6 +26,8 @@
 
 <script>
 import SingleClass from './SingleClass';
+import StartedExam from './StartedExam';
+
 export default {
     name: "Subjects",
     props: ['subjects', 'classes', 'exams'],
@@ -39,11 +39,12 @@ export default {
         }
     },
     components: {
-        SingleClass
+        SingleClass,
+        StartedExam
     },
     methods: {
         startNewExam(exam) {
-            let newExam = {id: exam.id, subject: exam.getSubject, class: exam.getClass}
+            let newExam = {id: exam.id, subject: exam.subject, class: exam.class}
             this.allExams.push(newExam)
         },
 

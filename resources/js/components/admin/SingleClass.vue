@@ -92,7 +92,7 @@ export default {
     },
     computed: {
         examStarted() {
-            let check = this.exams.filter(exam => exam.subject == this.subject.subject_name && exam.class == this.single.class)
+            let check = this.exams.filter(exam => exam.subject.subject_name == this.subject.subject_name && exam.class.class == this.single.class)
 
             return check.length > 0 ? true : false;
         }
