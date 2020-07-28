@@ -114,6 +114,8 @@
 
 <script>
 import Params from './Params'
+import katex from 'katex';
+import 'katex/dist/katex.min.css';
 
 export default {
     name: "AddQuestion",
@@ -150,7 +152,8 @@ export default {
                     [{ 'indent': '-1' }, { 'indent': '+1' }],
                     [{ 'align': [] }],
                     ['clean'],
-                    ['link', 'image', 'video']
+                    ['link', 'image', 'video'],
+                    ["formula"]
                     ],
                  },
                 placeholder: "Enter value here",
@@ -270,6 +273,9 @@ export default {
             console.log(this.question == this.currentQuestion.question, this.optionA == this.currentQuestion.options[0].body)
           return (this.question == this.currentQuestion.question && this.optionA == this.currentQuestion.options[0].body && this.optionB == this.currentQuestion.options[1].body && this.optionC == this.currentQuestion.options[2].body && this.optionD == this.currentQuestion.options[3].body)
         },
+    },
+    mounted() {
+        window.katex = katex
     }
 }
 </script>
