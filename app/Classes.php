@@ -26,7 +26,14 @@ class Classes extends Model
     public function checkParams($subject_id) {
         //check if a specific class has started exams for a specific subject
         $mark = Mark::where('subject_id',$subject_id)->where('class_id', $this->id)->first();
-        return  $mark ? 1 : 0;
+
+        if (!$mark) {
+            return 0;
+        }
+        else {
+            //only return true for subjects that have questions
+            return count($mark->subject->questions()->get()) > 0 ? 1 : 0;
+        }
     }
 
 
