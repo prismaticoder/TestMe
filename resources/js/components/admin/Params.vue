@@ -5,7 +5,7 @@
         </div>
 
         <div class="text-center" v-else>
-            Exam Parameters not set yet (<a href="#set" @click.prevent="dialog = true">Set</a>)
+            Note: Exam Duration and Aggregate Score have not been set (<a href="#set" @click.prevent="dialog = true">Set</a>)
         </div>
 
         <v-snackbar v-model="snackbar">

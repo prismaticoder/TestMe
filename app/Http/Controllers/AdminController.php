@@ -31,25 +31,24 @@ class AdminController extends Controller
         // to authorize admin as the super admin
 
         $classes = Classes::get();
+        $exams = [];
 
         if(Gate::denies('superAdminGate')){
             //Only return the subject of that user
             $subjects = Subject::where('id', Auth::user()->subject_id)->get();
-            $exams = [];
+            $all_started = Mark::where('subject_id', Auth::user()->subject_id)->where('hasStarted', 1)->get();
         }
 
         else {
             $subjects = Subject::orderBy('subject_name')->get();
             //get all started exams
             $all_started = Mark::where('hasStarted', 1)->get();
-            $exams = [];
+        }
 
+        if (count($all_started) > 0) {
             foreach ($all_started as $exam) {
                 array_push($exams, ['id' => $exam->id, 'subject' => $exam->subject, 'class' => $exam->class]);
             }
-
-            $exams = json_encode($exams);
-
         }
 
         foreach ($classes as $class) {
@@ -59,6 +58,8 @@ class AdminController extends Controller
             }
             $class->examsWithParamsSet = $params_array;
         }
+
+        $exams = json_encode($exams);
 
         return view('admin.dashboard',compact('subjects','classes', 'exams'));
     }
@@ -391,28 +392,19 @@ class AdminController extends Controller
 
 
         if ($mark) {
-            $mark->hasStarted = 1;
-            $mark->save();
+            $subject = Subject::where('id',$subject_id)->first();
 
-            $mark->getSubject = $mark->subject->subject_name;
-            $mark->getClass = $mark->class->class;
+            if (Gate::allows('view-subject-details', $subject)) {
+                $mark->hasStarted = 1;
+                $mark->save();
 
-            return response()->json(['exam' => $mark]) ;
+                return response()->json(['exam' => $mark]) ;
+            }
+
+            return abort('403');
         }
 
         return abort('404');
-    }
-
-    public function checkMark($id) {
-        $subject = Subject::where('alias',$id)->first();
-        $marks = Mark::where('subject_id',$subject->id)->orderBy('class_id')->get();
-
-        if ($marks->count() < 3) {
-            return response()->json('No');
-        }
-        else {
-            return response()->json('Yes');
-        }
     }
 
     public function endExam(Request $request) {
@@ -423,13 +415,16 @@ class AdminController extends Controller
 
 
         if ($mark) {
-            $mark->hasStarted = 0;
-            $mark->save();
+            $subject = Subject::where('id',$subject_id)->first();
 
-            $mark->getSubject = $mark->subject->subject_name;
-            $mark->getClass = $mark->class->class;
+            if (Gate::allows('view-subject-details', $subject)) {
+                $mark->hasStarted = 0;
+                $mark->save();
 
-            return response()->json(['exam' => $mark]) ;
+                return response()->json(['exam' => $mark]) ;
+            }
+
+            return abort(403);
         }
 
         return abort('404');
