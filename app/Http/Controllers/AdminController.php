@@ -53,13 +53,10 @@ class AdminController extends Controller
         }
 
         foreach ($classes as $class) {
-            $start_array = [];
             $params_array = [];
             foreach ($subjects as $subject) {
-                $start_array[$subject->subject_name] = $class->hasStarted($subject->id);
                 $params_array[$subject->subject_name] = $class->checkParams($subject->id);
             }
-            $class->startedExams = $start_array;
             $class->examsWithParamsSet = $params_array;
         }
 
