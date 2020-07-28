@@ -88,39 +88,5 @@
         @yield('content')
     @endif
 
-        <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
-    <script src="../../assets/js/vendor/popper.min.js"></script>
-
-    <script src="{{asset('js/jquery.js')}}"></script>
-    <script src="{{asset('js/bootstrap.min.js')}}"></script>
-
-    <!-- Icons -->
-    {{-- <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script> --}}
-    <script>
-    //   feather.replace()
-      $('.host-exam').on('click',function(event) {
-          event.preventDefault();
-          var id = $(this).attr('id');
-          $.ajax({
-              url:'/checkMark/'+id,
-              method:'GET',
-              success:function(response) {
-                  if (response == 'Yes') {
-                      window.location.href = "/admin/"+id+"/hostexam";
-                  }
-                  else {
-                      alert('You are not allowed to start this examination because the time duration has not been set for one or more of the classes that would be taking this exam. Check through the classes and set the duration where necessary')
-                  }
-              },
-              error:function(response) {
-                  console.log(response);
-              }
-
-          })
-      })
-    </script>
   </body>
 </html>
