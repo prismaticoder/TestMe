@@ -188,7 +188,7 @@ export default {
                 this.btnLoading = false
                 this.dialog = false;
                 console.log(err.response.data);
-                alert("There was an error deleting this question, please try again.")
+                alert(err.response.status == 403 ? err.response.data.message : "There was an error deleting this question, please try again.")
             })
         },
         addQuestion() {
@@ -214,7 +214,7 @@ export default {
             .catch(err => {
                 this.loading = false
                 console.log(err.response.data);
-                alert("There was an error submitting this question, please try again.")
+                alert(err.response.status == 403 ? err.response.data.message : "There was an error submitting this question, please try again.")
             })
         },
         updateQuestion() {
@@ -267,12 +267,6 @@ export default {
                 this.question = this.optionA = this.optionB = this.optionC = this.optionD = this.correct = null
             }
         }
-    },
-    computed: {
-        noChange() {
-            console.log(this.question == this.currentQuestion.question, this.optionA == this.currentQuestion.options[0].body)
-          return (this.question == this.currentQuestion.question && this.optionA == this.currentQuestion.options[0].body && this.optionB == this.currentQuestion.options[1].body && this.optionC == this.currentQuestion.options[2].body && this.optionD == this.currentQuestion.options[3].body)
-        },
     },
     mounted() {
         window.katex = katex

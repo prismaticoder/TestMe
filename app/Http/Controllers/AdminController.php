@@ -13,6 +13,7 @@ use Gate;
 use DB;
 use Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 
 class AdminController extends Controller
 {
@@ -34,17 +35,27 @@ class AdminController extends Controller
         if(Gate::denies('superAdminGate')){
             //Only return the subject of that user
             $subjects = Subject::where('id', Auth::user()->subject_id)->get();
+            $exams = [];
         }
 
         else {
-            $subjects = Subject::all();
+            $subjects = Subject::orderBy('subject_name')->get();
+            //get all started exams
+            $all_started = Mark::where('hasStarted', 1)->get();
+            $exams = [];
+
+            foreach ($all_started as $exam) {
+                array_push($exams, ['id' => $exam->id, 'subject' => $exam->subject, 'class' => $exam->class]);
+            }
+
+            $exams = json_encode($exams);
+
         }
 
         foreach ($classes as $class) {
             $start_array = [];
             $params_array = [];
             foreach ($subjects as $subject) {
-                // array_merge($class->start_array, [$subject->id => $class->hasStarted($subject->id)]);
                 $start_array[$subject->subject_name] = $class->hasStarted($subject->id);
                 $params_array[$subject->subject_name] = $class->checkParams($subject->id);
             }
@@ -52,7 +63,7 @@ class AdminController extends Controller
             $class->examsWithParamsSet = $params_array;
         }
 
-        return view('admin.dashboard',compact('subjects','classes'));
+        return view('admin.dashboard',compact('subjects','classes', 'exams'));
     }
 
     public function getClassStudents($class) {
@@ -130,6 +141,8 @@ class AdminController extends Controller
 
                 $questions = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->with('options')->get();
                 // $options = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->options;
+                Session::put('subject_id', $subject_id);
+                Session::put('class_id', $class_id);
 
                 return view('admin.questions', compact('questions','subject','class_id','classes','mark'));
             }
@@ -150,8 +163,11 @@ class AdminController extends Controller
         // converts all special characters to utf-8
         $question = mb_convert_encoding($question, 'HTML-ENTITIES', 'UTF-8');
         $dom = new \domdocument('1.0', 'utf-8');
-        // $dom->encoding = 'utf-8';
+
+        libxml_use_internal_errors(true); //for the math tags
         $dom->loadHtml($question, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        libxml_clear_errors();
+
         $images = $dom->getelementsbytagname('img');
 
         //loop over img elements, decode their base64 src and save them to public folder,
@@ -186,7 +202,11 @@ class AdminController extends Controller
             foreach ($options as $key=>$option) {
                 $option = mb_convert_encoding($option, 'HTML-ENTITIES', 'UTF-8');
                 $dom = new \domdocument('1.0', 'utf-8');
+
+                libxml_use_internal_errors(true); //for the math tags
                 $dom->loadHtml($option, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+                libxml_clear_errors();
+
                 $images = $dom->getelementsbytagname('img');
 
 
@@ -229,7 +249,11 @@ class AdminController extends Controller
 
         $question = mb_convert_encoding($question, 'HTML-ENTITIES', 'UTF-8');
         $dom = new \domdocument('1.0', 'utf-8');
+
+        libxml_use_internal_errors(true); //for the math tags
         $dom->loadHtml($question, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        libxml_clear_errors();
+
         $images = $dom->getelementsbytagname('img');
 
         //loop over img elements, decode their base64 src and save them to public folder,
@@ -263,7 +287,11 @@ class AdminController extends Controller
                 $option_body = $option['value'];
                 $option_body = mb_convert_encoding($option_body, 'HTML-ENTITIES', 'UTF-8');
                 $dom = new \domdocument('1.0', 'utf-8');
+
+                libxml_use_internal_errors(true); //for the math tags
                 $dom->loadHtml($option_body, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+                libxml_clear_errors();
+
                 $images = $dom->getelementsbytagname('img');
 
                 foreach($images as $k => $img){
@@ -358,6 +386,26 @@ class AdminController extends Controller
         return abort('404');
     }
 
+    public function startExam(Request $request) {
+        $subject_id = $request->subject_id;
+        $class_id = $request->class_id;
+
+        $mark = Mark::where('subject_id',$subject_id)->where('class_id', $class_id)->first();
+
+
+        if ($mark) {
+            $mark->hasStarted = 1;
+            $mark->save();
+
+            $mark->getSubject = $mark->subject->subject_name;
+            $mark->getClass = $mark->class->class;
+
+            return response()->json(['exam' => $mark]) ;
+        }
+
+        return abort('404');
+    }
+
     public function checkMark($id) {
         $subject = Subject::where('alias',$id)->first();
         $marks = Mark::where('subject_id',$subject->id)->orderBy('class_id')->get();
@@ -370,12 +418,24 @@ class AdminController extends Controller
         }
     }
 
-    public function endExam($subject) {
-        $subject = Subject::where('alias',$subject)->first();
-        $subject->isHosted = 0;
-        $subject->save();
+    public function endExam(Request $request) {
+        $subject_id = $request->subject_id;
+        $class_id = $request->class_id;
 
-        return redirect(route('dashboard'));
+        $mark = Mark::where('subject_id',$subject_id)->where('class_id', $class_id)->first();
+
+
+        if ($mark) {
+            $mark->hasStarted = 0;
+            $mark->save();
+
+            $mark->getSubject = $mark->subject->subject_name;
+            $mark->getClass = $mark->class->class;
+
+            return response()->json(['exam' => $mark]) ;
+        }
+
+        return abort('404');
     }
 
     public function setMark(Request $request) {
