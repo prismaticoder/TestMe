@@ -55,6 +55,7 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 Vue.component('Questions', require('./components/Questions.vue').default);
 Vue.component('Timer', require('./components/Timer.vue').default);
 Vue.component('add-question', require('./components/admin/AddQuestion.vue').default)
+Vue.component('subjects', require('./components/admin/Subjects.vue').default)
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

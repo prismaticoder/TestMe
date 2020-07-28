@@ -40,6 +40,18 @@ class AdminController extends Controller
             $subjects = Subject::all();
         }
 
+        foreach ($classes as $class) {
+            $start_array = [];
+            $params_array = [];
+            foreach ($subjects as $subject) {
+                // array_merge($class->start_array, [$subject->id => $class->hasStarted($subject->id)]);
+                $start_array[$subject->subject_name] = $class->hasStarted($subject->id);
+                $params_array[$subject->subject_name] = $class->checkParams($subject->id);
+            }
+            $class->startedExams = $start_array;
+            $class->examsWithParamsSet = $params_array;
+        }
+
         return view('admin.dashboard',compact('subjects','classes'));
     }
 

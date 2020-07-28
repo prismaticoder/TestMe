@@ -53,7 +53,7 @@ class StudentController extends Controller
                 $seed = Auth::user()->code;
                 // Session::put('scoreArray', []);
                 // session('scoreArray',[]);
-                $questions = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->with('options')->inRandomOrder($seed)->get();
+                $questions = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->with('options:id,question_id,body')->inRandomOrder($seed)->get();
 
                 return view('exam',compact('questions','user','subject','hours','minutes'));
             }
@@ -73,7 +73,7 @@ class StudentController extends Controller
 
         if ($subject) {
             $seed = Auth::user()->code;
-            $questions = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->with('options')->inRandomOrder($seed)->get();
+            $questions = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->with('options:id, body')->inRandomOrder($seed)->get();
             // $options = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->options;
             $question = $questions[$id-1];
 

@@ -55,7 +55,7 @@
         }
         .sidebar {
             padding: 70px 0 20px;
-            height: 100vh;
+            height: 90vh;
             overflow-y: scroll;
             background-color: #fff;
         }

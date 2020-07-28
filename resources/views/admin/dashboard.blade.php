@@ -4,7 +4,8 @@
 @section('pageHeader', 'Main Dashboard')
 @section('content')
     <main role="main">
-        <h1>Students</h1>
+        <h4>Students</h4>
+        <hr>
         <div class="card-deck">
 
             @foreach ($classes as $class)
@@ -22,12 +23,16 @@
 
         </div>
     </main>
+    <hr>
+    <h4>Exams in progress...</h4>
+    <hr>
+    <p>There are currently no examinations in progress</p>
+    <hr>
+    <h4>Subjects</h4>
+    <hr>
+    <div class="container" id="app">
 
-    <h1 style="margin-top:50px;">Subjects</h1>
-
-    <main class="card-columns">
-
-            @foreach ($subjects as $subject)
+            {{-- @foreach ($subjects as $subject)
             <div class="card">
                 <div class="card-body">
                 <p class="card-text">{{strtoupper($subject->alias)}}</p>
@@ -41,8 +46,9 @@
                 </small>
                 </div>
             </div>
-            @endforeach
-    </main>
+            @endforeach --}}
+        <subjects :subjects="{{$subjects}}" :classes="{{$classes}}"></subjects>
+    </div>
 
 </div>
 
@@ -83,5 +89,5 @@
             </div>
         </div>
         </div>
-
+        <script src="{{asset('/js/app.js')}}"></script>
 @endsection

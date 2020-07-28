@@ -3,7 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Subject;
+use App\Mark;
 
 class Classes extends Model
 {
@@ -19,7 +19,14 @@ class Classes extends Model
 
     public function hasStarted($subject_id) {
         //check if a specific class has started exams for a specific subject
-        return Subject::where('id',$subject_id)->first()->hasStarted;
+        $mark = Mark::where('subject_id',$subject_id)->where('class_id', $this->id)->first();
+        return  $mark ? $mark->hasStarted : 0;
+    }
+
+    public function checkParams($subject_id) {
+        //check if a specific class has started exams for a specific subject
+        $mark = Mark::where('subject_id',$subject_id)->where('class_id', $this->id)->first();
+        return  $mark ? 1 : 0;
     }
 
 
