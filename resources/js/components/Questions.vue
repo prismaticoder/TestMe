@@ -151,7 +151,7 @@ export default {
         examtime() {
             let time;
             if (this.hours > 0) {
-                if (this.hours = 1) {
+                if (this.hours == 1) {
                     this.minutes == 0 ? time = "1 hour" : time = `1 hour and ${this.minutes} minutes`
                 }
                 else {

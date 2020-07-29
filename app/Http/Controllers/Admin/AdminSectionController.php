@@ -29,21 +29,18 @@ class AdminSectionController extends Controller
             'password' => ['required', 'string'],
             'subject' => ['required', 'integer'],
         ]);
-            
-      
+
+
     }
 
-    public function index()
-    {
-        if(Gate::denies('superAdminGate')){
-            $roles = Role::get();
-          //  $roles = $admins->roles->role;
+    public function index() {
+
+        $roles = Role::get();
 
         return view('admin.Admin-Section')->with([
            'roles'=>$roles
         ]);
-        }
-        
+
     }
 
     /**
@@ -61,10 +58,10 @@ class AdminSectionController extends Controller
         $newAdmin = new Admin;
         $newAdmin->username = $request->input('username');
         $newAdmin->password = $request->input('password');
-       
+
         $subjectid = Subject::where('subject_name', $request->input('subject'))->first();
         $newAdmin->adminSubjectId = $subjectid->id;
-        
+
         $role = Role::where('role', 'teacher')->first();
         $adminRoleId = $role->id;
         $newAdmin->adminRoleId = $adminRoleId;
@@ -80,15 +77,15 @@ class AdminSectionController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-   
+
     /**
      * Display the specified resource.
      *
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-  
-        
+
+
 
     /**
      * Show the form for editing the specified resource.
@@ -115,8 +112,8 @@ class AdminSectionController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request)
-    {   
-       
+    {
+
         $admin = Admin::where('id', $request->id)->first();
         $admin->username = $request->username;
         $admin->password = $request->password;
