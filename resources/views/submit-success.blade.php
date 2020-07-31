@@ -10,7 +10,6 @@
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="{{asset('/css/bootstrap.min.css')}}">
-    <script src="{{asset('/js/jquery-3.4.1.min.js')}}"></script>
 
 
     <style>
@@ -156,7 +155,7 @@
   <h1 class="cover-heading">Hey <strong style="color:orange">{{Auth::user()->firstname}}</strong>, Your submission was successful!</h1>
     <p class="lead">{{config('app.schoolName')}} wishes you luck in the exam, you will be notified when your result is out.</p>
     <p class="lead">
-            <a href="" id="signOutBtn" class="btn btn-lg btn-secondary">Sign Out</a>
+            <a href="/logout" class="btn btn-lg btn-secondary">Sign Out</a>
     </p>
   </main>
 
@@ -168,12 +167,12 @@
 </div>
 
 <script>
-//Clear the session storage if something is there before logging the user out
-$('#signOutBtn').click(function(event) {
-    event.preventDefault();
-    sessionStorage.clear();
-    window.location = '/logout';
-})
+
+    window.onload = function() {
+        setTimeout(function() {
+            window.location.href = '/logout'
+        }, 2000)
+    }
 
 </script>
 </body>
