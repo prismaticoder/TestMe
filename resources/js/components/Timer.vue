@@ -100,10 +100,16 @@ export default {
             this.btnLoading = true;
             this.$store.dispatch('endExam')
             .then(() => {
+                this.btnLoading = false;
+                this.dialog = false
                 window.location.href = '/success'
             })
             .catch(err => {
-                console.log(err)
+                this.btnLoading = false;
+                this.dialog = false
+                console.log(err.response.data)
+                alert("Sorry, there was an error submitting your examination. Kindly contact the invigilator for assistance.")
+
             })
         }
     },

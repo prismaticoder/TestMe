@@ -41,24 +41,26 @@ Route::get('/exam/{subject}','StudentController@getExamQuestions')->name('exam')
 
 Route::get('/home', 'StudentController@index')->name('home');
 
+Route::group(['prefix' => 'api'], function () {
+    Route::get('/getQuestions','StudentController@getAjaxQuestions')->name('get-questions');
+    Route::post('/updateQuestion/{id}','AdminController@updateQuestion');
+    Route::post('/addQuestion', 'AdminController@addQuestion')->middleware('check-exam-status');
+    Route::post('/deleteQuestion/{id}','AdminController@deleteQuestion')->middleware('check-exam-status');
+    Route::post('/submitExam', 'StudentController@submitExam');
+    Route::post('/params','AdminController@setMark');
+    Route::put('/params/{id}','AdminController@updateMark');
+    Route::patch('/start-exam','AdminController@startExam');
+    Route::patch('/end-exam','AdminController@endExam');
+});
 //Ajax Routes
-Route::get('/getQuestions','StudentController@getAjaxQuestions')->name('get-questions');
 Route::get('/admin/findQuestion/{id}', 'AdminController@findOneQuestion');
-Route::post('/updateQuestion/{id}','AdminController@updateQuestion');
-Route::post('/addQuestion', 'AdminController@addQuestion')->middleware('check-exam-status');
-Route::post('/deleteQuestion/{id}','AdminController@deleteQuestion')->middleware('check-exam-status');
 Route::post('/calculateScore', 'StudentController@calculateScore');
 Route::post('/updateStudent/{id}','AdminController@updateStudent');
 Route::post('/deleteStudent/{id}','AdminController@deleteStudent');
 Route::post('/restoreStudent/{id}','AdminController@restoreStudent');
 Route::post('/addStudent', 'AdminController@addStudent');
 Route::get('/submitQuestion','StudentController@submitQuestion');
-Route::post('/submitExam', 'StudentController@submitExam');
-Route::post('/params','AdminController@setMark');
-Route::put('/params/{id}','AdminController@updateMark');
 Route::get('/checkMark/{id}','AdminController@checkMark');
-Route::patch('/start-exam','AdminController@startExam');
-Route::patch('/end-exam','AdminController@endExam');
 // Route::post('/exam/{subject}','StudentController@getAjaxQuestions');
 
 Route::get('/success','StudentController@submitSuccess')->name('success');
