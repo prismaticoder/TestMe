@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-class CreateMarksTable extends Migration
+class CreateExamsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,17 @@ class CreateMarksTable extends Migration
      */
     public function up()
     {
-        Schema::create('marks', function (Blueprint $table) {
-            $table->increments('id');
+        Schema::create('exams', function (Blueprint $table) {
+            $table->bigIncrements('id');
             $table->integer('class_id')->unsigned();
             $table->foreign('class_id')->references('id')->on('classes');
             $table->integer('subject_id')->unsigned();
             $table->foreign('subject_id')->references('id')->on('subjects');
-            $table->integer('mark');
+            $table->integer('base_score');
+            $table->date('date');
             $table->integer('hours');
             $table->integer('minutes');
+            $table->boolean('hasStarted')->default(0);
             $table->timestamps();
         });
     }
@@ -33,6 +35,6 @@ class CreateMarksTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('marks');
+        Schema::dropIfExists('exams');
     }
 }
