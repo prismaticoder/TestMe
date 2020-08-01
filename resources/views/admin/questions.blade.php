@@ -3,7 +3,7 @@
 @section('content')
 
     <div id="app" data-app="true">
-        <add-question :questions="{{$questions}}" :subject="{{$subject->id}}" :class-id="{{$class_id}}" :params="{{$mark}}"></add-question>
+    <add-question :questions="{{$questions}}" :subject="{{$subject->id}}" :class-id="{{$class_id}}" :params="{{$mark}}" :exams="{{$exams}}"></add-question>
     </div>
 
     <script src="{{asset('/js/app.js')}}"></script>

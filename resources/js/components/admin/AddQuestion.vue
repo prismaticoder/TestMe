@@ -1,5 +1,5 @@
 <template>
-  <div class="row">
+  <div class="row" v-if="examArray.length > 0">
         <div class="col-md-2 sidebar">
             <h4 class="mt-3 mb-3 ml-3">
                 Questions
@@ -43,7 +43,7 @@
 
         <div class="col-md-10 bg-white">
 
-            <Params :params="paramArray" :subject="subject" :classId="classId" @setParams="setParams"/>
+            <ExamParams :exam="examArray[0]" :yellow="yellow" @setExam="setExam"/>
 
             <div class="container">
                 <h3 class="text-center">Question</h3>
@@ -109,26 +109,31 @@
             </div>
         </div>
   </div>
+  <div class="container mt-5 mx-auto" v-else>
+        <CreateExam @setExam="setExam" :black="black" :yellow="yellow" :subject="subject" :classId="classId"/>
+  </div>
 
 </template>
 
 <script>
-import Params from './Params'
+import ExamParams from './ExamParams'
+import CreateExam from './CreateExam'
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 
 export default {
     name: "AddQuestion",
-    props: ['questions', 'subject', 'classId', 'params'],
+    props: ['questions', 'subject', 'classId', 'params', 'exams'],
     components: {
-        Params
+        ExamParams,
+        CreateExam
     },
     data() {
         return {
             questionArray: this.questions,
             currentQuestion: null,
             options: ['A','B','C','D'],
-            paramArray: this.params,
+            examArray: this.exams,
             question: null,
             optionA: null,
             optionB: null,
@@ -160,7 +165,8 @@ export default {
                 theme: 'snow',
                 readonly: true
             },
-            yellow: "#e67d23"
+            yellow: "#e67d23",
+            black: "#343a40"
         }
     },
     methods: {
@@ -200,8 +206,6 @@ export default {
                 question,
                 options,
                 correct,
-                class_id: this.classId,
-                subject_id: this.subject
             })
             .then(res => {
                 this.loading = false
@@ -226,8 +230,6 @@ export default {
                 question,
                 options,
                 correct,
-                class_id: this.classId,
-                subject_id: this.subject
             })
             .then(res => {
                 this.loading = false
@@ -243,12 +245,12 @@ export default {
                 alert("There was an error updating this question, please try again.")
             })
         },
-        setParams(type, paramObject) {
+        setExam(type, exam) {
             if (type == 'create') {
-                this.paramArray.push(paramObject)
+                this.examArray.push(exam)
             }
             else {
-                this.paramArray.splice(0,1,paramObject)
+                this.examArray.splice(0,1,exam)
             }
         }
     },

@@ -47,10 +47,10 @@ Route::group(['prefix' => 'api'], function () {
     Route::post('/addQuestion', 'AdminController@addQuestion')->middleware('check-exam-status');
     Route::post('/deleteQuestion/{id}','AdminController@deleteQuestion')->middleware('check-exam-status');
     Route::post('/submitExam', 'StudentController@submitExam');
-    Route::post('/params','AdminController@setMark');
-    Route::put('/params/{id}','AdminController@updateMark');
+    Route::post('/exams','AdminController@createExam');
+    Route::put('/exams/{id}','AdminController@updateExam');
     Route::patch('/start-exam','AdminController@startExam');
-    Route::patch('/end-exam','AdminController@endExam');
+    Route::patch('/end-exam/{id}','AdminController@endExam');
 });
 //Ajax Routes
 Route::get('/admin/findQuestion/{id}', 'AdminController@findOneQuestion');
