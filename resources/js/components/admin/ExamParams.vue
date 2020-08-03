@@ -1,7 +1,20 @@
 <template>
     <div class="container">
-        <div class="text-center">
-            Exam Duration (Aggregate Score): <strong>{{examtime}} ({{totalMarks}} marks)</strong> (<a href="#change" @click.prevent="dialog = true">Change</a>)
+        <div class="row">
+            <div class="text-center col-md-7">
+            Examination Date / Duration / Aggregate Score: <strong>{{refinedDate}} / {{examtime}} / {{totalMarks}} marks</strong> (<a href="#change" @click.prevent="dialog = true">Change</a>)
+            </div>
+            <!-- <div class="col-md-1"></div> -->
+            <div class="col-md-5">
+                <div class="float-right">
+                    <v-btn class="" :color="yellow" small tile title="Use Previous Examination Questions as a template for this examination">
+                    EXAM PQ TEMPLATES
+                    </v-btn>
+                    <v-btn class="ml-2 " :color="yellow" small tile title="Create New Examination">
+                        CREATE NEW EXAM
+                    </v-btn>
+                </div>
+            </div>
         </div>
 
         <v-snackbar v-model="snackbar">
@@ -122,6 +135,10 @@ export default {
             }
 
             return time
+        },
+        refinedDate() {
+            const options = { year: "numeric", month: "long", day: "numeric" }
+            return new Date(this.exam.date).toLocaleDateString(undefined, options)
         },
     }
 }

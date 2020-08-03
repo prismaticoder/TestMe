@@ -10,7 +10,7 @@
                 </v-btn>
             </h4>
             <div class="list-group">
-                <span v-for="(question, index) in questionArray" :key="question.id" class="list-group-item list-group-item-action questionBtn" v-bind:class="{'active': currentQuestion ? currentQuestion.id == questionArray[index].id : false}"  @click.prevent="currentQuestion = questionArray[index]">
+                <span v-for="(question, index) in questions" :key="question.id" class="list-group-item list-group-item-action questionBtn" v-bind:class="{'active': currentQuestion ? currentQuestion.id == questions[index].id : false}"  @click.prevent="currentQuestion = questions[index]">
                     Question {{index + 1}}
                     <v-btn text small dark :color="yellow" @click="dialog = true" class="float-right" title="Remove Question">
                         <v-icon>
@@ -123,14 +123,14 @@ import 'katex/dist/katex.min.css';
 
 export default {
     name: "AddQuestion",
-    props: ['questions', 'subject', 'classId', 'params', 'exams'],
+    props: ['subject', 'classId', 'exams'],
     components: {
         ExamParams,
         CreateExam
     },
     data() {
         return {
-            questionArray: this.questions,
+            questions: this.exams.length > 0 ? this.exams[0].questions : [],
             currentQuestion: null,
             options: ['A','B','C','D'],
             examArray: this.exams,
@@ -185,7 +185,7 @@ export default {
             .then(res => {
                 this.btnLoading = false
                 this.dialog = false
-                this.questionArray = this.questionArray.filter(question => question.id !== this.currentQuestion.id)
+                this.questions = this.questions.filter(question => question.id !== this.currentQuestion.id)
                 this.snackbar = true;
                 this.snackbarText = res.data.message
                 this.currentQuestion = null
@@ -209,7 +209,7 @@ export default {
             })
             .then(res => {
                 this.loading = false
-                this.questionArray.push(res.data.question)
+                this.questions.push(res.data.question)
                 this.snackbar = true;
                 this.snackbarText = res.data.message
                 this.clearQuestionForm()
@@ -233,8 +233,8 @@ export default {
             })
             .then(res => {
                 this.loading = false
-                let index = this.questionArray.findIndex(question => question.id == res.data.question.id)
-                this.questionArray.splice(index, 1, res.data.question)
+                let index = this.questions.findIndex(question => question.id == res.data.question.id)
+                this.questions.splice(index, 1, res.data.question)
                 this.snackbar = true;
                 this.snackbarText = res.data.message
                 window.scrollTo(0,0)
