@@ -17,10 +17,8 @@ class CreateScoresTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->integer('class_id')->unsigned();
-            $table->foreign('class_id')->references('id')->on('classes');
-            $table->integer('subject_id')->unsigned();
-            $table->foreign('subject_id')->references('id')->on('subjects');
+            $table->integer('exam_id')->unsigned();
+            $table->foreign('exam_id')->references('id')->on('exams');
             $table->integer('score')->unsigned();
             $table->timestamps();
         });

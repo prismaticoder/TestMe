@@ -1,5 +1,5 @@
 <template>
-  <div class="row">
+  <div class="row" v-if="examArray.length > 0">
         <div class="col-md-2 sidebar">
             <h4 class="mt-3 mb-3 ml-3">
                 Questions
@@ -10,7 +10,7 @@
                 </v-btn>
             </h4>
             <div class="list-group">
-                <span v-for="(question, index) in questionArray" :key="question.id" class="list-group-item list-group-item-action questionBtn" v-bind:class="{'active': currentQuestion ? currentQuestion.id == questionArray[index].id : false}"  @click.prevent="currentQuestion = questionArray[index]">
+                <span v-for="(question, index) in questions" :key="question.id" class="list-group-item list-group-item-action questionBtn" v-bind:class="{'active': currentQuestion ? currentQuestion.id == questions[index].id : false}"  @click.prevent="currentQuestion = questions[index]">
                     Question {{index + 1}}
                     <v-btn text small dark :color="yellow" @click="dialog = true" class="float-right" title="Remove Question">
                         <v-icon>
@@ -43,7 +43,7 @@
 
         <div class="col-md-10 bg-white">
 
-            <Params :params="paramArray" :subject="subject" :classId="classId" @setParams="setParams"/>
+            <ExamParams :exam="examArray[0]" :examCount="examArray.length" :yellow="yellow" :subject="subject" :classId="classId" @setExam="setExam"/>
 
             <div class="container">
                 <h3 class="text-center">Question</h3>
@@ -108,27 +108,55 @@
                 </v-btn>
             </div>
         </div>
+
+        <v-overlay :color="yellow" v-show="showPQList">
+            <v-simple-table light class="p-4" fixed-header>
+                <thead>
+                    <tr>
+                        <th class="text-center">Exam ID</th>
+                        <th class="text-center">Date Held</th>
+                        <th class="text-center">Options</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="exam in pastExams" :key="exam.id">
+                        <th>{{exam.id}}</th>
+                        <th>{{formatDate(exam.date)}}</th>
+                        <th>
+                            <v-btn :color="yellow" small tile outlined @click="useTemplate(exam.id)">
+                                USE AS TEMPLATE
+                            </v-btn>
+                        </th>
+                    </tr>
+                </tbody>
+            </v-simple-table>
+        </v-overlay>
+  </div>
+  <div class="container mt-5 mx-auto" v-else>
+        <CreateExam @setExam="setExam" :black="black" :yellow="yellow" :subject="subject" :classId="classId"/>
   </div>
 
 </template>
 
 <script>
-import Params from './Params'
+import ExamParams from './ExamParams'
+import CreateExam from './CreateExam'
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 
 export default {
     name: "AddQuestion",
-    props: ['questions', 'subject', 'classId', 'params'],
+    props: ['subject', 'classId', 'exams'],
     components: {
-        Params
+        ExamParams,
+        CreateExam
     },
     data() {
         return {
-            questionArray: this.questions,
+            questions: this.exams.length > 0 ? this.exams[0].questions : [],
             currentQuestion: null,
             options: ['A','B','C','D'],
-            paramArray: this.params,
+            examArray: this.exams,
             question: null,
             optionA: null,
             optionB: null,
@@ -140,6 +168,7 @@ export default {
             loading: false,
             snackbar: false,
             snackbarText: '',
+            showPQList: true,
             editorDisabled: true,
             editorOption: {
                 modules: {
@@ -160,7 +189,8 @@ export default {
                 theme: 'snow',
                 readonly: true
             },
-            yellow: "#e67d23"
+            yellow: "#e67d23",
+            black: "#343a40"
         }
     },
     methods: {
@@ -179,7 +209,7 @@ export default {
             .then(res => {
                 this.btnLoading = false
                 this.dialog = false
-                this.questionArray = this.questionArray.filter(question => question.id !== this.currentQuestion.id)
+                this.questions = this.questions.filter(question => question.id !== this.currentQuestion.id)
                 this.snackbar = true;
                 this.snackbarText = res.data.message
                 this.currentQuestion = null
@@ -200,12 +230,10 @@ export default {
                 question,
                 options,
                 correct,
-                class_id: this.classId,
-                subject_id: this.subject
             })
             .then(res => {
                 this.loading = false
-                this.questionArray.push(res.data.question)
+                this.questions.push(res.data.question)
                 this.snackbar = true;
                 this.snackbarText = res.data.message
                 this.clearQuestionForm()
@@ -226,13 +254,11 @@ export default {
                 question,
                 options,
                 correct,
-                class_id: this.classId,
-                subject_id: this.subject
             })
             .then(res => {
                 this.loading = false
-                let index = this.questionArray.findIndex(question => question.id == res.data.question.id)
-                this.questionArray.splice(index, 1, res.data.question)
+                let index = this.questions.findIndex(question => question.id == res.data.question.id)
+                this.questions.splice(index, 1, res.data.question)
                 this.snackbar = true;
                 this.snackbarText = res.data.message
                 window.scrollTo(0,0)
@@ -243,13 +269,29 @@ export default {
                 alert("There was an error updating this question, please try again.")
             })
         },
-        setParams(type, paramObject) {
+        setExam(type, exam) {
             if (type == 'create') {
-                this.paramArray.push(paramObject)
+                this.examArray.unshift(exam)
+                this.questions = exam.questions
             }
             else {
-                this.paramArray.splice(0,1,paramObject)
+                this.examArray.splice(0,1,exam)
             }
+        },
+        formatDate(dateString) {
+            const options = { year: "numeric", month: "long", day: "numeric"}
+            return new Date(dateString).toLocaleDateString(undefined, options)
+        },
+        useTemplate(examId) {
+            this.$http.get(`useTemplate/${examId}`)
+            .then(res => {
+                this.showPQList = false
+                this.questions = res.data.exam.questions
+            })
+            .catch(err => {
+                console.log(err.response.data)
+                alert("Sorry, there was an error using this exam as a template")
+            })
         }
     },
     watch: {
@@ -270,6 +312,11 @@ export default {
     },
     mounted() {
         window.katex = katex
+    },
+    computed: {
+        pastExams() {
+            return this.examArray.filter((exam, index) => index !== 0);
+        }
     }
 }
 </script>

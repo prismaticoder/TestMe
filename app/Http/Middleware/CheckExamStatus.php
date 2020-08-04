@@ -24,7 +24,7 @@ class CheckExamStatus
 
         if ($subject_param) {
             if ($subject_param->hasStarted) {
-                abort(403, "Error: this action cannot be performed for an examination in progress");
+                return abort(403, "Error: this action cannot be performed for an examination in progress");
             }
 
             else {
