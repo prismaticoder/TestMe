@@ -2,15 +2,15 @@
     <div class="container">
         <div class="row">
             <div class="text-center col-md-7">
-            Examination Date / Duration / Aggregate Score: <strong>{{refinedDate}} / {{examtime}} / {{totalMarks}} marks</strong> (<a href="#change" @click.prevent="dialog = true">Change</a>)
+            Examination Date / Duration / Aggregate Score: <strong>{{refinedDate}} / {{examtime}} / {{totalMarks}} marks</strong> <span v-show="!exam.hasBeenWritten">(<a href="#change" @click.prevent="dialog = true">Change</a>)</span>
             </div>
             <!-- <div class="col-md-1"></div> -->
             <div class="col-md-5">
                 <div class="float-right">
-                    <v-btn class="" :color="yellow" small tile title="Use Previous Examination Questions as a template for this examination">
+                    <v-btn v-show="!exam.hasBeenWritten && examCount > 1" :color="yellow" small tile title="Use Previous Examination Questions as a template for this examination">
                     EXAM PQ TEMPLATES
                     </v-btn>
-                    <v-btn class="ml-2 " :color="yellow" small tile title="Create New Examination">
+                    <v-btn v-show="exam.hasBeenWritten" @click="dialog=true" class="ml-2" :color="yellow" small tile title="Create New Examination">
                         CREATE NEW EXAM
                     </v-btn>
                 </div>
@@ -26,8 +26,8 @@
 
         <v-dialog v-model="dialog" max-width="500" persistent>
             <v-card>
-                <v-card-title v-if="exam" class="headline">Change Exam Parameters</v-card-title>
-                <v-card-title v-else class="headline">Set Exam Parameters</v-card-title>
+                <v-card-title v-if="!exam.hasBeenWritten" class="headline">Change Exam Parameters</v-card-title>
+                <v-card-title v-else class="headline">Create New Exam</v-card-title>
                 <v-container>
                     <v-row>
                         <v-col cols="12" sm="6" md="6">
@@ -52,7 +52,7 @@
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn :disabled="loading" color="green darken-1" text @click="backToPrevious">CLOSE</v-btn>
-                    <v-btn :loading="loading" :disabled="loading || ((hours == 0 && minutes == 0) || totalMarks < 5)" color="green darken-1" text @click="setExam()">SAVE</v-btn>
+                    <v-btn :loading="loading" :disabled="loading || ((hours == 0 && minutes == 0) || totalMarks < 5)" color="green darken-1" text @click="exam.hasBeenWritten ? setExam('create') : setExam('update')">SAVE</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -62,13 +62,13 @@
 <script>
 export default {
     name: "ExamParams",
-    props: ['exam','yellow'],
+    props: ['exam','yellow','examCount','subject','classId'],
     data() {
         return {
-            hours: this.exam.hours,
-            minutes: this.exam.minutes,
-            totalMarks: this.exam.base_score,
-            date: this.exam.date,
+            hours: this.exam.hasBeenWritten ? 0 : this.exam.hours,
+            minutes: this.exam.hasBeenWritten ? 0 : this.exam.minutes,
+            totalMarks: this.exam.hasBeenWritten ? 50 : this.exam.base_score,
+            date: this.exam.hasBeenWritten ? new Date().toISOString().substr(0, 10) : this.exam.date,
             today: new Date().toISOString().substr(0, 10),
             hourArray: [0,1,2,3,4,5,6],
             minuteArray: [0,5,10,15,20,25,30,35,40,45,50,55],
@@ -80,35 +80,61 @@ export default {
         }
     },
     methods: {
-        setExam() {
+        setExam(type) {
             this.loading = true
             let { hours, minutes, totalMarks, date } = this;
 
-            if (this.hours == this.exam.hours && this.minutes == this.exam.minutes && this.totalMarks == this.exam.base_score && this.date == this.exam.date) {
-                this.loading = false;
-                this.dialog = false
-            }
-            else {
-                this.$http.put(`exams/${this.exam.id}`, {
-                    hours,
-                    minutes,
-                    date,
-                    base_score: totalMarks
+            if (type == 'create') {
+                this.$http.post('exams', {
+                hours,
+                minutes,
+                date,
+                base_score: totalMarks,
+                class_id: this.classId,
+                subject_id: this.subject
                 })
                 .then(res => {
                     this.loading = false
                     this.dialog = false
-                    this.$emit('setExam', 'update', res.data.exam)
+                    this.$emit('setExam', 'create', res.data.exam)
                     this.snackbar = true
                     this.snackbarText = res.data.message
-
                 })
                 .catch(err => {
                     this.loading = false
                     this.dialog = false
                     console.log(err.response.data)
-                    alert("There was an error updating this exam, please try again")
+                    alert("There was an error creating this examination, please try again")
                 })
+            }
+
+            else {
+                if (this.hours == this.exam.hours && this.minutes == this.exam.minutes && this.totalMarks == this.exam.base_score && this.date == this.exam.date) {
+                this.loading = false;
+                this.dialog = false
+                }
+                else {
+                    this.$http.put(`exams/${this.exam.id}`, {
+                        hours,
+                        minutes,
+                        date,
+                        base_score: totalMarks
+                    })
+                    .then(res => {
+                        this.loading = false
+                        this.dialog = false
+                        this.$emit('setExam', 'update', res.data.exam)
+                        this.snackbar = true
+                        this.snackbarText = res.data.message
+
+                    })
+                    .catch(err => {
+                        this.loading = false
+                        this.dialog = false
+                        console.log(err.response.data)
+                        alert("There was an error updating this exam, please try again")
+                    })
+                }
             }
         },
         backToPrevious() {

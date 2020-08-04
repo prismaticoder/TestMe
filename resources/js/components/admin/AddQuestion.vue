@@ -43,7 +43,7 @@
 
         <div class="col-md-10 bg-white">
 
-            <ExamParams :exam="examArray[0]" :yellow="yellow" @setExam="setExam"/>
+            <ExamParams :exam="examArray[0]" :examCount="examArray.length" :yellow="yellow" :subject="subject" :classId="classId" @setExam="setExam"/>
 
             <div class="container">
                 <h3 class="text-center">Question</h3>
@@ -247,7 +247,8 @@ export default {
         },
         setExam(type, exam) {
             if (type == 'create') {
-                this.examArray.push(exam)
+                this.examArray.unshift(exam)
+                this.questions = exam.questions
             }
             else {
                 this.examArray.splice(0,1,exam)
