@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Subject;
 use App\Classes;
+use App\Exam;
 use App\Mark;
 use App\Question;
 use App\Option;
@@ -36,13 +37,13 @@ class AdminController extends Controller
         if(Gate::denies('superAdminGate')){
             //Only return the subject of that user
             $subjects = Subject::where('id', Auth::user()->subject_id)->get();
-            $all_started = Mark::where('subject_id', Auth::user()->subject_id)->where('hasStarted', 1)->get();
+            $all_started = Exam::where('subject_id', Auth::user()->subject_id)->where('hasStarted', 1)->get();
         }
 
         else {
             $subjects = Subject::orderBy('subject_name')->get();
             //get all started exams
-            $all_started = Mark::where('hasStarted', 1)->get();
+            $all_started = Exam::where('hasStarted', 1)->get();
         }
 
         if (count($all_started) > 0) {
@@ -135,14 +136,12 @@ class AdminController extends Controller
         if ($subject) {
 
             if (Gate::allows('view-subject-details', $subject)) {
-                $mark = Mark::where('subject_id',$subject->id)->where('class_id',$class_id)->get();
+                //Get the exam with the latest date, that is the current exam.
+                $exams = Exam::where('subject_id',$subject->id)->where('class_id',$class_id)->orderBy('date','desc')->get();
 
-                $questions = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->with('options')->get();
-                // $options = Question::where('class_id',$class_id)->where('subject_id',$subject_id)->options;
-                Session::put('subject_id', $subject_id);
-                Session::put('class_id', $class_id);
+                if (count($exams) > 0) Session::put('exam_id', $exams[0]->id);
 
-                return view('admin.questions', compact('questions','subject','class_id','classes','mark'));
+                return view('admin.questions', compact('subject','class_id','classes','exams'));
             }
 
             return abort('404','Page does not exist');
@@ -152,8 +151,6 @@ class AdminController extends Controller
     }
 
     public function addQuestion(Request $request) {
-        $subject_id = $request->subject_id;
-        $class_id = $request->class_id;
         $question = $request->question;
         $options = $request->options;
         $correctAnswer = $request->correct;
@@ -190,10 +187,9 @@ class AdminController extends Controller
         $question = $dom->savehtml();
 
         $createdQuestion = new Question;
-        DB::transaction(function() use($class_id,$subject_id,$question,$options,$correctAnswer, &$createdQuestion) {
+        DB::transaction(function() use($question,$options,$correctAnswer, &$createdQuestion) {
 
-            $createdQuestion->subject_id = $subject_id;
-            $createdQuestion->class_id = $class_id;
+            $createdQuestion->exam_id = Session::get('exam_id');
             $createdQuestion->question = $question;
             $createdQuestion->save();
 
@@ -369,36 +365,20 @@ class AdminController extends Controller
         return abort('404');
     }
 
-    public function hostExam($subject) {
-        $subject = Subject::where('alias',$subject)->first();
-        $marks = Mark::where('subject_id',$subject->id)->orderBy('class_id')->get();
-
-
-        if ($subject) {
-            $subject->isHosted = 1;
-            $subject->save();
-
-            return view('admin.host-exam',compact('subject','marks'));
-        }
-
-        return abort('404');
-    }
-
     public function startExam(Request $request) {
         $subject_id = $request->subject_id;
         $class_id = $request->class_id;
+        $today = date('Y-m-d');
+        $exam = Exam::where('subject_id',$subject_id)->where('class_id',$class_id)->where('date', $today)->first();
 
-        $mark = Mark::where('subject_id',$subject_id)->where('class_id', $class_id)->first();
-
-
-        if ($mark) {
+        if ($exam) {
             $subject = Subject::where('id',$subject_id)->first();
 
             if (Gate::allows('view-subject-details', $subject)) {
-                $mark->hasStarted = 1;
-                $mark->save();
+                $exam->hasStarted = 1;
+                $exam->save();
 
-                return response()->json(['exam' => $mark]) ;
+                return response()->json(['exam' => $exam]) ;
             }
 
             return abort('403');
@@ -407,21 +387,19 @@ class AdminController extends Controller
         return abort('404');
     }
 
-    public function endExam(Request $request) {
+    public function endExam(Request $request, $id) {
         $subject_id = $request->subject_id;
-        $class_id = $request->class_id;
-
-        $mark = Mark::where('subject_id',$subject_id)->where('class_id', $class_id)->first();
+        $exam = Exam::find($id);
 
 
-        if ($mark) {
+        if ($exam) {
             $subject = Subject::where('id',$subject_id)->first();
 
             if (Gate::allows('view-subject-details', $subject)) {
-                $mark->hasStarted = 0;
-                $mark->save();
+                $exam->hasStarted = 0;
+                $exam->save();
 
-                return response()->json(['exam' => $mark]) ;
+                return response()->json(['exam' => $exam]) ;
             }
 
             return abort(403);
@@ -430,37 +408,72 @@ class AdminController extends Controller
         return abort('404');
     }
 
-    public function setMark(Request $request) {
+    public function createExam(Request $request) {
         $subject_id = $request->subject_id;
         $class_id = $request->class_id;
-        $mark = $request->mark;
+        $base_score = $request->base_score;
         $hours = $request->hours;
         $minutes = $request->minutes;
+        $date = $request->date;
 
-        $table = new Mark;
+        $table = new Exam;
         $table->class_id = $class_id;
         $table->subject_id = $subject_id;
-        $table->mark = $mark;
+        $table->base_score = $base_score;
         $table->hours = $hours;
         $table->minutes = $minutes;
+        $table->date = $date;
         $table->save();
 
-        return response()->json(['params' => $table, 'message' => 'Details added successfully']);
+        Session::put('exam_id', $table->id);
+
+        return response()->json(['exam' => $table, 'message' => 'Exam created successfully']);
     }
 
-    public function updateMark(Request $request, $id) {
-        // $id = $request->id;
-        $mark = $request->mark;
+    public function updateExam(Request $request, $id) {
+        $base_score = $request->base_score;
         $hours = $request->hours;
         $minutes = $request->minutes;
+        $date = $request->date;
 
-        $table = Mark::find($id);
-        $table->mark = $mark;
+        $table = Exam::find($id);
+        $table->base_score = $base_score;
         $table->hours = $hours;
         $table->minutes = $minutes;
+        $table->date = $date;
         $table->save();
 
-        return response()->json(['params' => $table, 'message' => 'Update successful']);
+        return response()->json(['exam' => $table, 'message' => 'Settings updated successfully']);
+    }
+
+
+    public function createExamFromTemplate($template_id) {
+
+        DB::transaction(function() use($template_id) {
+            //first delete all questions in the current exam so as to replace them with pqs
+            $exam = Exam::find(Session::get('exam_id'));
+            $exam->questions()->delete();
+
+            $questions = Question::where('exam_id', $template_id)->with('options')->get();
+
+            foreach ($questions as $question) {
+                $newQuestion = Question::find($question->id)->replicate();
+                $newQuestion->exam_id = Session::get('exam_id');
+
+                $newQuestion->save();
+
+                foreach ($question->options as $option) {
+                    $newOption = Option::find($option->id)->replicate();
+                    $newOption->question_id = $newQuestion->id;
+
+                    $newOption->save();
+                }
+            }
+        });
+
+        $exam = Exam::find(Session::get('exam_id'));
+
+        return response()->json(['exam' => $exam, 'message' => 'Settings updated successfully']);
     }
 
 }

@@ -51,6 +51,7 @@ Route::group(['prefix' => 'api'], function () {
     Route::put('/exams/{id}','AdminController@updateExam');
     Route::patch('/start-exam','AdminController@startExam');
     Route::patch('/end-exam/{id}','AdminController@endExam');
+    Route::get('/useTemplate/{template_id}','AdminController@createExamFromTemplate');
 });
 //Ajax Routes
 Route::get('/admin/findQuestion/{id}', 'AdminController@findOneQuestion');
