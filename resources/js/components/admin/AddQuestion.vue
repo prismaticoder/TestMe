@@ -43,7 +43,7 @@
 
         <div class="col-md-10 bg-white">
 
-            <ExamParams :exam="examArray[0]" :examCount="examArray.length" :yellow="yellow" :subject="subject" :classId="classId" @setExam="setExam"/>
+            <ExamParams :exam="examArray[0]" :examCount="examArray.length" :yellow="yellow" :subject="subject" :classId="classId" @setExam="setExam" @alterPQList="alterPQList"/>
 
             <div class="container">
                 <h3 class="text-center">Question</h3>
@@ -109,28 +109,7 @@
             </div>
         </div>
 
-        <v-overlay :color="yellow" v-show="showPQList">
-            <v-simple-table light class="p-4" fixed-header>
-                <thead>
-                    <tr>
-                        <th class="text-center">Exam ID</th>
-                        <th class="text-center">Date Held</th>
-                        <th class="text-center">Options</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="exam in pastExams" :key="exam.id">
-                        <th>{{exam.id}}</th>
-                        <th>{{formatDate(exam.date)}}</th>
-                        <th>
-                            <v-btn :color="yellow" small tile outlined @click="useTemplate(exam.id)">
-                                USE AS TEMPLATE
-                            </v-btn>
-                        </th>
-                    </tr>
-                </tbody>
-            </v-simple-table>
-        </v-overlay>
+        <ExamPQList :yellow="yellow" :black="black" :pastExams="pastExams" :showPQList="showPQList" @usePQTemplate="usePQTemplate" @alterPQList="alterPQList"/>
   </div>
   <div class="container mt-5 mx-auto" v-else>
         <CreateExam @setExam="setExam" :black="black" :yellow="yellow" :subject="subject" :classId="classId"/>
@@ -141,6 +120,7 @@
 <script>
 import ExamParams from './ExamParams'
 import CreateExam from './CreateExam'
+import ExamPQList from './ExamPQList'
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 
@@ -149,7 +129,8 @@ export default {
     props: ['subject', 'classId', 'exams'],
     components: {
         ExamParams,
-        CreateExam
+        CreateExam,
+        ExamPQList
     },
     data() {
         return {
@@ -168,7 +149,7 @@ export default {
             loading: false,
             snackbar: false,
             snackbarText: '',
-            showPQList: true,
+            showPQList: false,
             editorDisabled: true,
             editorOption: {
                 modules: {
@@ -282,16 +263,19 @@ export default {
             const options = { year: "numeric", month: "long", day: "numeric"}
             return new Date(dateString).toLocaleDateString(undefined, options)
         },
-        useTemplate(examId) {
-            this.$http.get(`useTemplate/${examId}`)
-            .then(res => {
+        alterPQList(type) {
+            if (type == 'open') {
+                this.showPQList = true
+            }
+
+            else {
                 this.showPQList = false
-                this.questions = res.data.exam.questions
-            })
-            .catch(err => {
-                console.log(err.response.data)
-                alert("Sorry, there was an error using this exam as a template")
-            })
+            }
+        },
+        usePQTemplate(exam) {
+            this.showPQList = false
+            this.examArray.splice(0,1,exam)
+            this.questions = exam.questions
         }
     },
     watch: {

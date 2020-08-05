@@ -447,14 +447,15 @@ class AdminController extends Controller
     }
 
 
-    public function createExamFromTemplate($template_id) {
+    public function createExamFromTemplate(Request $request, $template_id) {
 
-        DB::transaction(function() use($template_id) {
-            //first delete all questions in the current exam so as to replace them with pqs
-            $exam = Exam::find(Session::get('exam_id'));
-            $exam->questions()->delete();
+        $number = $request->number;
 
-            $questions = Question::where('exam_id', $template_id)->with('options')->get();
+        DB::transaction(function() use($template_id,$number) {
+
+            $questions = Question::where('exam_id', $template_id)->with('options')->inRandomOrder()->get();
+
+            if ($number) $questions = $questions->take($number);
 
             foreach ($questions as $question) {
                 $newQuestion = Question::find($question->id)->replicate();
