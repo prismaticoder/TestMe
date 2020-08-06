@@ -1,24 +1,26 @@
 <template>
     <div class="row border-bottom">
-        <div class="col-12 text-center">
+        <div class="col-md-12 text-center">
             <span>{{single.class}}</span>
         </div>
-        <div class="col-1"></div>
-        <div class="col-5">
+        <div class="col-md-4">
             <v-btn :href="`/admin/subjects/${subject.alias}/${single.id}/questions`" small title="Go to Questions" :color="yellow">
                 Questions
             </v-btn>
         </div>
-        <div class="col-1"></div>
-        <div class="col-5">
-            <v-btn v-if="!examStarted" @click="dialog = true" :disabled="!single.examsWithParamsSet[subject.subject_name]" small :title="single.examsWithParamsSet[subject.subject_name] ? 'Start Exam' : 'You cannot start this exam because exam duration has not been set'" :color="yellow">
+        <div class="col-md-4">
+            <v-btn :href="`/admin/subjects/${subject.alias}/${single.id}/results`" small title="View results of most recent exam" :color="yellow">
+                Results
+            </v-btn>
+        </div>
+        <div class="col-md-4">
+            <v-btn class="ml-n3" v-if="!examStarted" @click="dialog = true" :disabled="!(single.latestExams[subject.subject_name] && single.latestExams[subject.subject_name].date == today && !single.latestExams[subject.subject_name].hasBeenWritten && single.latestExams[subject.subject_name].questions.length > 0)" small :color="yellow" :title="single.latestExams[subject.subject_name] ? 'Start Exam' : 'You cannot start this exam because exam duration has not been set'">
                 Begin Exam
             </v-btn>
-            <v-btn v-else @click="dialog = true" small title="End Exam" :color="yellow">
+            <v-btn v-else class="ml-n3" @click="dialog = true" small title="End Exam" :color="yellow">
                 End Exam
             </v-btn>
         </div>
-        <hr>
 
         <v-dialog v-model="dialog" max-width="350">
             <v-card>
@@ -47,7 +49,8 @@ export default {
     data() {
         return {
             loading: false,
-            dialog: false
+            dialog: false,
+            today: new Date().toISOString().substr(0, 10),
         }
     },
     methods: {
@@ -61,6 +64,7 @@ export default {
             .then(res => {
                 this.loading = false
                 this.dialog = false
+                console.log(res.data)
                 this.$emit('startNewExam', res.data.exam)
             })
             .catch(err => {
@@ -73,7 +77,8 @@ export default {
         endExam() {
             this.loading = true
 
-            this.$http.patch('end-exam', {
+            let examId = this.exams.filter(exam => exam.subject.subject_name == this.subject.subject_name && exam.class.class == this.single.class)[0].id
+            this.$http.patch(`end-exam/${examId}`, {
                 class_id: this.single.id,
                 subject_id: this.subject.id
             })
