@@ -10,7 +10,7 @@
                 </v-btn>
             </h4>
             <div class="list-group">
-                <span v-for="(question, index) in questions" :key="question.id" class="list-group-item list-group-item-action questionBtn" v-bind:class="{'active': currentQuestion ? currentQuestion.id == questions[index].id : false}"  @click.prevent="currentQuestion = questions[index]">
+                <span v-for="(question, index) in questions" :key="question.id" class="list-group-item list-group-item-action questionBtn" v-bind:class="{'active': currentQuestion ? currentQuestion.id == questions[index].id : false}"  @click.prevent="editorDisabled = true; currentQuestion = questions[index];">
                     Question {{index + 1}}
                     <v-btn text small dark :color="yellow" @click="dialog = true" class="float-right" title="Remove Question">
                         <v-icon>
@@ -62,7 +62,7 @@
                 </div>
                 <div class="col-md-8">
                     <h4>Option A</h4>
-                    <quill-editor :disabled="editorDisabled" @blur="onEditorBlur($event)" @focus="onEditorFocus($event)" :options="editorOption" class="option" v-model="optionA" />
+                    <quill-editor :disabled="editorDisabled" @focus="onEditorFocus($event)" :options="editorOption" class="option" v-model="optionA" />
                     <hr>
                 </div>
             </div>
@@ -73,7 +73,7 @@
                 </div>
                 <div class="col-md-8">
                     <h4>Option B</h4>
-                    <quill-editor :disabled="editorDisabled" @blur="onEditorBlur($event)" @focus="onEditorFocus($event)" :options="editorOption" class="option" v-model="optionB" />
+                    <quill-editor :disabled="editorDisabled" @focus="onEditorFocus($event)" :options="editorOption" class="option" v-model="optionB" />
                     <hr>
                 </div>
             </div>
@@ -84,7 +84,7 @@
                 </div>
                 <div class="col-md-8">
                     <h4>Option C</h4>
-                    <quill-editor :disabled="editorDisabled" @blur="onEditorBlur($event)" @focus="onEditorFocus($event)" :options="editorOption" class="option" v-model="optionC" />
+                    <quill-editor :disabled="editorDisabled" @focus="onEditorFocus($event)" :options="editorOption" class="option" v-model="optionC" />
                     <hr>
                 </div>
             </div>
@@ -95,7 +95,7 @@
                 </div>
                 <div class="col-md-8">
                     <h4>Option D</h4>
-                    <quill-editor :disabled="editorDisabled" @blur="onEditorBlur($event)" @focus="onEditorFocus($event)" :options="editorOption" class="option" v-model="optionD" />
+                    <quill-editor :disabled="editorDisabled" @focus="onEditorFocus($event)" :options="editorOption" class="option" v-model="optionD" />
                 </div>
             </div>
 
@@ -175,9 +175,9 @@ export default {
         }
     },
     methods: {
-        onEditorBlur(quill) {
-            this.editorDisabled = true
-        },
+        // onEditorBlur(quill) {
+        //     // this.editorDisabled = true
+        // },
         onEditorFocus(quill) {
             this.editorDisabled = false
         },
@@ -219,6 +219,7 @@ export default {
                 this.snackbarText = res.data.message
                 this.clearQuestionForm()
                 window.scrollTo(0,0)
+                this.editorDisabled = true
             })
             .catch(err => {
                 this.loading = false
@@ -243,6 +244,7 @@ export default {
                 this.snackbar = true;
                 this.snackbarText = res.data.message
                 window.scrollTo(0,0)
+                this.editorDisabled = true
             })
             .catch(err => {
                 this.loading = false
