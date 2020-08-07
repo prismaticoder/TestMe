@@ -53,11 +53,11 @@ class AdminController extends Controller
         }
 
         foreach ($classes as $class) {
-            $params_array = [];
+            $exams_array = [];
             foreach ($subjects as $subject) {
-                $params_array[$subject->subject_name] = $class->checkParams($subject->id);
+                $exams_array[$subject->subject_name] = $class->getCurrentExam($subject->id);
             }
-            $class->examsWithParamsSet = $params_array;
+            $class->latestExams = $exams_array;
         }
 
         $exams = json_encode($exams);
@@ -130,18 +130,24 @@ class AdminController extends Controller
 
     public function getAllQuestions($subject,$class_id) {
         $subject = Subject::where('alias',$subject)->first();
+        $current_class = Classes::where('id', $class_id)->first();
         $subject_id = $subject['id'];
         $classes = Classes::all();
 
-        if ($subject) {
+        if ($subject && $current_class) {
 
             if (Gate::allows('view-subject-details', $subject)) {
                 //Get the exam with the latest date, that is the current exam.
                 $exams = Exam::where('subject_id',$subject->id)->where('class_id',$class_id)->orderBy('date','desc')->get();
 
-                if (count($exams) > 0) Session::put('exam_id', $exams[0]->id);
+                if (count($exams) > 0) {
+                    Session::put('exam_id', $exams[0]->id);
+                }
+                else {
+                    Session::forget('exam_id');
+                }
 
-                return view('admin.questions', compact('subject','class_id','classes','exams'));
+                return view('admin.questions', compact('subject','class_id','current_class','classes','exams'));
             }
 
             return abort('404','Page does not exist');
@@ -349,14 +355,21 @@ class AdminController extends Controller
 
     public function getSingleResult($subject,$class_id) {
         $subject = Subject::where('alias',$subject)->first();
+        $current_class = Classes::find($class_id);
 
-        if ($subject) {
+        if ($subject && $current_class) {
             if (Gate::allows('view-subject-details', $subject)) {
+
                 $students = User::where('class_id',$class_id)->get();
-                $selected_class = Classes::find($class_id);
-                $mark = (Mark::where('subject_id',$subject->id)->where('class_id',$class_id)->first())?Mark::where('subject_id',$subject->id)->where('class_id',$class_id)->first()->mark:50;
-                $classes = Classes::get();
-                return view('admin.main-result',compact('students','subject','selected_class','classes','mark'));
+                $exams = Exam::where('subject_id',$subject->id)->where('class_id',$class_id)->has('scores')->orderBy('date','desc')->get();
+
+                foreach ($students as $student) {
+                    $student->score = count($exams) > 0 ? $student->getScore($exams[0]->id) : null;
+                }
+
+                $classes = Classes::all();
+
+                return view('admin.main-result',compact('students','subject','current_class','classes','exams'));
             }
 
             return  abort('404');
@@ -370,6 +383,7 @@ class AdminController extends Controller
         $class_id = $request->class_id;
         $today = date('Y-m-d');
         $exam = Exam::where('subject_id',$subject_id)->where('class_id',$class_id)->where('date', $today)->first();
+        $mark = Mark::where('subject_id',$subject_id)->where('class_id',$class_id)->first();
 
         if ($exam) {
             $subject = Subject::where('id',$subject_id)->first();
@@ -378,7 +392,7 @@ class AdminController extends Controller
                 $exam->hasStarted = 1;
                 $exam->save();
 
-                return response()->json(['exam' => $exam]) ;
+                return response()->json(['exam' => $exam, 'mark' => $mark]) ;
             }
 
             return abort('403');
