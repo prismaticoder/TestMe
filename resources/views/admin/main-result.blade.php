@@ -2,39 +2,41 @@
 @section('title') {{$current_class->class}} {{ucfirst($subject->subject_name)}} Exam Results @endsection
 @section('content')
 
-    <div class="container">
+    <div class="container" id="app" data-app="true">
         <h3 class="text-center mt-5">
             {{$current_class->class}} {{$subject->subject_name}} Examination Results
         </h3>
         <hr>
 
-          <table class="table table-sm mt-5">
+    <all-results :exams="{{$exams}}" :subject="{{$subject}}" :class-id="{{$current_class->id}}"></all-results>
 
-              <thead>
+        <table class="table table-sm mt-2 table-bordered text-center">
+
+            <thead>
+            <tr>
+            <th>S/N</th>
+                <th>EXAMINATION NUMBER</th>
+                <th>NAME</th>
+                <th>ACTUAL SCORE</th>
+                <th>COMPUTED SCORE (/{{count($exams) > 0 ? $exams[0]->base_score : 50}})</th>
+            </tr>
+            </thead>
+            <tbody>
+                @foreach ($students as $student)
                 <tr>
-                <th>S/N</th>
-                  <th>Registration Number</th>
-                  <th>Surname</th>
-                  <th>First name</th>
-                  <th>Actual Score</th>
-                  <th>Score (/50)</th>
+                    <td>{{$loop->iteration}}</td>
+                    <td>{{$student->code}}</td>
+                    <td>{{$student->getFullName()}}</td>
+                    <td>{{$student->score ? $student->score['actual_score'] : "-"}}</td>
+                    <td>{{$student->score ? $student->score['computed_score'] : "-"}}</td>
                 </tr>
-              </thead>
-              <tbody>
-                  @foreach ($students as $student)
-                    <tr>
-                        <td>{{$loop->iteration}}</td>
-                        <td>{{$student->code}}</td>
-                        <td>{{$student->lastname}}</td>
-                        <td>{{$student->firstname}}</td>
-                        <td>{{$student->score ? $student->score['actual_score'] : "-"}}</td>
-                        <td>{{$student->score ? $student->score['computed_score'] : "-"}}</td>
-                    </tr>
-                  @endforeach
+                @endforeach
 
-              </tbody>
-            </table>
+            </tbody>
+        </table>
     </div>
+
+    <script src="{{asset('/js/app.js')}}"></script>
 
 @endsection
 
