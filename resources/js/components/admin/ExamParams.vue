@@ -1,13 +1,13 @@
 <template>
     <div class="container">
         <div class="row">
-            <div class="text-center col-md-7">
+            <div class="text-center col-md-9">
             Examination Date / Duration / Aggregate Score: <strong>{{refinedDate}} / {{examtime}} / {{totalMarks}} marks</strong> <span v-show="!exam.hasBeenWritten">(<a href="#change" @click.prevent="dialog = true">Change</a>)</span>
             </div>
             <!-- <div class="col-md-1"></div> -->
-            <div class="col-md-5">
+            <div class="col-md-3">
                 <div class="float-right">
-                    <v-btn v-show="!exam.hasBeenWritten && examCount > 1" :color="yellow" small tile title="Use Previous Examination Questions as a template for this examination">
+                    <v-btn v-show="!exam.hasBeenWritten && examCount > 1" :color="yellow" @click="$emit('alterPQList', 'open')" small tile title="Import some of the previous examination questions into the current examination">
                     EXAM PQ TEMPLATES
                     </v-btn>
                     <v-btn v-show="exam.hasBeenWritten" @click="dialog=true" class="ml-2" :color="yellow" small tile title="Create New Examination">

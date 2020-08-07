@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Log;
 
 class User extends Authenticatable
 {
@@ -30,6 +31,12 @@ class User extends Authenticatable
 
     public function getFullName() {
         return $this->firstname . ' ' . $this->lastname;
+    }
+
+    public function getScore($exam_id) {
+        $score = $this->scores()->where('exam_id', $exam_id)->first();
+
+        return $score ? ['actual_score' => $score->actual_score, 'computed_score' => $score->computed_score] : null;
     }
 
     /**

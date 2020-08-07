@@ -14,7 +14,7 @@ class EditScoresTable extends Migration
     public function up()
     {
         Schema::table('scores', function (Blueprint $table) {
-            $table->integer('original');
+            $table->integer('actual_score');
         });
     }
 
@@ -26,7 +26,7 @@ class EditScoresTable extends Migration
     public function down()
     {
         Schema::table('scores', function(Blueprint $table) {
-            $table->dropColumn('original');
+            $table->dropColumn('actual_score');
         });
     }
 }

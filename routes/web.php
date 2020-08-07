@@ -47,11 +47,11 @@ Route::group(['prefix' => 'api'], function () {
     Route::post('/addQuestion', 'AdminController@addQuestion')->middleware('check-exam-status');
     Route::post('/deleteQuestion/{id}','AdminController@deleteQuestion')->middleware('check-exam-status');
     Route::post('/submitExam', 'StudentController@submitExam');
-    Route::post('/exams','AdminController@createExam');
-    Route::put('/exams/{id}','AdminController@updateExam');
+    Route::post('/exams','AdminController@createExam')->middleware('check-exam-status');
+    Route::put('/exams/{id}','AdminController@updateExam')->middleware('check-exam-status');
     Route::patch('/start-exam','AdminController@startExam');
     Route::patch('/end-exam/{id}','AdminController@endExam');
-    Route::get('/useTemplate/{template_id}','AdminController@createExamFromTemplate');
+    Route::post('/useTemplate/{template_id}','AdminController@createExamFromTemplate');
 });
 //Ajax Routes
 Route::get('/admin/findQuestion/{id}', 'AdminController@findOneQuestion');
@@ -72,7 +72,6 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/logout', "Admin\LoginController@logout")->name('admin-logout');
     Route::get('/', 'AdminController@dashboard')->name('dashboard');
     Route::get('/students/{class}', 'AdminController@getClassStudents')->name('class-students');
-    Route::get('/results','AdminController@getResults')->name('results');
     Route::get('/{subject}/hostexam','AdminController@hostExam')->name('host-exam');
     Route::get('/{subject}/endexam','AdminController@endExam')->name('end-exam');
     //new route has been added
@@ -87,9 +86,7 @@ Route::group(['prefix' => 'admin'], function () {
 
     Route::group(['prefix' => 'subjects'], function() {
         Route::get('/{subject}/{class_id}/questions', 'AdminController@getAllQuestions')->name('questions');
-        Route::get('/{subject}/{class_id}/results', 'AdminController@getSingleResult')->name('singleresult');
-        // Route::post('/{subject}/{class_id}/questions', 'AdminController@addQuestion');
-        // Route::post('/{subject}/{class_id}/questions/{id}', 'AdminController@updateQuestion');
+        Route::get('/{subject}/{class_id}/results', 'AdminController@getSingleResult')->name('results');
     });
 
 });

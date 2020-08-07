@@ -13,9 +13,9 @@
             <li class="nav-item">
                 <a class="nav-link {{ (\Request::route()->getName() == 'dashboard') ? 'active' : '' }}" href="{{route('dashboard')}}">Main Dashboard</a>
             </li>
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link {{ (\Request::route()->getName() == 'results') ? 'active' : '' }}" href="{{route('results')}}">Results</a>
-            </li>
+            </li> --}}
             @can('superAdminGate')
             <li class="nav-item">
                 <a class="nav-link {{ (\Request::route()->getName() == 'teachers') ? 'active' : '' }}" href="{{route('teachers')}}">Teachers</a>

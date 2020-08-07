@@ -8,6 +8,7 @@ class Exam extends Model
 {
     protected $fillable = ['class_id','subject_id','base_score','hours','minutes','date','hasStarted'];
     protected $appends = ['hasBeenWritten', 'questions'];
+
     //
     public function questions() {
         return $this->hasMany(Question::class);

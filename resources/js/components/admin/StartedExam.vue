@@ -35,7 +35,7 @@ export default {
         endExam() {
             this.loading = true
 
-            this.$http.patch('end-exam', {
+            this.$http.patch(`end-exam/${this.exam.id}`, {
                 class_id: this.exam.class.id,
                 subject_id: this.exam.subject.id
             })

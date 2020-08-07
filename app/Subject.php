@@ -26,6 +26,13 @@ class Subject extends Model
     public function admins() {
         return $this->belongsTo(Admin::class);
     }
+
+    public function getStartedExam($class_id) {
+        $today = date('Y-m-d');
+        $exam = Exam::where('subject_id',$this->id)->where('class_id',$class_id)->where('date', $today)->where('hasStarted', 1)->first();
+
+        return $exam ? $exam : null;
+    }
 }
 
 
