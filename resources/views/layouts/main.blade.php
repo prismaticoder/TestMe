@@ -71,7 +71,7 @@
   </head>
 
   <body>
-    @if (\Request::route()->getName() !== 'questions')
+    @if (\Request::route()->getName() !== 'questions' && \Request::route()->getName() !== 'results')
         @include('partials.nav')
 
         <div class="container">
