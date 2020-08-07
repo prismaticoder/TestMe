@@ -183,6 +183,7 @@ export default {
         },
         clearQuestionForm() {
             this.question = this.optionA = this.optionB = this.optionC = this.optionD = this.correct = null
+            this.editorDisabled = true
         },
         deleteQuestion() {
             this.btnLoading = true;
@@ -219,7 +220,6 @@ export default {
                 this.snackbarText = res.data.message
                 this.clearQuestionForm()
                 window.scrollTo(0,0)
-                this.editorDisabled = true
             })
             .catch(err => {
                 this.loading = false
