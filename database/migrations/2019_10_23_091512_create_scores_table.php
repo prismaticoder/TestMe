@@ -19,7 +19,7 @@ class CreateScoresTable extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->integer('exam_id')->unsigned();
             $table->foreign('exam_id')->references('id')->on('exams');
-            $table->integer('score')->unsigned();
+            $table->decimal('computed_score', 4, 2);
             $table->timestamps();
         });
     }
