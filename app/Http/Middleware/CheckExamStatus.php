@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Mark;
+use App\Exam;
 use Closure;
 use Illuminate\Support\Facades\Session;
 
@@ -17,13 +17,12 @@ class CheckExamStatus
      */
     public function handle($request, Closure $next)
     {
-        $subject_id = Session::get('subject_id');
-        $class_id = Session::get('class_id');
+        $exam_id = Session::get('exam_id');
 
-        $subject_param = Mark::where('subject_id',$subject_id)->where('class_id',$class_id)->first();
+        $exam = Exam::find($exam_id);
 
-        if ($subject_param) {
-            if ($subject_param->hasStarted) {
+        if ($exam) {
+            if ($exam->hasStarted) {
                 return abort(403, "Error: this action cannot be performed for an examination in progress");
             }
 
