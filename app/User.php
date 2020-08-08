@@ -30,7 +30,7 @@ class User extends Authenticatable
     }
 
     public function getFullName() {
-        return $this->firstname . ' ' . $this->lastname;
+        return $this->lastname . ' ' . $this->firstname;
     }
 
     public function getScore($exam_id) {
