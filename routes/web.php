@@ -87,6 +87,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::group(['prefix' => 'subjects'], function() {
         Route::get('/{subject}/{class_id}/questions', 'AdminController@getAllQuestions')->name('questions');
         Route::get('/{subject}/{class_id}/results', 'AdminController@getSingleResult')->name('results');
+        Route::get('/{subject}/{class_id}/results/download/{exam_id}', 'AdminController@downloadResult')->name('download-result');
     });
 
 });

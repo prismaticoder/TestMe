@@ -1,12 +1,27 @@
 <template>
-    <div v-show="exams.length > 1" class="col-md-2 mx-auto">
-        <v-btn outlined small :color="yellow" @click="showExamList = true">
-            SEE PREVIOUS EXAMINATION RESULTS
-        </v-btn>
+    <div class="col-md-4 float-right">
+        <v-menu offset-y close-on-click>
+            <template v-slot:activator="{ on, attrs }">
+                <v-btn class="float-right" :color="yellow" v-bind="attrs" v-on="on" small tile outlined :retain-focus-on-click="false">
+                    <v-icon color="text-white">mdi-dots-vertical</v-icon> OPTIONS
+                </v-btn>
+            </template>
+            <v-list dense>
+                <v-list-item :href="`/admin/subjects/${subject.alias}/${classId}/results/download/${selected_exam ? selected_exam.id : exams[0].id}`" :disabled="exams.length < 1">
+                    <v-list-item-title>Download PDF</v-list-item-title>
+                </v-list-item>
+                <v-list-item :href="`/admin/subjects/${subject.alias}/${classId}/results`" :disabled="iscurrentexam">
+                    <v-list-item-title>Latest Exam Results</v-list-item-title>
+                </v-list-item>
+                <v-list-item @click="showExamList = true" :disabled="exams.length <= 1">
+                    <v-list-item-title>View Previous Results</v-list-item-title>
+                </v-list-item>
+            </v-list>
+        </v-menu>
 
         <v-overlay :color="black" v-show="showExamList">
 
-            <v-btn fab absolute top right :color="yellow" title="Close" @click="showExamList">
+            <v-btn fab absolute top right :color="yellow" title="Close" @click="showExamList = false">
                 <v-icon style="color: #343a40">
                     mdi-close
                 </v-icon>
@@ -30,7 +45,7 @@
                         <th>{{index+1}}</th>
                         <th>{{formatDate(exam.date)}}</th>
                         <th>
-                            <v-btn :color="yellow" small tile outlined :href="`?exam_date=${exam.date}`">
+                            <v-btn :color="yellow" small tile outlined :href="`?date=${exam.date}&id=${exam.id}`">
                                 VIEW RESULTS
                             </v-btn>
                         </th>
@@ -44,7 +59,7 @@
 <script>
 export default {
     name: "AllResults",
-    props: ['exams','subject','classId'],
+    props: ['exams','subject','classId','iscurrentexam','selected_exam'],
     data() {
         return {
             yellow:  "#e67d23",
