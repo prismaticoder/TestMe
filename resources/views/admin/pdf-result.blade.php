@@ -47,7 +47,7 @@
                 <tr>
                     <td>{{$loop->iteration}}</td>
                     <td>{{$student->code}}</td>
-                    <td>{{$student->getFullName()}}</td>
+                    <td>{{$student->fullName}}</td>
                     <td>{{$student->score ? $student->score['actual_score'] : "-"}}</td>
                     <td>{{$student->score ? $student->score['computed_score'] : "-"}}</td>
                 </tr>
