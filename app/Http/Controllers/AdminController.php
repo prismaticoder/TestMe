@@ -66,16 +66,10 @@ class AdminController extends Controller
         return view('admin.dashboard',compact('subjects','classes', 'exams'));
     }
 
-    public function getClassStudents($class) {
-        $class = Classes::where('class',$class)->first();
+    public function getAllStudents() {
+        $classes = Classes::with('students')->get();
 
-        if ($class) {
-            $students = $class->students()->withTrashed()->get();
-
-            return view('admin.class-students', compact('students','class'));
-        }
-
-        return abort('404','Page does not exist');
+        return view('admin.class-students', compact('classes'));
     }
 
     public function updateStudent(Request $request,$id) {
