@@ -24,13 +24,14 @@ class User extends Authenticatable
     protected $fillable = [
         'firstname', 'lastname', 'class_id', 'code'
     ];
+    protected $appends = ['fullName'];
 
     public function scores() {
         return $this->hasMany(Score::class);
     }
 
-    public function getFullName() {
-        return $this->firstname . ' ' . $this->lastname;
+    public function getFullNameAttribute() {
+        return $this->lastname . ' ' . $this->firstname;
     }
 
     public function getScore($exam_id) {

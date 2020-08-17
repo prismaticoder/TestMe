@@ -10,16 +10,16 @@ class Exam extends Model
     protected $appends = ['hasBeenWritten', 'questions'];
 
     //
-    public function questions() {
-        return $this->hasMany(Question::class);
-    }
-
     public function subject() {
         return $this->belongsTo(Subject::class);
     }
 
     public function class() {
         return $this->belongsTo(Classes::class);
+    }
+
+    public function questions() {
+        return $this->hasMany(Question::class);
     }
 
     public function scores() {

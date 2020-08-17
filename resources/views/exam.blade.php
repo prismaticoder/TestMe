@@ -63,7 +63,7 @@
             </li>
             <span style="display:none" class="subject">{{strtoupper($subject->alias)}}</span>
             <li class="nav-item">
-            <a class="nav-link">{{$user->getFullName()}}</a>
+            <a class="nav-link">{{$user->fullName}}</a>
             </li>
             <li class="nav-item">
             <a class="nav-link">Exam No: {{$user->code}}</a>
