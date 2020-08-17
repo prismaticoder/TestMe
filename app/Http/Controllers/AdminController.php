@@ -67,7 +67,9 @@ class AdminController extends Controller
     }
 
     public function getAllStudents() {
-        $classes = Classes::with('students')->get();
+        $classes = Classes::with(['students' => function ($q) {
+            $q->orderBy('lastname');
+          }])->get();
 
         return view('admin.class-students', compact('classes'));
     }
