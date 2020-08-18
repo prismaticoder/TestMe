@@ -68,7 +68,7 @@ class AdminController extends Controller
 
     public function getAllStudents() {
         $classes = Classes::with(['students' => function ($q) {
-            $q->orderBy('lastname');
+            $q->withTrashed()->orderBy('lastname');
           }])->get();
 
         return view('admin.class-students', compact('classes'));
@@ -83,23 +83,48 @@ class AdminController extends Controller
         $student->firstname = $firstname;
         $student->lastname = $lastname;
         $student->save();
+        $message = "Details updated successfully";
 
-        return response()->json('Details Saved Successfully');
+        return compact('student','message');
+    }
 
+    public function disableStudent($id) {
+        $student = User::find($id);
+        $student->delete();
+        $message = 'Student access disabled';
+
+        return compact('student','message');
     }
 
     public function deleteStudent($id) {
         $student = User::find($id);
-        $student->delete();
+        $student->forceDelete();
 
-        return response()->json('Deletion Successful!');
+        return response()->json(['message' => 'Student deleted successfully']);
     }
 
     public function restoreStudent($id) {
-        $student = User::onlyTrashed()->where('id',$id);
+        $student = User::onlyTrashed()->where('id',$id)->first();
         $student->restore();
+        $message = 'The selected student has succesfully been restored!';
 
-        return response()->json('The selected student has succesfully been restored!');
+        return compact('student','message');
+    }
+
+    public function generateStudentCode($class_id) {
+        $characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+        $code = mt_rand(5111, 9999) . $characters[rand(0, strlen($characters) - 1)] . $characters[rand(0, strlen($characters) - 1)];
+
+        $check = User::where('class_id',$class_id)->where('code', $code)->first();
+
+        //recursively check whether another student exists in that class with the same code
+        if ($check) {
+            return $this->generateStudentCode($class_id);
+        }
+
+        else {
+            return $code;
+        }
     }
 
     public function addStudent(Request $request) {
@@ -107,22 +132,18 @@ class AdminController extends Controller
         $lastname = $request->lastname;
         $class_id = $request->class_id;
 
-        $check = User::where('firstname',$firstname)->where('lastname',$lastname)->where('class_id',$class_id)->first();
+        $code = $this->generateStudentCode($class_id);
 
-        if (empty($check)) {
-            $student = new User;
-            $student->firstname = $firstname;
-            $student->lastname = $lastname;
-            $student->class_id = $class_id;
-            $student->code = rand(10000,50000);
-            $student->save();
-            $res = "Student Added Successfully!";
-        }
-        else {
-            $res = "This Student Already Exists!";
-        }
+        $student = new User;
+        $student->firstname = $firstname;
+        $student->lastname = $lastname;
+        $student->class_id = $class_id;
+        $student->code = $code;
+        $student->save();
 
-        return response()->json($res);
+        $message = "Student Added Successfully!";
+
+        return compact('student','message');
     }
 
     public function getAllQuestions($subject,$class_id) {
@@ -415,7 +436,7 @@ class AdminController extends Controller
         $subject_id = $request->subject_id;
         $class_id = $request->class_id;
         $today = date('Y-m-d');
-        $exam = Exam::where('subject_id',$subject_id)->where('class_id',$class_id)->where('date', $today)->with('subject','class')->first();
+        $exam = Exam::where('subject_id',$subject_id)->where('class_id',$class_id)->where('date', $today)->with('subject','class')->has('scores',0)->first();
 
         if ($exam) {
             $subject = Subject::where('id',$subject_id)->first();

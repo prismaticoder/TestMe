@@ -5,7 +5,7 @@
 
     <div class="container" id="app" data-app="true">
         {{-- <v-app> --}}
-            <class-students :classes="{{$classes}}"></class-students>
+            <class-students :allclasses="{{$classes}}"></class-students>
         {{-- </v-app> --}}
     </div>
 

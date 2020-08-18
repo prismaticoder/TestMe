@@ -52,17 +52,20 @@ Route::group(['prefix' => 'api'], function () {
     Route::patch('/start-exam','AdminController@startExam');
     Route::patch('/end-exam/{id}','AdminController@endExam');
     Route::post('/useTemplate/{template_id}','AdminController@createExamFromTemplate');
+    Route::post('/students', 'AdminController@addStudent');
+    Route::put('/students/{id}','AdminController@updateStudent');
+    Route::delete('/students/{id}','AdminController@deleteStudent');
+    Route::get('/disableStudent/{id}','AdminController@disableStudent');
+    Route::get('/restoreStudent/{id}','AdminController@restoreStudent');
+    Route::get('/generateNumber', function() {
+        $characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+
+        $code = mt_rand(5111, 9999) . $characters[rand(0, strlen($characters) - 1)] . $characters[rand(0, strlen($characters) - 1)];
+
+        dd($code);
+
+    });
 });
-//Ajax Routes
-Route::get('/admin/findQuestion/{id}', 'AdminController@findOneQuestion');
-Route::post('/calculateScore', 'StudentController@calculateScore');
-Route::post('/updateStudent/{id}','AdminController@updateStudent');
-Route::post('/deleteStudent/{id}','AdminController@deleteStudent');
-Route::post('/restoreStudent/{id}','AdminController@restoreStudent');
-Route::post('/addStudent', 'AdminController@addStudent');
-Route::get('/submitQuestion','StudentController@submitQuestion');
-Route::get('/checkMark/{id}','AdminController@checkMark');
-// Route::post('/exam/{subject}','StudentController@getAjaxQuestions');
 
 Route::get('/success','StudentController@submitSuccess')->name('success');
 
