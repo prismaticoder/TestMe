@@ -15,7 +15,7 @@ class ClassesTableSeeder extends Seeder
         for ($i=1; $i < 4; $i++) {
             DB::table('classes')->insert([
                 'id' => $i,
-                'class' => "JSS" . $i
+                'class' => "Grade" . $i + 6
             ]);
         }
 
