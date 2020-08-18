@@ -13,28 +13,10 @@
                         <th>S/N</th>
                         <th>EXAMINATION NUMBER</th>
                         <th>NAME</th>
-                        <th colspan="2">OPTIONS</th>
+                        <th colspan="3">OPTIONS</th>
                     </thead>
                     <tbody>
-                        <tr v-for="(student,index) in section.students" :key="student.id">
-                            <td>{{index+1}}</td>
-                            <td>{{student.code}}</td>
-                            <td>{{student.fullName}}</td>
-                            <td>
-                                <v-btn small text :color="yellow" title="Edit Student Details">
-                                    <v-icon>
-                                        mdi-pencil
-                                    </v-icon>
-                                </v-btn>
-                            </td>
-                            <td>
-                                <v-btn small text :color="yellow" title="Delete Student Details">
-                                    <v-icon>
-                                        mdi-close
-                                    </v-icon>
-                                </v-btn>
-                            </td>
-                        </tr>
+                        <SingleStudent v-for="(student,index) in section.students" :key="student.id" :student="student" :number="index+1" :yellow="yellow"/>
                     </tbody>
                 </table>
             </v-tab-item>
@@ -43,9 +25,14 @@
 </template>
 
 <script>
+import SingleStudent from './SingleStudent'
+
 export default {
     name: "ClassStudents",
     props: ['classes'],
+    components: {
+        SingleStudent
+    },
     data() {
         return {
             tab: null,
