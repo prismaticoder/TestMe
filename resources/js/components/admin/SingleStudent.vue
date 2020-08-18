@@ -89,7 +89,7 @@
 <script>
 export default {
     name: "SingleStudent",
-    props: ['yellow','student','number','classIndex'],
+    props: ['yellow','student','number','isadmin'],
     data() {
         return {
             editDialog: false,
@@ -174,8 +174,6 @@ export default {
                 this.deleteDialog = false;
                 this.loading = false
                 this.$emit('deleteStudent', this.student)
-                this.snackbar = true;
-                this.snackbarText = res.data.message
             })
             .catch(err => {
                 this.deleteDialog = false;
