@@ -11,13 +11,12 @@
             @foreach ($classes as $class)
                 <div class="card">
                     <div class="card-body">
-                    <a href="{{route('students')}}" class="text-dark">
-                    <h5 class="card-title">{{strtoupper($class->class)}}</h5>
-                    <p class="card-text">{{$class->students()->count()}} Students</P>
+                    <a href="/admin/students#{{strtolower($class->class)}}" class="text-dark">
+                            <h5 class="card-title">{{strtoupper($class->class)}}</h5>
+                            <p class="card-text">{{$class->students()->count()}} Students</p>
+                        </a>
                     </div>
-                    <div class="card-footer">
-                    <small class="text-muted"><a href="{{route('students')}}">See Student List</a></small>
-                    </div>
+
                 </div>
             @endforeach
 

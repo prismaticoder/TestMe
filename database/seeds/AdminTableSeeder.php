@@ -11,12 +11,10 @@ class AdminTableSeeder extends Seeder
      */
     public function run()
     {
-        $arr = [1,2,3,4,5,6];
-        foreach ($arr as $key => $value) {
-            DB::table('admins')->insert([
-                'username' => 'ora/tid/00'.$value,
-                'password' => bcrypt('oasis'.$value)
-            ]);
-        }
+        DB::table('admins')->insert([
+            'username' => 'admin',
+            'password' => bcrypt('admin'),
+            'role_id' => 1
+        ]);
     }
 }

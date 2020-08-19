@@ -4,9 +4,7 @@
 @section('content')
 
     <div class="container" id="app" data-app="true">
-        {{-- <v-app> --}}
-            <class-students :classes="{{$classes}}"></class-students>
-        {{-- </v-app> --}}
+        <class-students :allclasses="{{$classes}}" :isadmin="{{json_encode(auth()->user()->can('superAdminGate'))}}"></class-students>
     </div>
 
     <script src="{{asset('/js/app.js')}}"></script>

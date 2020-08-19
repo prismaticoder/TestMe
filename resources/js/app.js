@@ -12,6 +12,7 @@ window.Vue = require('vue');
 import axios from 'axios';
 Vue.prototype.$http = axios
 Vue.prototype.$http.defaults.baseURL = `${process.env.MIX_APP_URL}/api`
+Vue.prototype.$location = window.location
 
 //vuetify
 import Vuetify from 'vuetify';
