@@ -43,11 +43,11 @@ Run `php artisan db:seed` to seed a few subjects, classes, random student data a
 
 The default administrator seeded into the database has a username and password of `admin`. (You could always change this from the seeder files in `database/seeds/AdminTableSeeder.php`)
 
-You can now access the server at http://localhost:8000
+You can now access the server at http://localhost:8000 and the admin interface at http://localhost:8000/admin
 
 ## Contributing
 
-Wanna contribute? Fork the repo, make your changes and open a [Pull Request](https://github.com/prismathic/TestMe/pulls). I would be happy to go over it and merge if applicable.
+Wanna contribute? Fork the repo, make your changes and open a [pull request](https://github.com/prismathic/TestMe/pulls). I would be happy to go over it and merge if applicable.
 
 ## Acknowledgements
 
