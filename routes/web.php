@@ -57,6 +57,18 @@ Route::group(['prefix' => 'api'], function () {
     Route::delete('/students/{id}','AdminController@deleteStudent');
     Route::get('/disableStudent/{id}','AdminController@disableStudent');
     Route::get('/restoreStudent/{id}','AdminController@restoreStudent');
+    Route::group(['prefix' => 'admins', 'middleware' => ['auth:admins']], function() {
+        Route::post('/','Admin\AdminSectionController@createAdmin')->middleware('can:superAdminGate');
+        Route::put('/{id}','Admin\AdminSectionController@updateAdmin')->middleware('can:superAdminGate');
+        Route::get('/teachers','Admin\AdminSectionController@getAllTeachers')->middleware('can:superAdminGate');
+        Route::post('/teachers','Admin\AdminSectionController@createTeacher')->middleware('can:superAdminGate');
+        Route::put('/teachers/{id}','Admin\AdminSectionController@updateTeacher')->middleware('cannot:superAdminGate');
+        Route::delete('/teachers/{id}','Admin\AdminSectionController@deleteTeacher')->middleware('can:superAdminGate');
+        Route::get('/subjects','Admin\AdminSectionController@getAllSubjects')->middleware('can:superAdminGate');
+        Route::post('/subjects','Admin\AdminSectionController@createSubject')->middleware('can:superAdminGate');
+        Route::put('/subjects/{id}','Admin\AdminSectionController@updateSubject')->middleware('can:superAdminGate');
+
+    });
     Route::get('/generateNumber', function() {
         $characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
 
@@ -94,3 +106,21 @@ Route::group(['prefix' => 'admin'], function () {
     });
 
 });
+
+//function to add new teacher (username, password and subject, c'est fini)
+//function to add new admin (like a superadmin) - username and password only. Confirm that the user wants to add the person as an admin
+
+//Function to update admin details. Only the details of the admin that is logged in (like his/her username and password), the person's username and password
+//function to delete a teacher, that is to revoke their access.
+
+//can't delete an admin, can only revoke the person's access. Admins have equal rights so it should be very minimal
+//teacher can also change password but not subject
+//function to add the new teacher to the database on the place that the user is located
+//admin cannot change teacher's password, he can only change his own password and add a new teacher
+
+//why does a teacher's password have to be renewed everyday?
+//Teacher can change password but not subject
+
+//username should have no spaces in between. An example is aremu.physics or aremu_physics or olaosebikan-chemistry
+//main admin username can be anything.
+//so main admin can only add and delete teachers
