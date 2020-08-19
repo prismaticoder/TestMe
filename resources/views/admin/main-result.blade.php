@@ -23,7 +23,7 @@
                 <th>EXAMINATION NUMBER</th>
                 <th>NAME</th>
                 <th>ACTUAL SCORE</th>
-                <th>COMPUTED SCORE (/{{count($exams) > 0 ? $exams[0]->base_score : 50}})</th>
+                <th>COMPUTED SCORE {{count($exams) > 0 ? '(/' .$exams[0]->base_score.')' : ''}}</th>
             </tr>
             </thead>
             <tbody>
