@@ -13,7 +13,7 @@
                     <div class="card-body">
                     <a href="/admin/students#{{strtolower($class->class)}}" class="text-dark">
                             <h5 class="card-title">{{strtoupper($class->class)}}</h5>
-                            <p class="card-text">{{$class->students()->count()}} Students</p>
+                            <p class="card-text">{{$class->students()->withTrashed()->count()}} Students</p>
                         </a>
                     </div>
 
