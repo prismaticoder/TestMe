@@ -24,7 +24,7 @@ class Subject extends Model
     }
 
     public function admins() {
-        return $this->belongsTo(Admin::class);
+        return $this->belongsToMany(Admin::class);
     }
 
     public function getStartedExam($class_id) {

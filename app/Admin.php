@@ -37,8 +37,8 @@ class Admin extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function subject(){
-        return $this->hasOne(Subject::class);
+    public function subjects(){
+        return $this->belongsToMany(Subject::class);
     }
 
     public function role() {

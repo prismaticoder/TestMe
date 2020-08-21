@@ -16,8 +16,6 @@ class EditAdminsTable extends Migration
         Schema::table('admins', function (Blueprint $table) {
             $table->integer('role_id')->unsigned()->default(2);
             $table->foreign('role_id')->references('id')->on('roles');
-            $table->integer('subject_id')->unsigned();
-            $table->foreign('subject_id')->references('id')->on('subjects')->nullable();
         });
     }
 
