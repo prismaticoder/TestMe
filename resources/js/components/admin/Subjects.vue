@@ -11,9 +11,9 @@
         <hr>
         <h4>Subjects</h4>
         <hr>
-        <div class="container">
+        <div class="container-fluid">
             <v-expansion-panels accordion hover focusable>
-                <v-expansion-panel class="col-md-4" v-for="subject in subjects" :key="subject.id">
+                <v-expansion-panel class="col-md-4 border m-1" v-for="subject in subjects" :key="subject.id">
                         <v-expansion-panel-header><h5>{{subject.alias.toUpperCase()}}</h5></v-expansion-panel-header>
                             <v-expansion-panel-content>
                                 <SingleClass :single="single" :subject="subject" :exams="allExams" :yellow="yellow" @startNewExam="startNewExam" @endExam="endExam" v-for="single in classes" :key="single.id" />
