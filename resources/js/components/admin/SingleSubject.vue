@@ -2,9 +2,9 @@
     <tr>
         <td>{{number}}</td>
         <td>{{subject.subject_name}}</td>
-        <td>{{subject.alias}}</td>
+        <td>{{getClassList}}</td>
         <td>
-            <v-btn small text :color="yellow" title="Edit Student Details" @click="editDialog=true">
+            <v-btn small text :color="yellow" title="Edit Subject information" @click="editDialog=true">
                 <v-icon>
                     mdi-pencil
                 </v-icon>
@@ -30,40 +30,32 @@
             </v-btn>
         </td> -->
 
-        <!-- <v-dialog v-model="editDialog" max-width="500" persistent>
+        <v-dialog v-model="editDialog" max-width="500" persistent>
             <v-card>
-                <v-card-title class="headline">Edit Student Details</v-card-title>
+                <v-card-title class="headline">Update Subject Details</v-card-title>
                 <v-container>
-                    <v-text-field v-model="lastname" label="Surname"></v-text-field>
-                    <v-text-field v-model="firstname" label="Firstname"></v-text-field>
+                    <v-text-field v-model="name" @keyup="changeSlug" label="Subject Name"></v-text-field>
+                    <v-text-field readonly v-model="alias" label="Slug" hint="This is the url rendering of the subject"></v-text-field>
+
+                    <v-select
+                        v-model="classes"
+                        :items="items"
+                        chips
+                        item-color=""
+                        label="Classes taking this subject"
+                        multiple
+                    ></v-select>
+
                 </v-container>
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn :disabled="loading" color="green darken-1" text @click="backToPrevious">CLOSE</v-btn>
-                    <v-btn :loading="loading" :disabled="loading || !lastname || !firstname || (lastname === student.lastname && firstname === student.firstname)" color="green darken-1" text @click="updateStudent()">SAVE</v-btn>
+                    <v-btn :loading="loading" :disabled="loading || !name || !alias || classes.length === 0" color="green darken-1" text @click="updateSubject()">SAVE</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
 
-        <v-dialog v-model="disableDialog" :persistent="loading" max-width="350">
-            <v-card>
-                <v-card-title v-if="student.deleted_at" class="headline">Restore Examination Access?</v-card-title>
-                <v-card-title v-else class="headline">Disable Examination Access?</v-card-title>
-                <v-card-text v-if="student.deleted_at">
-                    Please confirm that you want to restore <strong>{{student.fullName}}'s</strong> access to the next school examinations.
-                </v-card-text>
-                <v-card-text v-else>
-                    Please confirm that you want to disable <strong>{{student.fullName}}'s</strong> access to the next school examinations.
-                </v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn :disabled="loading" color="green darken-1" text @click="disableDialog = false">Close</v-btn>
-                    <v-btn :loading="loading" :disabled="loading" color="green darken-1" text @click="student.deleted_at ? restoreStudent() : disableStudent()">Confirm</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
-
-        <v-dialog v-model="deleteDialog" :persistent="loading" max-width="350">
+        <!-- <v-dialog v-model="deleteDialog" :persistent="loading" max-width="350">
             <v-card>
                 <v-card-title class="headline">Delete this student?</v-card-title>
                 <v-card-text>
@@ -75,23 +67,27 @@
                     <v-btn :loading="loading" :disabled="loading" color="green darken-1" text @click="deleteStudent()">Confirm</v-btn>
                 </v-card-actions>
             </v-card>
-        </v-dialog>
+        </v-dialog> -->
 
         <v-snackbar v-model="snackbar">
             {{ snackbarText }}
             <v-btn color="pink" text @click="snackbar = false">
                 Close
             </v-btn>
-        </v-snackbar> -->
+        </v-snackbar>
     </tr>
 </template>
 
 <script>
 export default {
     name: "SingleSubject",
-    props: ['yellow','subject','number'],
+    props: ['yellow','subject','number','allclasses'],
     data() {
         return {
+            name: this.subject.subject_name,
+            alias: this.subject.alias,
+            classes: this.subject.classes.map(single => single.id),
+            items: this.allclasses.map((single) => {return {text: single.class, value: single.id}}),
             editDialog: false,
             loading: false,
             disableDialog: false,
@@ -100,6 +96,44 @@ export default {
             snackbarText: ''
         }
     },
+    methods: {
+        backToPrevious() {
+            this.name = this.subject.subject_name
+            this.alias = this.subject.alias
+            this.classes = this.subject.classes.map(single =>  single.id)
+            this.editDialog = false
+        },
+        changeSlug() {
+            this.alias = this.name.toLowerCase().split(' ').join('-')
+        },
+        updateSubject() {
+            this.loading = true
+
+            this.$http.put(`admins/subjects/${this.subject.id}`, {
+                name: this.name,
+                alias: this.alias,
+                classes: this.classes
+            })
+            .then(res => {
+                this.loading = false
+                this.editDialog = false
+                this.$emit('updateSubject', res.data.subject, this.number - 1)
+            })
+            .catch(err => {
+                this.loading = false
+                this.editDialog = false
+                console.log(err.response.data)
+                alert("Sorry, there was an error updating this subject, please try again later")
+            })
+        }
+    },
+    computed: {
+        getClassList() {
+            let classArray = this.subject.classes.map(single => single.class)
+
+            return classArray.join()
+        }
+    }
 }
 </script>
 

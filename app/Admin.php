@@ -40,10 +40,6 @@ class Admin extends Authenticatable
     ];
 
     public function subjects(){
-        return $this->belongsToMany(Subject::class)->distinct();
-    }
-
-    public function adminSubjects(){
         return $this->hasMany(AdminSubject::class);
     }
 

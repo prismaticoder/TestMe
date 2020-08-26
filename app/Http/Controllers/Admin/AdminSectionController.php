@@ -19,12 +19,62 @@ class AdminSectionController extends Controller
 
     public function index() {
 
-        $roles = Role::get();
+        $subjects = Subject::with('classes')->get();
+        $teachers = Admin::where('role_id', 2)->with(['subjects' => function ($q) {
+            $q->with('classes','subject');
+        }])->get();
 
-        return view('admin.Admin-Section')->with([
-           'roles'=>$roles
+        $classes = Classes::all();
+
+        return view('admin.Admin-Section', compact('classes','subjects','teachers'));
+
+    }
+
+    public function createSubject(Request $request) {
+        $request->validate([
+            'name' => ['required', 'string', 'unique:subjects,subject_name'],
+            'alias' => ['required', 'string', 'unique:subjects'],
+            'classes' => ['required', 'array']
         ]);
 
+
+        $subject = new Subject;
+        $subject->subject_name = $request->name;
+        $subject->alias = $request->alias;
+
+        $subject->save();
+
+        $subject->classes()->sync($request->classes, false);
+
+        $message = "Subject created successfully";
+
+        return compact('subject','message');
+    }
+
+    public function updateSubject(Request $request, $id) {
+        // $request->validate([
+        //     'name' => ['required', 'string', 'unique:subjects,subject_name'],
+        //     'alias' => ['required', 'string', 'unique:subjects'],
+        //     'classes' => ['required', 'array']
+        // ]);
+
+
+        $subject = Subject::find($id);
+
+        if ($subject) {
+            $subject->subject_name = $request->name;
+            $subject->alias = $request->alias;
+
+            $subject->save();
+
+            $subject->classes()->sync($request->classes, false);
+
+            $message = "Update successful";
+
+            return compact('subject','message');
+        }
+
+        return abort(404);
     }
 
     public function createAdmin(Request $request) {
@@ -79,7 +129,8 @@ class AdminSectionController extends Controller
         $request->validate([
             'username' => ['required', 'string', 'unique:admins', 'max:255'],
             'password' => ['required', 'string'],
-            'subject_id' => ['required', 'integer'],
+            'subjects' => ['required', 'array'],
+            'classes' => ['required', 'array'],
         ]);
 
         $check = Subject::find($request->subject_id);
@@ -88,10 +139,11 @@ class AdminSectionController extends Controller
             $teacher = new Admin;
             $teacher->username = $request->username;
             $teacher->password = $request->password;
-            $teacher->subject_id = $request->subject_id;
             $teacher->role_id = 2;
 
             $teacher->save();
+
+            $teacher->subjects->sync($request->subjects, false);
 
             $message = "Teacher created successfully";
 
