@@ -19,8 +19,6 @@ class CreateAdminSubjectTable extends Migration
             $table->foreign('admin_id')->references('id')->on('admins');
             $table->integer('subject_id')->unsigned();
             $table->foreign('subject_id')->references('id')->on('subjects');
-            $table->integer('class_id')->unsigned();
-            $table->foreign('class_id')->references('id')->on('classes');
         });
     }
 

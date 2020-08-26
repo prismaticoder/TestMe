@@ -14,7 +14,7 @@ class Classes extends Model
     }
 
     public function subjects() {
-        return $this->belongsToMany(Subject::class);
+        return $this->belongsToMany(Subject::class, 'admin_subject','class_id');
     }
 
     public function admins() {

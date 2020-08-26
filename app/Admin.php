@@ -28,6 +28,8 @@ class Admin extends Authenticatable
         'password', 'remember_token',
     ];
 
+    // protected $appends = ['admin_subjects'];
+
     /**
      * The attributes that should be cast to native types.
      *
@@ -41,13 +43,17 @@ class Admin extends Authenticatable
         return $this->belongsToMany(Subject::class)->distinct();
     }
 
+    public function adminSubjects(){
+        return $this->hasMany(AdminSubject::class);
+    }
+
     public function classes(){
         return $this->belongsToMany(Classes::class);
     }
 
     public function role() {
         return $this->belongsTo(Role::class);
-        }
+    }
 
     // i link this with gate
     public function isSuperAdmin() {
