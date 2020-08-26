@@ -21,7 +21,8 @@ class Subject extends Model
     }
 
     public function adminClasses() {
-        return $this->hasManyThrough(Classes::class, AdminSubject::class)->where('admin_id', Auth::id());
+        //get only classes the admin is teaching for that particular subject
+        return $this->hasManyThrough(Classes::class, AdminSubject::class, 'subject_id', 'id', 'id', 'class_id')->where('admin_id', Auth::id());
     }
 
     public function admins() {
