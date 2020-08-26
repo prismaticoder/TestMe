@@ -1,9 +1,14 @@
 @extends('layouts.main')
 @section('title', 'Teachers')
-@section('pageHeader', 'Teacher Section')
+@section('pageHeader', 'Administrative Section')
 @section('content')
 
-    <main role="main" >
+
+    <div id="app">
+        <admin-section :allsubjects="{{$subjects}}" :allteachers="{{$teachers}}"></admin-section>
+    </div>
+
+    {{-- <main role="main" >
         <div class="card-deck">
         <table class ="table table-responsive table-bordered">
             <tr>
@@ -29,5 +34,7 @@
             @endforeach
         </table>
         </div>
-    </main>
+    </main> --}}
+
+    <script src="{{asset('/js/app.js')}}"></script>
 @endsection
