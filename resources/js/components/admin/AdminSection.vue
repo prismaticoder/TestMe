@@ -20,7 +20,7 @@
                         <th colspan="3">OPTIONS</th>
                     </thead>
                     <tbody>
-                        <SingleSubject v-for="(subject,index) in subjects" :key="subject.id" :subject="subject" :number="index+1" :yellow="yellow"/>
+                        <SingleSubject v-for="(subject,index) in subjects" :key="subject.id" :allclasses="allclasses" :subject="subject" :number="index+1" :yellow="yellow" @updateSubject="updateSubject"/>
                     </tbody>
                 </table>
             </v-tab-item>
@@ -91,7 +91,7 @@ import SingleSubject from './SingleSubject'
 
 export default {
     name: "AdminSection",
-    props: ['allsubjects', 'allteachers'],
+    props: ['allsubjects', 'allteachers','allclasses'],
     components: {
         SingleTeacher,
         SingleSubject
@@ -104,6 +104,11 @@ export default {
             dialog: false,
             loading: false,
             yellow:  "#e67d23",
+        }
+    },
+    methods: {
+        updateSubject(subject, index) {
+            this.subjects = this.subjects.splice(index,1,subject)
         }
     }
 
