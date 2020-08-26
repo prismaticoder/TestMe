@@ -14,7 +14,11 @@ class Classes extends Model
     }
 
     public function subjects() {
-        return $this->belongsToMany(Subject::class, 'questions');
+        return $this->belongsToMany(Subject::class);
+    }
+
+    public function admins() {
+        return $this->belongsToMany(Admin::class);
     }
 
     public function hasStarted($subject_id) {

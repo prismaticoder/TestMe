@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAdminSubjectTable extends Migration
+class CreateClassSubjectTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,12 @@ class CreateAdminSubjectTable extends Migration
      */
     public function up()
     {
-        Schema::create('admin_subject', function (Blueprint $table) {
+        Schema::create('class_subject', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('admin_id');
-            $table->foreign('admin_id')->references('id')->on('admins');
-            $table->integer('subject_id')->unsigned();
-            $table->foreign('subject_id')->references('id')->on('subjects');
             $table->integer('class_id')->unsigned();
             $table->foreign('class_id')->references('id')->on('classes');
+            $table->integer('subject_id')->unsigned();
+            $table->foreign('subject_id')->references('id')->on('subjects');
         });
     }
 
@@ -31,6 +29,6 @@ class CreateAdminSubjectTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('admin_subject');
+        Schema::dropIfExists('class_subject');
     }
 }

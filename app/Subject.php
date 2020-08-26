@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Subject extends Model
 {
@@ -15,12 +16,12 @@ class Subject extends Model
         return $this->hasMany(Question::class);
     }
 
-    public function options() {
-        return $this->hasManyThrough(Option::class, Question::class);
+    public function classes() {
+        return $this->belongsToMany(Classes::class);
     }
 
-    public function classes() {
-        return $this->belongsToMany(Classes::class, 'questions');
+    public function adminClasses() {
+        return $this->hasManyThrough(Classes::class, AdminSubject::class)->where('admin_id', Auth::id());
     }
 
     public function admins() {

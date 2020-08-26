@@ -38,7 +38,11 @@ class Admin extends Authenticatable
     ];
 
     public function subjects(){
-        return $this->belongsToMany(Subject::class);
+        return $this->belongsToMany(Subject::class)->distinct();
+    }
+
+    public function classes(){
+        return $this->belongsToMany(Classes::class);
     }
 
     public function role() {
