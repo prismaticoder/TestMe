@@ -35,22 +35,15 @@
                 <v-card-title class="headline">Update Subject Details</v-card-title>
                 <v-container>
                     <v-text-field v-model="name" @keyup="changeSlug" label="Subject Name"></v-text-field>
-                    <v-text-field readonly v-model="alias" label="Slug" hint="This is the url rendering of the subject"></v-text-field>
+                    <v-text-field readonly v-model="alias" label="Slug" persistent-hint hint="This is the url rendering of the subject"></v-text-field>
 
-                    <v-select
-                        v-model="classes"
-                        :items="items"
-                        chips
-                        item-color=""
-                        label="Classes taking this subject"
-                        multiple
-                    ></v-select>
+                    <v-select v-model="classes" :items="items" chips deletable-chips label="Classes taking this subject" multiple></v-select>
 
                 </v-container>
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn :disabled="loading" color="green darken-1" text @click="backToPrevious">CLOSE</v-btn>
-                    <v-btn :loading="loading" :disabled="loading || !name || !alias || classes.length === 0" color="green darken-1" text @click="updateSubject()">SAVE</v-btn>
+                    <v-btn :loading="loading" :disabled="(loading || !name || !alias || classes.length === 0) || (name == subject.subject_name && alias ==subject.alias && isEqual)" color="green darken-1" text @click="updateSubject()">SAVE</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -125,13 +118,21 @@ export default {
                 console.log(err.response.data)
                 alert("Sorry, there was an error updating this subject, please try again later")
             })
-        }
+        },
     },
     computed: {
         getClassList() {
             let classArray = this.subject.classes.map(single => single.class)
 
             return classArray.join()
+        },
+        isEqual() {
+            let originalClasses = this.subject.classes.map(single => single.id);
+            let modifiedClasses = this.classes;
+
+            var union = [...new Set([...originalClasses, ...modifiedClasses])];
+
+            return union.length == originalClasses.length && union.length == modifiedClasses.length
         }
     }
 }

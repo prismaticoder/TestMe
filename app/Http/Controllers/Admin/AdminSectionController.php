@@ -47,6 +47,8 @@ class AdminSectionController extends Controller
 
         $subject->classes()->sync($request->classes);
 
+        $subject->load('classes');
+
         $message = "Subject created successfully";
 
         return compact('subject','message');
