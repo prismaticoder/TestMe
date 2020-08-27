@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Log;
 use App\Role;
 use Illuminate\Support\Facades\Auth;
 use App\Admin;
+use App\AdminSubject;
 use App\User;
 use App\Subject;
 use App\Classes;
@@ -44,7 +45,7 @@ class AdminSectionController extends Controller
 
         $subject->save();
 
-        $subject->classes()->sync($request->classes, false);
+        $subject->classes()->sync($request->classes);
 
         $message = "Subject created successfully";
 
@@ -67,7 +68,9 @@ class AdminSectionController extends Controller
 
             $subject->save();
 
-            $subject->classes()->sync($request->classes, false);
+            $subject->classes()->sync($request->classes);
+
+            $subject->load('classes');
 
             $message = "Update successful";
 
@@ -133,46 +136,73 @@ class AdminSectionController extends Controller
             'classes' => ['required', 'array'],
         ]);
 
-        $check = Subject::find($request->subject_id);
 
-        if ($check) {
-            $teacher = new Admin;
-            $teacher->username = $request->username;
-            $teacher->password = $request->password;
-            $teacher->role_id = 2;
+        $teacher = new Admin;
+        $teacher->username = $request->username;
+        $teacher->password = bcrypt($request->password);
+        $teacher->role_id = 2; //teacher's role_id
 
-            $teacher->save();
+        $teacher->save();
 
-            $teacher->subjects->sync($request->subjects, false);
+        foreach ($request->subjects as $subject) {
+            $admin_subject = new AdminSubject;
+            $admin_subject->admin_id = $teacher->id;
+            $admin_subject->subject_id = $subject->subject_id;
+            $admin_subject->save();
 
-            $message = "Teacher created successfully";
-
-            return compact('teacher','message');
+            $admin_subject->classes()->sync($subject->classes);
+            // $teacher->subjects()->save($subject->subject_id);
         }
 
-        return abort(404, $message = "Subject not found");
+        $message = "Teacher created successfully";
+
+        return compact('teacher','message');
     }
 
 
     public function updateTeacher(Request $request, $id) {
         $request->validate([
-            'username' => ['required', 'string', 'unique:admins', 'max:255'],
-            'password' => ['required', 'string']
+            'subjects' => ['required', 'array'],
         ]);
 
-        if (Auth::id() === $id) {
-            $teacher = Admin::find($id);
-            $teacher->username = $request->username;
-            $teacher->password = $request->password;
 
-            $teacher->save();
+        $teacher = Admin::find($id);
 
-            $message = "Your details were updated successfully";
+        foreach ($request->subjects as $subject) {
+            if ($teacher->subjects()->contains($subject->subject_id)) {
+                $admin_subject = AdminSubject::where('admin_id',$teacher->id)->where('subject_id',$subject->subject_id);
+                $admin_subject->classes()->sync($subject->classes);
+            }
 
-            return compact('teacher','message');
+            else {
+                $admin_subject = new AdminSubject;
+                $admin_subject->admin_id = $teacher->id;
+                $admin_subject->subject_id = $subject->subject_id;
+                $admin_subject->save();
+
+                $admin_subject->classes()->sync($subject->classes);
+            }
         }
 
-        return abort (401, "You are not authorized to perform this action");
+        $message = "Details updated successfully";
+
+        return compact('teacher','message');
+    }
+
+    public function updatePassword(Request $request) {
+        $request->validate([
+            'password' => ['required', 'string'],
+        ]);
+
+
+        $teacher = Admin::find(Auth::id());
+        $teacher->password = $request->password;
+
+        $teacher->save();
+
+        $message = "Your password was updated successfully";
+
+        return compact('teacher','message');
     }
 
     public function deleteTeacher($id) {
