@@ -2,9 +2,9 @@
     <tr>
         <td>{{number}}</td>
         <td>{{teacher.username}}</td>
-        <td>{{teacher.classes}}</td>
+        <td>{{getSubjects}}</td>
         <td>
-            <v-btn small text :color="yellow" title="Edit Student Details" @click="editDialog=true">
+            <v-btn small text :color="yellow" title="Update subjects for this teacher" @click="editDialog=true">
                 <v-icon>
                     mdi-pencil
                 </v-icon>
@@ -43,53 +43,15 @@
                     <v-btn :loading="loading" :disabled="loading || !lastname || !firstname || (lastname === student.lastname && firstname === student.firstname)" color="green darken-1" text @click="updateStudent()">SAVE</v-btn>
                 </v-card-actions>
             </v-card>
-        </v-dialog>
+        </v-dialog> -->
 
-        <v-dialog v-model="disableDialog" :persistent="loading" max-width="350">
-            <v-card>
-                <v-card-title v-if="student.deleted_at" class="headline">Restore Examination Access?</v-card-title>
-                <v-card-title v-else class="headline">Disable Examination Access?</v-card-title>
-                <v-card-text v-if="student.deleted_at">
-                    Please confirm that you want to restore <strong>{{student.fullName}}'s</strong> access to the next school examinations.
-                </v-card-text>
-                <v-card-text v-else>
-                    Please confirm that you want to disable <strong>{{student.fullName}}'s</strong> access to the next school examinations.
-                </v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn :disabled="loading" color="green darken-1" text @click="disableDialog = false">Close</v-btn>
-                    <v-btn :loading="loading" :disabled="loading" color="green darken-1" text @click="student.deleted_at ? restoreStudent() : disableStudent()">Confirm</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
-
-        <v-dialog v-model="deleteDialog" :persistent="loading" max-width="350">
-            <v-card>
-                <v-card-title class="headline">Delete this student?</v-card-title>
-                <v-card-text>
-                    Please confirm that you want to delete <strong>{{student.fullName}}</strong> from the school student database.
-                </v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn :disabled="loading" color="green darken-1" text @click="deleteDialog = false">Close</v-btn>
-                    <v-btn :loading="loading" :disabled="loading" color="green darken-1" text @click="deleteStudent()">Confirm</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
-
-        <v-snackbar v-model="snackbar">
-            {{ snackbarText }}
-            <v-btn color="pink" text @click="snackbar = false">
-                Close
-            </v-btn>
-        </v-snackbar> -->
     </tr>
 </template>
 
 <script>
 export default {
     name: "SingleTeacher",
-    props: ['yellow','teacher','number'],
+    props: ['yellow','teacher','number','subjects'],
     data() {
         return {
             editDialog: false,
@@ -97,9 +59,39 @@ export default {
             disableDialog: false,
             deleteDialog: false,
             snackbar: false,
-            snackbarText: ''
+            snackbarText: '',
+            items: null,
+            subjectArray: null
         }
     },
+    computed: {
+        getSubjects() {
+            let subjects = this.teacher.subjects.map((subject) => {
+                return `${subject.subject.subject_name} (${subject.classes.map(single => single.class).join()})`
+            })
+
+            return subjects.join()
+        }
+    },
+    mounted() {
+        let items = new Array()
+        let subjectArray = new Array()
+        let iteration = 1;
+        this.subjects.forEach(subject => {
+            subject.classes.forEach(single => {
+                items.push({text: `${subject.subject_name} (${single.class})`, value: iteration, subject_id: subject.id, class_id: single.id})
+
+                if (this.teacher.subjects.find(one => one.subject_id == subject.id && one.classes.find(oneClass => oneClass.id == single.id))) {
+                    subjectArray.push(iteration)
+                }
+
+                iteration++
+            })
+        })
+        this.items = items,
+        this.subjectArray = subjectArray
+
+    }
 }
 </script>
 
