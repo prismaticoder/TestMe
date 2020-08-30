@@ -2,7 +2,11 @@
     <tr>
         <td>{{number}}</td>
         <td>{{subject.subject_name}}</td>
-        <td>{{getClassList}}</td>
+        <td v-for="single in allclasses" :key="single.id">
+            <v-icon small v-if="subject.classes.find(one => one.class == single.class)">
+                mdi-check
+            </v-icon>
+        </td>
         <td>
             <v-btn small text :color="yellow" title="Edit Subject information" @click="editDialog=true">
                 <v-icon>
@@ -37,7 +41,7 @@
                     <v-text-field v-model="name" @keyup="changeSlug" label="Subject Name"></v-text-field>
                     <v-text-field readonly v-model="alias" label="Slug" persistent-hint hint="This is the url rendering of the subject"></v-text-field>
 
-                    <v-select v-model="classes" :items="items" chips deletable-chips label="Classes taking this subject" multiple></v-select>
+                    <v-select class="mt-3" v-model="classes" :items="items" chips deletable-chips label="Classes taking this subject" multiple></v-select>
 
                 </v-container>
                 <v-card-actions>
@@ -47,20 +51,6 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-
-        <!-- <v-dialog v-model="deleteDialog" :persistent="loading" max-width="350">
-            <v-card>
-                <v-card-title class="headline">Delete this student?</v-card-title>
-                <v-card-text>
-                    Please confirm that you want to delete <strong>{{student.fullName}}</strong> from the school student database.
-                </v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn :disabled="loading" color="green darken-1" text @click="deleteDialog = false">Close</v-btn>
-                    <v-btn :loading="loading" :disabled="loading" color="green darken-1" text @click="deleteStudent()">Confirm</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog> -->
 
         <v-snackbar v-model="snackbar">
             {{ snackbarText }}

@@ -12,12 +12,21 @@
                     ADD NEW SUBJECT
                 </v-btn>
 
-                <table class="table table-bordered w-100 text-center">
+                <table class="table table-bordered table-sm w-100 text-center">
                     <thead>
-                        <th>S/N</th>
-                        <th>SUBJECT NAME</th>
-                        <th>CLASSES UNDER THIS SUBJECT</th>
-                        <th colspan="3">OPTIONS</th>
+                        <tr>
+                            <th rowspan="2">S/N</th>
+                            <th rowspan="2">SUBJECT NAME</th>
+                            <th :colspan="allclasses.length">
+                                SUBJECT CLASSES
+                            </th>
+                            <th rowspan="2">OPTIONS</th>
+                        </tr>
+                        <tr>
+                            <th v-for="single in allclasses" :key="single.id">
+                                {{single.class}}
+                            </th>
+                        </tr>
                     </thead>
                     <tbody>
                         <SingleSubject v-for="(subject,index) in subjects" :key="subject.id" :allclasses="allclasses" :subject="subject" :number="index+1" :yellow="yellow" @updateSubject="updateSubject"/>
@@ -55,7 +64,7 @@
                         <th colspan="3">OPTIONS</th>
                     </thead>
                     <tbody>
-                        <SingleTeacher v-for="(teacher,index) in teachers" :key="teacher.id" :teacher="teacher" :number="index+1" :yellow="yellow"/>
+                        <SingleTeacher v-for="(teacher,index) in teachers" :key="teacher.id" :teacher="teacher" :subjects="subjects" :number="index+1" :yellow="yellow" @updateTeacher="updateTeacher"/>
                     </tbody>
                 </table>
 
@@ -104,6 +113,9 @@ export default {
     methods: {
         updateSubject(subject, index) {
             this.subjects.splice(index,1,subject)
+        },
+        updateTeacher(teacher, index) {
+            this.teachers.splice(index,1,teacher)
         },
         changeSlug() {
             this.alias = this.name.toLowerCase().split(' ').join('-')

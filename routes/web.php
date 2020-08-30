@@ -62,7 +62,7 @@ Route::group(['prefix' => 'api'], function () {
         Route::put('/{id}','Admin\AdminSectionController@updateAdmin')->middleware('can:superAdminGate');
         Route::get('/teachers','Admin\AdminSectionController@getAllTeachers')->middleware('can:superAdminGate');
         Route::post('/teachers','Admin\AdminSectionController@createTeacher')->middleware('can:superAdminGate');
-        Route::put('/teachers/{id}','Admin\AdminSectionController@updateTeacher')->middleware('cannot:superAdminGate');
+        Route::put('/teachers/{id}','Admin\AdminSectionController@updateTeacher')->middleware('can:superAdminGate');
         Route::delete('/teachers/{id}','Admin\AdminSectionController@deleteTeacher')->middleware('can:superAdminGate');
         Route::get('/subjects','Admin\AdminSectionController@getAllSubjects')->middleware('can:superAdminGate');
         Route::post('/subjects','Admin\AdminSectionController@createSubject')->middleware('can:superAdminGate');

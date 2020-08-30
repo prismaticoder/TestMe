@@ -171,20 +171,24 @@ class AdminSectionController extends Controller
         $teacher = Admin::find($id);
 
         foreach ($request->subjects as $subject) {
-            if ($teacher->subjects()->contains($subject->subject_id)) {
-                $admin_subject = AdminSubject::where('admin_id',$teacher->id)->where('subject_id',$subject->subject_id);
-                $admin_subject->classes()->sync($subject->classes);
+            $check = AdminSubject::where('admin_id',$teacher->id)->where('subject_id',$subject['subject_id'])->first();
+            if ($check) {
+                $check->classes()->sync($subject['classes']);
             }
 
             else {
                 $admin_subject = new AdminSubject;
                 $admin_subject->admin_id = $teacher->id;
-                $admin_subject->subject_id = $subject->subject_id;
+                $admin_subject->subject_id = $subject['subject_id'];
                 $admin_subject->save();
 
-                $admin_subject->classes()->sync($subject->classes);
+                $admin_subject->classes()->sync($subject['classes']);
             }
         }
+
+        $teacher->load(['subjects' => function ($q) {
+            $q->with('classes','subject');
+        }]);
 
         $message = "Details updated successfully";
 
