@@ -8,6 +8,8 @@ class AdminSubject extends Model
 {
     //
     protected $table = 'admin_subject';
+    protected $fillable = ['admin_id','subject_id'];
+    public $timestamps = false;
 
     public function subject() {
         return $this->belongsTo(Subject::class);
