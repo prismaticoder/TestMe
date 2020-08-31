@@ -10,40 +10,20 @@
                 </v-icon>
             </v-btn>
         </td>
-        <!-- <td>
-            <v-btn v-if="!student.deleted_at" small text :color="yellow" title="Disable this student's exam access" @click="disableDialog = true">
-                <v-icon>
-                    mdi-close
-                </v-icon>
-            </v-btn>
-            <v-btn v-else small text :color="yellow" title="Restore examination access for this student" @click="disableDialog = true">
-                <v-icon>
-                    mdi-check
-                </v-icon>
-            </v-btn>
-        </td>
-        <td>
-            <v-btn small text :color="yellow" title="Delete this student" @click="deleteDialog = true">
-                <v-icon>
-                    mdi-delete
-                </v-icon>
-            </v-btn>
-        </td> -->
 
-        <!-- <v-dialog v-model="editDialog" max-width="500" persistent>
+        <v-dialog v-model="editDialog" max-width="700" persistent>
             <v-card>
-                <v-card-title class="headline">Edit Student Details</v-card-title>
+                <v-card-title class="headline">Add/Remove Subjects from User &lt;{{teacher.username}}&gt; </v-card-title>
                 <v-container>
-                    <v-text-field v-model="lastname" label="Surname"></v-text-field>
-                    <v-text-field v-model="firstname" label="Firstname"></v-text-field>
+                    <v-autocomplete v-model="subjectArray" :items="items" chips deletable-chips label="Subjects" multiple></v-autocomplete>
                 </v-container>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn :disabled="loading" color="green darken-1" text @click="backToPrevious">CLOSE</v-btn>
-                    <v-btn :loading="loading" :disabled="loading || !lastname || !firstname || (lastname === student.lastname && firstname === student.firstname)" color="green darken-1" text @click="updateStudent()">SAVE</v-btn>
+                    <v-btn :disabled="loading" color="green darken-1" text @click="editDialog=false">CLOSE</v-btn>
+                    <v-btn :loading="loading" :disabled="loading || subjectArray.length == 0" color="green darken-1" text @click="updateTeacher()">SAVE</v-btn>
                 </v-card-actions>
             </v-card>
-        </v-dialog> -->
+        </v-dialog>
 
     </tr>
 </template>
@@ -51,7 +31,7 @@
 <script>
 export default {
     name: "SingleTeacher",
-    props: ['yellow','teacher','number','subjects'],
+    props: ['yellow','teacher','number','subjects','items'],
     data() {
         return {
             editDialog: false,
@@ -60,8 +40,48 @@ export default {
             deleteDialog: false,
             snackbar: false,
             snackbarText: '',
-            items: null,
-            subjectArray: null
+            subjectArray: []
+        }
+    },
+    methods: {
+        updateTeacher() {
+            this.loading = true
+
+            //create the proper subject array
+            let subjects = new Array();
+
+            this.subjectArray.forEach(value => {
+                let item = this.items.find(item => item.value === value)
+
+                if (item) {
+                    let subjectIndex = subjects.findIndex(subject => subject.subject_id === item.subject_id)
+
+                    if (subjectIndex !== -1) {
+                        subjects[subjectIndex].classes.push(item.class_id)
+                    }
+
+                    else {
+                        subjects.push({subject_id: item.subject_id, classes: [item.class_id]})
+                    }
+                }
+            })
+
+            console.log(subjects)
+
+            this.$http.put(`admins/teachers/${this.teacher.id}`, {
+                subjects
+            })
+            .then(res => {
+                this.loading = false
+                this.editDialog = false
+                this.$emit('updateTeacher', res.data.teacher, this.number - 1)
+            })
+            .catch(err => {
+                this.loading = false
+                this.editDialog = false
+                console.log(err.response.data)
+                alert("Sorry, there was an error updating this subject, please try again later")
+            })
         }
     },
     computed: {
@@ -74,21 +94,12 @@ export default {
         }
     },
     mounted() {
-        let items = new Array()
         let subjectArray = new Array()
-        let iteration = 1;
-        this.subjects.forEach(subject => {
-            subject.classes.forEach(single => {
-                items.push({text: `${subject.subject_name} (${single.class})`, value: iteration, subject_id: subject.id, class_id: single.id})
 
-                if (this.teacher.subjects.find(one => one.subject_id == subject.id && one.classes.find(oneClass => oneClass.id == single.id))) {
-                    subjectArray.push(iteration)
-                }
-
-                iteration++
-            })
+        this.items.forEach(item => {
+            if (this.teacher.subjects.find(subject => subject.subject_id === item.subject_id && subject.classes.find(single => single.id == item.class_id))) subjectArray.push(item.value)
         })
-        this.items = items,
+
         this.subjectArray = subjectArray
 
     }

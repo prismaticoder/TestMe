@@ -64,9 +64,26 @@
                         <th colspan="3">OPTIONS</th>
                     </thead>
                     <tbody>
-                        <SingleTeacher v-for="(teacher,index) in teachers" :key="teacher.id" :teacher="teacher" :subjects="subjects" :number="index+1" :yellow="yellow" @updateTeacher="updateTeacher"/>
+                        <SingleTeacher v-for="(teacher,index) in teachers" :key="teacher.id" :teacher="teacher" :subjects="subjects" :number="index+1" :yellow="yellow" :items="subjectList" @updateTeacher="updateTeacher"/>
                     </tbody>
                 </table>
+
+                <v-dialog v-model="teacherDialog" max-width="500" persistent>
+                    <v-card>
+                        <v-card-title class="headline">Add New Teacher</v-card-title>
+                        <v-container>
+                            <v-text-field v-model="username" label="Username"></v-text-field>
+                            <v-text-field v-model="password" type="password" label="Password"></v-text-field>
+                            <v-autocomplete v-model="subjectArray" :items="subjectList" chips deletable-chips label="Subjects" multiple hint="Subjects this teacher will be teaching" persistent-hint></v-autocomplete>
+
+                        </v-container>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn :disabled="loading" color="green darken-1" text @click="username=password=null; subjectArray.length = 0; subjectDialog=false">CLOSE</v-btn>
+                            <v-btn :loading="loading" :disabled="loading || !name || !alias || classes.length === 0" color="green darken-1" text @click="createSubject()">SAVE</v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
 
             </v-tab-item>
         </v-tabs-items>
@@ -107,7 +124,8 @@ export default {
             teacherDialog: false,
             yellow:  "#e67d23",
             snackbar: false,
-            snackbarText: ''
+            snackbarText: '',
+            subjectArray: new Array(),
         }
     },
     methods: {
@@ -142,6 +160,20 @@ export default {
                 alert("Sorry, there was an error updating this subject, please try again later")
             })
         },
+    },
+    computed: {
+        subjectList() {
+            let subjectList = new Array()
+            let iteration = 1;
+            this.subjects.forEach(subject => {
+                subject.classes.forEach(single => {
+                    subjectList.push({text: `${subject.subject_name} (${single.class})`, value: iteration, subject_id: subject.id, class_id: single.id})
+                    iteration++
+                })
+            })
+
+            return subjectList
+        }
     }
 
 }
