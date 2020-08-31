@@ -135,7 +135,6 @@ class AdminSectionController extends Controller
             'username' => ['required', 'string', 'unique:admins', 'max:255'],
             'password' => ['required', 'string'],
             'subjects' => ['required', 'array'],
-            'classes' => ['required', 'array'],
         ]);
 
 
@@ -149,12 +148,15 @@ class AdminSectionController extends Controller
         foreach ($request->subjects as $subject) {
             $admin_subject = new AdminSubject;
             $admin_subject->admin_id = $teacher->id;
-            $admin_subject->subject_id = $subject->subject_id;
+            $admin_subject->subject_id = $subject['subject_id'];
             $admin_subject->save();
 
-            $admin_subject->classes()->sync($subject->classes);
-            // $teacher->subjects()->save($subject->subject_id);
+            $admin_subject->classes()->sync($subject['classes']);
         }
+
+        $teacher->load(['subjects' => function ($q) {
+            $q->with('classes','subject');
+        }]);
 
         $message = "Teacher created successfully";
 
@@ -177,9 +179,10 @@ class AdminSectionController extends Controller
         $teacher->subjects()->whereNotIn('subject_id',$subject_indexes)->delete();
 
         foreach ($request->subjects as $subject) {
-            $check = AdminSubject::where('admin_id',$teacher->id)->where('subject_id',$subject['subject_id'])->first();
-            if ($check) {
-                $check->classes()->sync($subject['classes']);
+            $check_and_get_subject = AdminSubject::where('admin_id',$teacher->id)->where('subject_id',$subject['subject_id'])->first();
+
+            if ($check_and_get_subject) {
+                $check_and_get_subject->classes()->sync($subject['classes']);
             }
 
             else {

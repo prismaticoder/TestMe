@@ -51,8 +51,8 @@
                     </v-card>
                 </v-dialog>
             </v-tab-item>
-            <v-tab-item>
-                <v-btn tile class="m-3" small dark @click="dialog = true">
+            <v-tab-item class="text-center">
+                <v-btn tile class="m-3" small dark @click="teacherDialog = true">
                     ADD NEW TEACHER
                 </v-btn>
 
@@ -79,8 +79,8 @@
                         </v-container>
                         <v-card-actions>
                             <v-spacer></v-spacer>
-                            <v-btn :disabled="loading" color="green darken-1" text @click="username=password=null; subjectArray.length = 0; subjectDialog=false">CLOSE</v-btn>
-                            <v-btn :loading="loading" :disabled="loading || !name || !alias || classes.length === 0" color="green darken-1" text @click="createSubject()">SAVE</v-btn>
+                            <v-btn :disabled="loading" color="green darken-1" text @click="username=password=null; subjectArray.length = 0; teacherDialog=false">CLOSE</v-btn>
+                            <v-btn :loading="loading" :disabled="loading || !username || !password || subjectArray.length === 0" color="green darken-1" text @click="createTeacher()">SAVE</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
@@ -126,6 +126,8 @@ export default {
             snackbar: false,
             snackbarText: '',
             subjectArray: new Array(),
+            username: null,
+            password: null
         }
     },
     methods: {
@@ -158,6 +160,47 @@ export default {
                 this.subjectDialog = false
                 console.log(err.response.data)
                 alert("Sorry, there was an error updating this subject, please try again later")
+            })
+        },
+        createTeacher() {
+            this.loading = true
+
+            //create the proper subject array
+            let subjects = new Array();
+
+            this.subjectArray.forEach(value => {
+                let item = this.subjectList.find(item => item.value === value)
+
+                if (item) {
+                    let subjectIndex = subjects.findIndex(subject => subject.subject_id === item.subject_id)
+
+                    if (subjectIndex !== -1) {
+                        subjects[subjectIndex].classes.push(item.class_id)
+                    }
+
+                    else {
+                        subjects.push({subject_id: item.subject_id, classes: [item.class_id]})
+                    }
+                }
+            })
+
+            this.$http.post(`admins/teachers`, {
+                username: this.username,
+                password: this.password,
+                subjects
+            })
+            .then(res => {
+                this.loading = false
+                this.teacherDialog = false
+                this.teachers.push(res.data.teacher)
+                this.snackbarText = res.data.message
+                this.snackbar = true
+            })
+            .catch(err => {
+                this.loading = false
+                this.teacherDialog = false
+                console.log(err.response.data)
+                alert("Sorry, there was an error creating this teacher, please try again later")
             })
         },
     },

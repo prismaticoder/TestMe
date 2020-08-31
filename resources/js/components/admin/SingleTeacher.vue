@@ -11,7 +11,7 @@
             </v-btn>
         </td>
 
-        <v-dialog v-model="editDialog" max-width="700" persistent>
+        <v-dialog v-model="editDialog" max-width="700" :persistent="loading">
             <v-card>
                 <v-card-title class="headline">Add/Remove Subjects from User &lt;{{teacher.username}}&gt; </v-card-title>
                 <v-container>
@@ -65,8 +65,6 @@ export default {
                     }
                 }
             })
-
-            console.log(subjects)
 
             this.$http.put(`admins/teachers/${this.teacher.id}`, {
                 subjects
