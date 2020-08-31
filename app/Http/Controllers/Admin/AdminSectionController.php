@@ -170,6 +170,12 @@ class AdminSectionController extends Controller
 
         $teacher = Admin::find($id);
 
+        $subject_indexes = array_map(function($element) {
+            return $element['subject_id'];
+        }, $request->subjects);
+
+        $teacher->subjects()->whereNotIn('subject_id',$subject_indexes)->delete();
+
         foreach ($request->subjects as $subject) {
             $check = AdminSubject::where('admin_id',$teacher->id)->where('subject_id',$subject['subject_id'])->first();
             if ($check) {
