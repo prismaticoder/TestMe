@@ -21,13 +21,13 @@ class AdminSectionController extends Controller
     public function index() {
 
         $subjects = Subject::with('classes')->get();
-        $teachers = Admin::where('role_id', 2)->with(['subjects' => function ($q) {
+        $teachers = Admin::where('role_id', 2)->orderBy('username')->with(['subjects' => function ($q) {
             $q->with('classes','subject');
         }])->get();
 
         $classes = Classes::all();
 
-        return view('admin.Admin-Section', compact('classes','subjects','teachers'));
+        return view('admin.teachers', compact('classes','subjects','teachers'));
 
     }
 
@@ -158,7 +158,7 @@ class AdminSectionController extends Controller
             $q->with('classes','subject');
         }]);
 
-        $message = "Teacher created successfully";
+        $message = "User <" . $teacher->username.  "> created successfully";
 
         return compact('teacher','message');
     }

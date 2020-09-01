@@ -60,6 +60,7 @@ Vue.component('subjects', require('./components/admin/Subjects.vue').default)
 Vue.component('all-results', require('./components/admin/AllResults.vue').default)
 Vue.component('class-students', require('./components/admin/ClassStudents.vue').default)
 Vue.component('admin-section', require('./components/admin/AdminSection.vue').default)
+Vue.component('teachers', require('./components/admin/Teachers.vue').default)
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
