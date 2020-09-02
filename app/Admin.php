@@ -28,6 +28,8 @@ class Admin extends Authenticatable
         'password', 'remember_token',
     ];
 
+    // protected $appends = ['admin_subjects'];
+
     /**
      * The attributes that should be cast to native types.
      *
@@ -37,13 +39,17 @@ class Admin extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function subject(){
-        return $this->hasOne(Subject::class);
+    public function subjects(){
+        return $this->hasMany(AdminSubject::class);
+    }
+
+    public function classes(){
+        return $this->belongsToMany(Classes::class);
     }
 
     public function role() {
         return $this->belongsTo(Role::class);
-        }
+    }
 
     // i link this with gate
     public function isSuperAdmin() {

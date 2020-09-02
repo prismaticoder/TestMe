@@ -379,7 +379,7 @@ class AdminController extends Controller
             if (Gate::allows('view-subject-details', $subject)) {
 
                 $students = User::where('class_id',$class_id)->orderBy('lastname')->get();
-                $exams = Exam::where('subject_id',$subject->id)->where('class_id',$class_id)->has('scores')->orderBy('date','desc')->get();
+                $exams = Exam::where('subject_id',$subject->id)->where('class_id',$class_id)->orderBy('date','desc')->get();
 
                 $selected_exam = null;
                 if ($request->date && $request->id) {
@@ -436,7 +436,7 @@ class AdminController extends Controller
         $subject_id = $request->subject_id;
         $class_id = $request->class_id;
         $today = date('Y-m-d');
-        $exam = Exam::where('subject_id',$subject_id)->where('class_id',$class_id)->where('date', $today)->with('subject','class')->has('scores',0)->first();
+        $exam = Exam::where('subject_id',$subject_id)->where('class_id',$class_id)->where('date', $today)->with('subject','class')->doesntHave('scores')->first();
 
         if ($exam) {
             $subject = Subject::where('id',$subject_id)->first();

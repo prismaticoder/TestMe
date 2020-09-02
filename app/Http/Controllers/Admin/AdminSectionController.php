@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Log;
 use App\Role;
 use Illuminate\Support\Facades\Auth;
 use App\Admin;
+use App\AdminSubject;
 use App\User;
 use App\Subject;
 use App\Classes;
@@ -16,83 +17,220 @@ use App\Http\Controllers\Controller;
 
 class AdminSectionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-
-    protected function validator(array $data)
-    {
-        $this->validate($request, [
-            'username' => ['required', 'string'],
-            'password' => ['required', 'string'],
-            'subject' => ['required', 'integer'],
-        ]);
-
-
-    }
 
     public function index() {
 
-        $roles = Role::get();
+        $subjects = Subject::with('classes')->get();
+        $teachers = Admin::where('role_id', 2)->orderBy('username')->with(['subjects' => function ($q) {
+            $q->with('classes','subject');
+        }])->get();
 
-        return view('admin.Admin-Section')->with([
-           'roles'=>$roles
-        ]);
+        $classes = Classes::all();
+
+        return view('admin.teachers', compact('classes','subjects','teachers'));
 
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create(Request $request)
-    {
-        $this->validate($request, [
-            'username' => ['required', 'string'],
+    public function createSubject(Request $request) {
+        $request->validate([
+            'name' => ['required', 'string', 'unique:subjects,subject_name'],
+            'alias' => ['required', 'string', 'unique:subjects'],
+            'classes' => ['required', 'array']
+        ]);
+
+
+        $subject = new Subject;
+        $subject->subject_name = $request->name;
+        $subject->alias = $request->alias;
+
+        $subject->save();
+
+        $subject->classes()->sync($request->classes);
+
+        $subject->load('classes');
+
+        $message = "Subject created successfully";
+
+        return compact('subject','message');
+    }
+
+    public function updateSubject(Request $request, $id) {
+        // $request->validate([
+        //     'name' => ['required', 'string', 'unique:subjects,subject_name'],
+        //     'alias' => ['required', 'string', 'unique:subjects'],
+        //     'classes' => ['required', 'array']
+        // ]);
+
+
+        $subject = Subject::find($id);
+
+        if ($subject) {
+            $subject->subject_name = $request->name;
+            $subject->alias = $request->alias;
+
+            $subject->save();
+
+            $subject->classes()->sync($request->classes);
+
+            $subject->load('classes');
+
+            $message = "Update successful";
+
+            return compact('subject','message');
+        }
+
+        return abort(404);
+    }
+
+    public function createAdmin(Request $request) {
+        $request->validate([
+            'username' => ['required', 'string', 'unique:admins', 'max:255'],
             'password' => ['required', 'string'],
-            'subject' => ['required', 'integer'],
         ]);
-        $newAdmin = new Admin;
-        $newAdmin->username = $request->input('username');
-        $newAdmin->password = $request->input('password');
 
-        $subjectid = Subject::where('subject_name', $request->input('subject'))->first();
-        $newAdmin->adminSubjectId = $subjectid->id;
 
-        $role = Role::where('role', 'teacher')->first();
-        $adminRoleId = $role->id;
-        $newAdmin->adminRoleId = $adminRoleId;
+        $admin = new Admin;
+        $admin->username = $request->username;
+        $admin->password = $request->password;
+        $admin->subject_id = null;
+        $admin->role_id = 1;
 
-        $newAdmin->save();
+        $admin->save();
 
-        return view('admin.Admin-Section');
+        $message = "New administrator added successfully";
+
+        return compact('admin','message');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
+    public function updateAdmin(Request $request, $id) {
+        $request->validate([
+            'username' => ['required', 'string', 'unique:admins', 'max:255'],
+            'password' => ['required', 'string']
+        ]);
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
+        if (Auth::id() === $id) {
+            $admin = Admin::find($id);
+            $admin->username = $request->username;
+            $admin->password = $request->password;
+
+            $admin->save();
+
+            $message = "Your details were updated successfully";
+
+            return compact('admin','message');
+        }
+
+        return abort (401, "You are not authorized to perform this action");
+    }
+
+    public function getAllTeachers() {
+        $teachers = Admin::where('role_id',2)->get();
+
+        return compact('teachers');
+    }
 
 
+    public function createTeacher(Request $request) {
+        $request->validate([
+            'username' => ['required', 'string', 'unique:admins', 'max:255'],
+            'password' => ['required', 'string'],
+            'subjects' => ['required', 'array'],
+        ]);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
+
+        $teacher = new Admin;
+        $teacher->username = $request->username;
+        $teacher->password = bcrypt($request->password);
+        $teacher->role_id = 2; //teacher's role_id
+
+        $teacher->save();
+
+        foreach ($request->subjects as $subject) {
+            $admin_subject = new AdminSubject;
+            $admin_subject->admin_id = $teacher->id;
+            $admin_subject->subject_id = $subject['subject_id'];
+            $admin_subject->save();
+
+            $admin_subject->classes()->sync($subject['classes']);
+        }
+
+        $teacher->load(['subjects' => function ($q) {
+            $q->with('classes','subject');
+        }]);
+
+        $message = "User <" . $teacher->username.  "> created successfully";
+
+        return compact('teacher','message');
+    }
+
+
+    public function updateTeacher(Request $request, $id) {
+        $request->validate([
+            'subjects' => ['required', 'array'],
+        ]);
+
+
+        $teacher = Admin::find($id);
+
+        $subject_indexes = array_map(function($element) {
+            return $element['subject_id'];
+        }, $request->subjects);
+
+        $teacher->subjects()->whereNotIn('subject_id',$subject_indexes)->delete();
+
+        foreach ($request->subjects as $subject) {
+            $check_and_get_subject = AdminSubject::where('admin_id',$teacher->id)->where('subject_id',$subject['subject_id'])->first();
+
+            if ($check_and_get_subject) {
+                $check_and_get_subject->classes()->sync($subject['classes']);
+            }
+
+            else {
+                $admin_subject = new AdminSubject;
+                $admin_subject->admin_id = $teacher->id;
+                $admin_subject->subject_id = $subject['subject_id'];
+                $admin_subject->save();
+
+                $admin_subject->classes()->sync($subject['classes']);
+            }
+        }
+
+        $teacher->load(['subjects' => function ($q) {
+            $q->with('classes','subject');
+        }]);
+
+        $message = "Details updated successfully";
+
+        return compact('teacher','message');
+    }
+
+    public function updatePassword(Request $request) {
+        $request->validate([
+            'password' => ['required', 'string'],
+        ]);
+
+
+        $teacher = Admin::find(Auth::id());
+        $teacher->password = $request->password;
+
+        $teacher->save();
+
+        $message = "Your password was updated successfully";
+
+        return compact('teacher','message');
+    }
+
+    public function deleteTeacher($id) {
+
+        $teacher = Admin::find($id);
+        $teacher->delete();
+
+        $message = "Deletion successful!";
+
+        return compact('message');
+    }
+
+
     public function edit(Request $request)
     {
         // roles and admin => one to one relationship
