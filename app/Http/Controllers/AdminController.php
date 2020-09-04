@@ -14,6 +14,7 @@ use Gate;
 use DB;
 use Auth;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth as FacadesAuth;
 use PDF;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
@@ -148,28 +149,23 @@ class AdminController extends Controller
     }
 
     public function getAllQuestions($subject,$class_id) {
-        $subject = Subject::where('alias',$subject)->first();
-        $current_class = Classes::where('id', $class_id)->first();
+        $subject = Subject::where('alias',$subject)->firstOrFail();
+        $current_class = $subject->classes()->where('class_id', $class_id)->firstOrFail();
         $subject_id = $subject['id'];
         $classes = Classes::all();
 
-        if ($subject && $current_class) {
+        if (Gate::allows('view-subject-details', $subject)) {
+            //Get the exam with the latest date, that is the current exam.
+            $exams = Exam::where('subject_id',$subject->id)->where('class_id',$class_id)->orderBy('date','desc')->get();
 
-            if (Gate::allows('view-subject-details', $subject)) {
-                //Get the exam with the latest date, that is the current exam.
-                $exams = Exam::where('subject_id',$subject->id)->where('class_id',$class_id)->orderBy('date','desc')->get();
-
-                if (count($exams) > 0) {
-                    Session::put('exam_id', $exams[0]->id);
-                }
-                else {
-                    Session::forget('exam_id');
-                }
-
-                return view('admin.questions', compact('subject','class_id','current_class','classes','exams'));
+            if (count($exams) > 0) {
+                Session::put('exam_id', $exams[0]->id);
+            }
+            else {
+                Session::forget('exam_id');
             }
 
-            return abort('404','Page does not exist');
+            return view('admin.questions', compact('subject','class_id','current_class','classes','exams'));
         }
 
         return abort('404','Page does not exist');
