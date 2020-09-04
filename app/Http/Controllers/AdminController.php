@@ -59,7 +59,7 @@ class AdminController extends Controller
 
         foreach ($subjects as $subject) {
             foreach ($subject->classes as $class) {
-                $class->hasPendingExamToday = $class->hasPendingExamToday($subject->id);
+                $class->hasPendingExamToday = $class->hasPendingExamToday(Auth::user()->isSuperAdmin() ? $subject->id : $subject->subject_id);
             }
         }
 
