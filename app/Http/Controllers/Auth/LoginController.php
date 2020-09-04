@@ -55,7 +55,6 @@ class LoginController extends Controller
 
         if ($user) {
             Auth::login($user);
-            Session::put('scoreArray', []);
             return redirect()->intended('/home');
         }
 
