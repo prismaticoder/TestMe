@@ -35,7 +35,9 @@ class AuthServiceProvider extends ServiceProvider
 
         //admin should only view questions of his own subject
         Gate::define('view-subject-details', function($admin, $subject) {
-            return $admin->isSuperAdmin() || $admin->subject_id === $subject->id;
+            $check = $admin->subjects()->where('subject_id', $subject->id)->first();
+
+            return $admin->isSuperAdmin() || $check;
         });
     }
 }
