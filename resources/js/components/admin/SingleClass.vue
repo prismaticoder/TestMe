@@ -14,7 +14,7 @@
             </v-btn>
         </div>
         <div class="col-md-4">
-            <v-btn class="ml-n3" v-if="!examStarted" @click="dialog = true" :disabled="!(single.latestExams[subject.subject_name] && single.latestExams[subject.subject_name].date == today && !single.latestExams[subject.subject_name].hasBeenWritten && single.latestExams[subject.subject_name].questions.length > 0)" small :color="yellow" :title="single.latestExams[subject.subject_name] ? 'Start Exam' : 'You cannot start this exam because exam duration has not been set'">
+            <v-btn class="ml-n3" v-if="!examStarted" @click="dialog = true" :disabled="!single.hasPendingExamToday" small :color="yellow" :title="single.hasPendingExamToday ? 'Start Exam' : 'You cannot start this exam because exam duration has not been set'">
                 Begin Exam
             </v-btn>
             <v-btn v-else class="ml-n3" @click="dialog = true" small title="End Exam" :color="yellow">

@@ -13,9 +13,11 @@ use App\User;
 use Gate;
 use DB;
 use Auth;
+use Illuminate\Support\Arr;
 use PDF;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
@@ -32,17 +34,18 @@ class AdminController extends Controller
     public function dashboard() {
         // to authorize admin as the super admin
 
-        $classes = Classes::get();
         $exams = [];
 
-        if(Gate::denies('superAdminGate')){
+        if (Gate::denies('superAdminGate')){
             //Only return the subject of that user
-            $subjects = Subject::where('id', Auth::user()->subject_id)->get();
-            $all_started = Exam::where('subject_id', Auth::user()->subject_id)->where('hasStarted', 1)->get();
+            $subjects = Auth::user()->subjects()->with('classes','subject')->get();
+            $classes = Classes::get();
+            $all_started = Exam::whereIn('subject_id', Arr::pluck($subjects, 'subject_id'))->where('hasStarted', 1)->get();
         }
 
         else {
             $subjects = Subject::orderBy('subject_name')->get();
+            $classes = Classes::get();
             //get all started exams
             $all_started = Exam::where('hasStarted', 1)->get();
         }
@@ -53,12 +56,10 @@ class AdminController extends Controller
             }
         }
 
-        foreach ($classes as $class) {
-            $exams_array = [];
-            foreach ($subjects as $subject) {
-                $exams_array[$subject->subject_name] = $class->getCurrentExam($subject->id);
+        foreach ($subjects as $subject) {
+            foreach ($subject->classes as $class) {
+                $class->hasPendingExamToday = $class->hasPendingExamToday($subject->id);
             }
-            $class->latestExams = $exams_array;
         }
 
         $exams = json_encode($exams);
@@ -379,7 +380,7 @@ class AdminController extends Controller
             if (Gate::allows('view-subject-details', $subject)) {
 
                 $students = User::where('class_id',$class_id)->orderBy('lastname')->get();
-                $exams = Exam::where('subject_id',$subject->id)->where('class_id',$class_id)->orderBy('date','desc')->get();
+                $exams = $current_class->getAllExams($subject->id);
 
                 $selected_exam = null;
                 if ($request->date && $request->id) {
@@ -439,7 +440,7 @@ class AdminController extends Controller
         $exam = Exam::where('subject_id',$subject_id)->where('class_id',$class_id)->where('date', $today)->with('subject','class')->doesntHave('scores')->first();
 
         if ($exam) {
-            $subject = Subject::where('id',$subject_id)->first();
+            $subject = Subject::find($subject_id);
 
             if (Gate::allows('view-subject-details', $subject)) {
                 $exam->hasStarted = 1;
@@ -460,7 +461,7 @@ class AdminController extends Controller
 
 
         if ($exam) {
-            $subject = Subject::where('id',$subject_id)->first();
+            $subject = Subject::find($subject_id);
 
             if (Gate::allows('view-subject-details', $subject)) {
                 $exam->hasStarted = 0;
