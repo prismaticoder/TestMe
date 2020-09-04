@@ -15,7 +15,7 @@
         <li class="nav-item active">
             <a class="nav-link" href="#">{{strtoupper($subject->alias)}} <span class="sr-only">(current)</span></a>
         </li>
-        @foreach ($classes as $class)
+        @foreach ($subject->classes as $class)
             <li class="nav-item">
             <a class="nav-link {{ (request()->segment(4) == $class->id) ? 'active' : '' }}" href="{{\Request::route()->getName() == 'questions' ? route('questions',['subject'=>$subject->alias,'class_id'=>$class->id]) : route('results',['subject'=>$subject->alias,'class_id'=>$class->id])}}">JSS {{$class->id}}</a>
             </li>
