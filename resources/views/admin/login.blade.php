@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="/docs/4.1/assets/img/favicons/favicon.ico">
+    <link rel="icon" href="{{asset('/img/logo.png')}}">
 
     <title>{{config('app.name')}} | {{config('app.schoolAlias')}} - Teacher Login</title>
 
@@ -73,7 +73,7 @@
   </head>
 
   <body class="text-center">
-    <form class="form-signin" action="{{route('admin-login')}}" method="post">
+    <form class="form-signin" autocomplete="off" action="{{route('admin-login')}}" method="post">
 
       <h1 class="h3 mb-3 font-weight-normal">Teacher Login</h1>
 
@@ -83,7 +83,10 @@
 
         @if ($errors->any())
                 @foreach ($errors->all() as $error)
-                    <strong style="color:red">{{$error}}</strong>
+                <div class="alert alert-danger" role="alert">
+                    <strong>{{$error}}</strong><button type="button" class="close" data-dismiss='alert' aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                </div>
                 @endforeach
         @endif
 
