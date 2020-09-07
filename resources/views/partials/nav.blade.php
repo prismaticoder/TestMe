@@ -13,14 +13,19 @@
             <li class="nav-item">
                 <a class="nav-link {{ (\Request::route()->getName() == 'dashboard') ? 'active' : '' }}" href="{{route('dashboard')}}">Main Dashboard</a>
             </li>
-            {{-- <li class="nav-item">
-                <a class="nav-link {{ (\Request::route()->getName() == 'results') ? 'active' : '' }}" href="{{route('results')}}">Results</a>
-            </li> --}}
+            <li class="nav-item">
+                <a class="nav-link {{ (\Request::route()->getName() == 'students') ? 'active' : '' }}" href="{{route('students')}}">Students</a>
+            </li>
+
             @can('superAdminGate')
             <li class="nav-item">
                 <a class="nav-link {{ (\Request::route()->getName() == 'teachers') ? 'active' : '' }}" href="{{route('teachers')}}">Teachers</a>
             </li>
             @endcan
+
+            <li class="nav-item">
+                <a class="nav-link {{ (\Request::route()->getName() == 'account') ? 'active' : '' }}" href="{{route('account')}}">Manage Account</a>
+            </li>
         </ul>
         <span>
             <a class="mt-2 nav-link logoutBtn" href="{{route('admin-logout')}}">Sign Out</a>

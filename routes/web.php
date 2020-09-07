@@ -87,6 +87,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/logout', "Admin\LoginController@logout")->name('admin-logout');
     Route::get('/', 'AdminController@dashboard')->name('dashboard');
     Route::get('/students', 'AdminController@getAllStudents')->name('students');
+    Route::get('/account', 'AdminController@getAccountPage')->name('account');
     Route::get('/{subject}/hostexam','AdminController@hostExam')->name('host-exam');
     Route::get('/{subject}/endexam','AdminController@endExam')->name('end-exam');
     //new route has been added
