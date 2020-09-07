@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 class Subject extends Model
 {
 
+    protected $appends = ['subject_id'];
+
     public function scores() {
         return $this->hasMany(Score::class);
     }
@@ -32,6 +34,10 @@ class Subject extends Model
 
     public function admins() {
         return $this->belongsToMany(Admin::class);
+    }
+
+    public function getSubjectIdAttribute() {
+        return $this->attributes['id'];
     }
 
     public function getStartedExam($class_id) {
