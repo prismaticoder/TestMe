@@ -40,6 +40,14 @@ class User extends Authenticatable
         return $score ? ['actual_score' => $score->actual_score, 'computed_score' => $score->computed_score] : null;
     }
 
+    public function getAllStartedExams() {
+        $exams = Exam::where('class_id', $this->class_id)->where('hasStarted',1)->whereDoesntHave('scores',function($q) {
+            $q->where('user_id',$this->id);
+        })->get();
+
+        return $exams;
+    }
+
     /**
      * The attributes that should be hidden for arrays.
      *

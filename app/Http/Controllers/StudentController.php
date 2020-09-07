@@ -25,8 +25,9 @@ class StudentController extends Controller
     }
 
     public function index() {
-        $subjects = Subject::all();
-        return view('home',compact('subjects'));
+        $exams = Auth::user()->getAllStartedExams();
+
+        return view('home',compact('exams'));
     }
 
     public function getExamQuestions(\Request $request, $subject) {
