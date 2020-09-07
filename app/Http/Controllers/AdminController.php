@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Admin;
 use Illuminate\Http\Request;
 use App\Subject;
 use App\Classes;
@@ -15,6 +16,7 @@ use DB;
 use Auth;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth as FacadesAuth;
+use Illuminate\Support\Facades\Hash;
 use PDF;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
@@ -513,6 +515,32 @@ class AdminController extends Controller
         $exam = Exam::find(Session::get('exam_id'));
 
         return response()->json(['exam' => $exam, 'message' => 'Settings updated successfully']);
+    }
+
+    public function getAccountPage() {
+        return view('admin.manage-account');
+    }
+
+    public function confirmPassword(Request $request) {
+        $check = Hash::check($request->password, Auth::user()->password);
+
+        return response()->json(['valid' => $check]);
+    }
+
+    public function updatePassword(Request $request) {
+        $request->validate([
+            'password' => ['required', 'string'],
+        ]);
+
+
+        $admin = Admin::find(Auth::id());
+        $admin->password = bcrypt($request->password);
+
+        $admin->save();
+
+        $message = "Your password has successfully been updated!";
+
+        return compact('message');
     }
 
 }

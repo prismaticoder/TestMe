@@ -59,7 +59,6 @@ Route::group(['prefix' => 'api'], function () {
     Route::get('/restoreStudent/{id}','AdminController@restoreStudent');
     Route::group(['prefix' => 'admins', 'middleware' => ['auth:admins']], function() {
         Route::post('/','Admin\AdminSectionController@createAdmin')->middleware('can:superAdminGate');
-        Route::put('/{id}','Admin\AdminSectionController@updateAdmin')->middleware('can:superAdminGate');
         Route::get('/teachers','Admin\AdminSectionController@getAllTeachers')->middleware('can:superAdminGate');
         Route::post('/teachers','Admin\AdminSectionController@createTeacher')->middleware('can:superAdminGate');
         Route::put('/teachers/{id}','Admin\AdminSectionController@updateTeacher')->middleware('can:superAdminGate');
@@ -67,6 +66,8 @@ Route::group(['prefix' => 'api'], function () {
         Route::get('/subjects','Admin\AdminSectionController@getAllSubjects')->middleware('can:superAdminGate');
         Route::post('/subjects','Admin\AdminSectionController@createSubject')->middleware('can:superAdminGate');
         Route::put('/subjects/{id}','Admin\AdminSectionController@updateSubject')->middleware('can:superAdminGate');
+        Route::post('/confirmPassword', 'AdminController@confirmPassword');
+        Route::put('/updatePassword', 'AdminController@updatePassword');
 
     });
     Route::get('/generateNumber', function() {
