@@ -157,7 +157,7 @@ class AdminController extends Controller
         if (Gate::allows('view-subject-details', [$subject->id, $class_id])) {
             //Get the exam with the latest date, that is the current exam.
             $exams = Exam::where('subject_id',$subject->id)->where('class_id',$class_id)->orderBy('date','desc')->get();
-            $classes = Auth::user()->isSuperAdmin() ? Classes::all() : $subject->adminSubjects()->where('admin_id', Auth::id())->first()->classes;
+            $classes = Auth::user()->isSuperAdmin() ? $subject->classes : $subject->adminSubjects()->where('admin_id', Auth::id())->first()->classes;
 
             if (count($exams) > 0) {
                 Session::put('exam_id', $exams[0]->id);
@@ -387,7 +387,7 @@ class AdminController extends Controller
                 $student->score = count($exams) > 0 ? $student->getScore($selected_exam ? $selected_exam->id : $exams[0]->id) : null;
             }
 
-            $classes = Auth::user()->isSuperAdmin() ? Classes::all() : $subject->adminSubjects()->where('admin_id', Auth::id())->first()->classes;
+            $classes = Auth::user()->isSuperAdmin() ? $subject->classes : $subject->adminSubjects()->where('admin_id', Auth::id())->first()->classes;
 
             return view('admin.main-result',compact('students','subject','current_class','classes','exams','selected_exam'));
         }
