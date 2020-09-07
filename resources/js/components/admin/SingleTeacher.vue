@@ -36,7 +36,7 @@
             <v-card>
                 <v-card-title class="headline">Revoke User Access?</v-card-title>
                 <v-card-text>
-                Please confirm that you want to permanently revoke this user's access to the administrative section of this platform.
+                Please confirm that you want to permanently revoke <strong>{{teacher.username}}</strong>'s access to the administrative section of this platform.
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
