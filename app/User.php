@@ -30,6 +30,10 @@ class User extends Authenticatable
         return $this->hasMany(Score::class);
     }
 
+    public function class() {
+        return $this->belongsTo(Classes::class);
+    }
+
     public function getFullNameAttribute() {
         return ucfirst(strtolower($this->lastname)) . ' ' . ucfirst(strtolower($this->firstname));
     }
