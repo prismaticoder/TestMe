@@ -90,21 +90,11 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/account', 'AdminController@getAccountPage')->name('account');
     Route::get('/{subject}/hostexam','AdminController@hostExam')->name('host-exam');
     Route::get('/{subject}/endexam','AdminController@endExam')->name('end-exam');
-    //new route has been added
-
-    Route::group(['prefix' => 'teachers', 'middleware' => ['auth:admins','can:superAdminGate']], function() {
-        Route::get('/edit-admin','Admin\AdminSectionController@edit')->name('edit-admin');
-        Route::get('/','Admin\AdminSectionController@index')->name('teachers');
-        Route::post('/update-admin','Admin\AdminSectionController@update')->name('update-admin');
-        Route::post('/delete-admin','Admin\AdminSectionController@destroy')->name('destroy-admin');
-        Route::post('/add-admin','Admin\AdminSectionController@create')->name('add-admin');
-    });
-
-    Route::group(['prefix' => 'subjects'], function() {
-        Route::get('/{subject}/{class_id}/questions', 'AdminController@getAllQuestions')->name('questions');
-        Route::get('/{subject}/{class_id}/results', 'AdminController@getSingleResult')->name('results');
-        Route::get('/{subject}/{class_id}/results/download/{exam_id}', 'AdminController@downloadResult')->name('download-result');
-    });
+    Route::get('/teachers', 'Admin\AdminSectionController@teachersPage')->name('teachers');
+    Route::get('/subjects', 'Admin\AdminSectionController@subjectsPage')->name('subjects');
+    Route::get('/{subject}/{class_id}/questions', 'AdminController@getAllQuestions')->name('questions');
+    Route::get('/{subject}/{class_id}/results', 'AdminController@getSingleResult')->name('results');
+    Route::get('/{subject}/{class_id}/results/download/{exam_id}', 'AdminController@downloadResult')->name('download-result');
 
 });
 

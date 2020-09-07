@@ -57,6 +57,7 @@ Vue.component('Questions', require('./components/Questions.vue').default);
 Vue.component('Timer', require('./components/Timer.vue').default);
 Vue.component('add-question', require('./components/admin/AddQuestion.vue').default)
 Vue.component('subjects', require('./components/admin/Subjects.vue').default)
+Vue.component('all-subjects', require('./components/admin/AllSubjects.vue').default)
 Vue.component('all-results', require('./components/admin/AllResults.vue').default)
 Vue.component('class-students', require('./components/admin/ClassStudents.vue').default)
 Vue.component('admin-section', require('./components/admin/AdminSection.vue').default)

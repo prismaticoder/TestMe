@@ -4,12 +4,12 @@
             <span>{{single.class}}</span>
         </div>
         <div class="col-md-4">
-            <v-btn :href="`/admin/subjects/${subject.alias}/${single.id}/questions`" small title="Go to Questions" :color="yellow">
+            <v-btn :href="`/admin/${subject.alias}/${single.id}/questions`" small title="Go to Questions" :color="yellow">
                 Questions
             </v-btn>
         </div>
         <div class="col-md-4">
-            <v-btn :href="`/admin/subjects/${subject.alias}/${single.id}/results`" small title="View results of most recent exam" :color="yellow">
+            <v-btn :href="`/admin/${subject.alias}/${single.id}/results`" small title="View results of most recent exam" :color="yellow">
                 Results
             </v-btn>
         </div>
@@ -59,7 +59,7 @@ export default {
 
             this.$http.patch('start-exam', {
                 class_id: this.single.id,
-                subject_id: this.subject.id
+                subject_id: this.subject.subject_id
             })
             .then(res => {
                 this.loading = false
@@ -80,7 +80,7 @@ export default {
             let examId = this.exams.filter(exam => exam.subject.subject_name == this.subject.subject_name && exam.class.class == this.single.class)[0].id
             this.$http.patch(`end-exam/${examId}`, {
                 class_id: this.single.id,
-                subject_id: this.subject.id
+                subject_id: this.subject.subject_id
             })
             .then(res => {
                 this.loading = false

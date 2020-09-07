@@ -17,7 +17,7 @@
         </li>
         @foreach ($classes as $class)
             <li class="nav-item">
-            <a class="nav-link {{ (request()->segment(4) == $class->id) ? 'active' : '' }}" href="{{\Request::route()->getName() == 'questions' ? route('questions',['subject'=>$subject->alias,'class_id'=>$class->id]) : route('results',['subject'=>$subject->alias,'class_id'=>$class->id])}}">{{$class->class}}</a>
+                <a class="nav-link {{ (request()->segment(3) == $class->id) ? 'active' : '' }}" href="{{\Request::route()->getName() == 'questions' ? route('questions',['subject'=>$subject->alias,'class_id'=>$class->id]) : route('results',['subject'=>$subject->alias,'class_id'=>$class->id])}}">{{$class->class}}</a>
             </li>
         @endforeach
         </ul>

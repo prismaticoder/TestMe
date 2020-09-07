@@ -9,7 +9,7 @@
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarText">
-        <ul class="navbar-nav mx-auto col-md-3">
+        <ul class="navbar-nav mx-auto col-md-5">
             <li class="nav-item">
                 <a class="nav-link {{ (\Request::route()->getName() == 'dashboard') ? 'active' : '' }}" href="{{route('dashboard')}}">Main Dashboard</a>
             </li>
@@ -18,9 +18,12 @@
             </li>
 
             @can('superAdminGate')
-            <li class="nav-item">
-                <a class="nav-link {{ (\Request::route()->getName() == 'teachers') ? 'active' : '' }}" href="{{route('teachers')}}">Teachers</a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ (\Request::route()->getName() == 'teachers') ? 'active' : '' }}" href="{{route('teachers')}}">Teachers</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ (\Request::route()->getName() == 'subjects') ? 'active' : '' }}" href="{{route('subjects')}}">Subjects</a>
+                </li>
             @endcan
 
             <li class="nav-item">
