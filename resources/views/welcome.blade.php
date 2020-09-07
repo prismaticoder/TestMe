@@ -124,6 +124,18 @@
         font-weight: 700;
         }
 
+        .loginBtn:hover {
+            color: white;
+            border: solid #e67d23 1.5px;
+            background-color: transparent
+        }
+
+        .loginBtn {
+            background-color: #e67d23;
+            color: white;
+
+        }
+
 
         /*
         * Footer
@@ -155,9 +167,9 @@
                 <div class="top-right links">
                   {{-- <a href="{{ url('/admin') }}" class="btn btn-lg btn-secondary mr-2">Admin Login</a> --}}
                     @auth
-                        <a href="{{ url('/home') }}" class="btn btn-lg btn-secondary">Home</a>
+                        <a href="{{ url('/home') }}" class="btn btn-lg loginBtn">Home</a>
                     @else
-                        <a href="{{ route('login') }}" class="btn btn-lg btn-secondary">Student Login</a>
+                        <a href="{{ route('login') }}" class="btn btn-lg loginBtn">Student Login</a>
 
                         @if (Route::has('register'))
                             <a href="{{ route('register') }}" class="btn btn-lg btn-secondary">Register</a>
@@ -171,7 +183,7 @@
 
   <footer class="mastfoot mt-auto">
     <div class="inner">
-      <p>&copy;2019 OASIS-CBT</p>
+      <p>&copy;{{date('Y')}} OASIS-CBT</p>
     </div>
   </footer>
 </div>

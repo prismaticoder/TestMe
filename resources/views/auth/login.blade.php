@@ -55,6 +55,18 @@
         border-top-left-radius: 0;
         border-top-right-radius: 0;
         }
+
+        .loginBtn:hover {
+            color: black;
+            border: solid #e67d23 1.5px;
+            background-color: transparent
+        }
+
+        .loginBtn {
+            background-color: #e67d23;
+            color: black;
+
+        }
     </style>
   </head>
 
@@ -65,9 +77,9 @@
             @csrf
 
             @if ($errors->any())
-                {{-- @foreach ($errors as $error) --}}
-                    <strong style="color:red">{{$errors}}</strong>
-                {{-- @endforeach --}}
+                @foreach ($errors->all() as $error)
+                    <strong style="color:red">{{$error}}</strong>
+                @endforeach
             @endif
 
             <label for="email" class="mt-3">{{ __('Surname') }}</label>
@@ -80,7 +92,7 @@
             <input id="email" type="number" class="form-control" name="code" required>
 
             <div >
-                <button type="submit" class="btn btn-primary mt-3">
+                <button type="submit" class="btn loginBtn btn-block mt-4">
                     {{ __('Login') }}
                 </button>
 
