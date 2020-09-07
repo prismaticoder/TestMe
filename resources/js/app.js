@@ -14,6 +14,18 @@ Vue.prototype.$http = axios
 Vue.prototype.$http.defaults.baseURL = `${process.env.MIX_APP_URL}/api`
 Vue.prototype.$location = window.location
 
+Vue.prototype.$http.interceptors.response.use(undefined, function (err) {
+    let originalRequest = err.config
+
+    if (err.response.status === 419 && !originalRequest._retry) {
+      window.location.reload()
+    }
+
+    else {
+      throw err
+    }
+})
+
 //vuetify
 import Vuetify from 'vuetify';
 Vue.use(Vuetify)
