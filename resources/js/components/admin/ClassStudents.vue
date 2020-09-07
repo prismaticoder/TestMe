@@ -8,7 +8,10 @@
 
         <v-tabs-items v-model="tab">
             <v-tab-item v-for="section in classes" :key="section.id" :value="section.class.toLowerCase()" class="text-center">
-                <v-btn tile class="m-3" small dark @click="dialog = true">
+                <v-btn tile class="m-3" outlined @click="dialog=true">
+                    <v-icon>
+                        mdi-plus
+                    </v-icon>
                     ADD NEW STUDENT
                 </v-btn>
                 <table class="table table-bordered w-100 text-center">
