@@ -14,11 +14,17 @@ use Gate;
 use Illuminate\Http\Request;
 use GuzzleHttp\Exception\RequestException;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Str;
 
 class AdminSectionController extends Controller
 {
 
-    public function index() {
+    public function __construct()
+    {
+        $this->middleware(['auth:admins','can:superAdminGate']);
+    }
+
+    public function teachersPage() {
 
         $subjects = Subject::with('classes')->get();
         $teachers = Admin::where('role_id', 2)->orderBy('username')->with(['subjects' => function ($q) {
@@ -26,22 +32,35 @@ class AdminSectionController extends Controller
         }])->get();
 
         $classes = Classes::all();
+        $type = 'teachers';
 
-        return view('admin.teachers', compact('classes','subjects','teachers'));
+        return view('admin.teacher-subject', compact('classes','type','subjects','teachers'));
 
     }
+
+    public function subjectsPage() {
+
+        $subjects = Subject::with('classes')->orderBy('subject_name')->get();
+
+        $classes = Classes::all();
+        $type = 'subjects';
+
+        return view('admin.teacher-subject', compact('classes','type','subjects'));
+
+    }
+
+
 
     public function createSubject(Request $request) {
         $request->validate([
             'name' => ['required', 'string', 'unique:subjects,subject_name'],
-            'alias' => ['required', 'string', 'unique:subjects'],
             'classes' => ['required', 'array']
         ]);
 
 
         $subject = new Subject;
         $subject->subject_name = $request->name;
-        $subject->alias = $request->alias;
+        $subject->alias = Str::slug($request->name);
 
         $subject->save();
 
@@ -66,7 +85,7 @@ class AdminSectionController extends Controller
 
         if ($subject) {
             $subject->subject_name = $request->name;
-            $subject->alias = $request->alias;
+            $subject->alias = Str::slug($request->name);
 
             $subject->save();
 

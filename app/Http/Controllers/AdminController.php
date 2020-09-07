@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Admin;
 use Illuminate\Http\Request;
 use App\Subject;
 use App\Classes;
@@ -13,9 +14,13 @@ use App\User;
 use Gate;
 use DB;
 use Auth;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth as FacadesAuth;
+use Illuminate\Support\Facades\Hash;
 use PDF;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
@@ -32,17 +37,18 @@ class AdminController extends Controller
     public function dashboard() {
         // to authorize admin as the super admin
 
-        $classes = Classes::get();
         $exams = [];
 
-        if(Gate::denies('superAdminGate')){
+        if (Gate::denies('superAdminGate')){
             //Only return the subject of that user
-            $subjects = Subject::where('id', Auth::user()->subject_id)->get();
-            $all_started = Exam::where('subject_id', Auth::user()->subject_id)->where('hasStarted', 1)->get();
+            $subjects = Auth::user()->subjects()->with('classes','subject')->get();
+            $classes = Classes::get();
+            $all_started = Exam::whereIn('subject_id', Arr::pluck($subjects, 'subject_id'))->where('hasStarted', 1)->get();
         }
 
         else {
             $subjects = Subject::orderBy('subject_name')->get();
+            $classes = Classes::get();
             //get all started exams
             $all_started = Exam::where('hasStarted', 1)->get();
         }
@@ -53,12 +59,10 @@ class AdminController extends Controller
             }
         }
 
-        foreach ($classes as $class) {
-            $exams_array = [];
-            foreach ($subjects as $subject) {
-                $exams_array[$subject->subject_name] = $class->getCurrentExam($subject->id);
+        foreach ($subjects as $subject) {
+            foreach ($subject->classes as $class) {
+                $class->hasPendingExamToday = $class->hasPendingExamToday($subject->subject_id);
             }
-            $class->latestExams = $exams_array;
         }
 
         $exams = json_encode($exams);
@@ -147,28 +151,22 @@ class AdminController extends Controller
     }
 
     public function getAllQuestions($subject,$class_id) {
-        $subject = Subject::where('alias',$subject)->first();
-        $current_class = Classes::where('id', $class_id)->first();
-        $subject_id = $subject['id'];
-        $classes = Classes::all();
+        $subject = Subject::where('alias',$subject)->firstOrFail();
+        $current_class = $subject->classes()->where('class_id', $class_id)->firstOrFail();
 
-        if ($subject && $current_class) {
+        if (Gate::allows('view-subject-details', [$subject->id, $class_id])) {
+            //Get the exam with the latest date, that is the current exam.
+            $exams = Exam::where('subject_id',$subject->id)->where('class_id',$class_id)->orderBy('date','desc')->get();
+            $classes = Auth::user()->isSuperAdmin() ? Classes::all() : $subject->adminSubjects()->where('admin_id', Auth::id())->first()->classes;
 
-            if (Gate::allows('view-subject-details', $subject)) {
-                //Get the exam with the latest date, that is the current exam.
-                $exams = Exam::where('subject_id',$subject->id)->where('class_id',$class_id)->orderBy('date','desc')->get();
-
-                if (count($exams) > 0) {
-                    Session::put('exam_id', $exams[0]->id);
-                }
-                else {
-                    Session::forget('exam_id');
-                }
-
-                return view('admin.questions', compact('subject','class_id','current_class','classes','exams'));
+            if (count($exams) > 0) {
+                Session::put('exam_id', $exams[0]->id);
+            }
+            else {
+                Session::forget('exam_id');
             }
 
-            return abort('404','Page does not exist');
+            return view('admin.questions', compact('subject','class_id','current_class','classes','exams'));
         }
 
         return abort('404','Page does not exist');
@@ -372,61 +370,49 @@ class AdminController extends Controller
     }
 
     public function getSingleResult(Request $request,$subject,$class_id) {
-        $subject = Subject::where('alias',$subject)->first();
-        $current_class = Classes::find($class_id);
+        $subject = Subject::where('alias',$subject)->firstOrFail();
+        $current_class = $subject->classes()->where('class_id', $class_id)->firstOrFail();
 
-        if ($subject && $current_class) {
-            if (Gate::allows('view-subject-details', $subject)) {
+        if (Gate::allows('view-subject-details', [$subject->id, $class_id])) {
 
-                $students = User::where('class_id',$class_id)->orderBy('lastname')->get();
-                $exams = Exam::where('subject_id',$subject->id)->where('class_id',$class_id)->orderBy('date','desc')->get();
+            $students = User::where('class_id',$class_id)->orderBy('lastname')->get();
+            $exams = $current_class->getAllExams($subject->id);
 
-                $selected_exam = null;
-                if ($request->date && $request->id) {
-                    $selected_exam = Exam::where('id', $request->id)->where('subject_id',$subject->id)->where('class_id',$class_id)->where('date', $request->date)->has('scores')->first();
-                }
-
-                foreach ($students as $student) {
-                    $student->score = count($exams) > 0 ? $student->getScore($selected_exam ? $selected_exam->id : $exams[0]->id) : null;
-                }
-
-                $classes = Classes::all();
-
-                return view('admin.main-result',compact('students','subject','current_class','classes','exams','selected_exam'));
+            $selected_exam = null;
+            if ($request->date && $request->id) {
+                $selected_exam = Exam::where('id', $request->id)->where('subject_id',$subject->id)->where('class_id',$class_id)->where('date', $request->date)->has('scores')->first();
             }
 
-            return  abort('404');
+            foreach ($students as $student) {
+                $student->score = count($exams) > 0 ? $student->getScore($selected_exam ? $selected_exam->id : $exams[0]->id) : null;
+            }
+
+            $classes = Auth::user()->isSuperAdmin() ? Classes::all() : $subject->adminSubjects()->where('admin_id', Auth::id())->first()->classes;
+
+            return view('admin.main-result',compact('students','subject','current_class','classes','exams','selected_exam'));
         }
 
-        return abort('404');
+        return  abort('404');
     }
 
     public function downloadResult(Request $request, $subject,$class_id,$exam_id) {
-        $subject = Subject::where('alias',$subject)->first();
-        $current_class = Classes::find($class_id);
+        $subject = Subject::where('alias',$subject)->firstOrFail();
+        $current_class = Classes::findOrFail($class_id);
 
-        if ($subject && $current_class) {
-            if (Gate::allows('view-subject-details', $subject)) {
+        if (Gate::allows('view-subject-details', [$subject->id, $class_id])) {
 
-                $students = User::where('class_id',$class_id)->orderBy('lastname')->get();
-                $exam = Exam::where('id', $exam_id)->where('subject_id',$subject->id)->where('class_id',$class_id)->first();
+            $students = User::where('class_id',$class_id)->orderBy('lastname')->get();
+            $exam = Exam::where('id', $exam_id)->where('subject_id',$subject->id)->where('class_id',$class_id)->firstOrFail();
 
-                if ($exam) {
-                    foreach ($students as $student) {
-                        $student->score = $student->getScore($exam->id);
-                    }
-
-                    $data = compact('current_class','subject','students','exam');
-
-                    $pdf = PDF::loadView('admin.pdf-result',$data);
-
-                    return $pdf->download(strtolower($subject->alias).'_'.strtolower($current_class->class).'_results.pdf');
-                }
-
-                return abort('404');
+            foreach ($students as $student) {
+                $student->score = $student->getScore($exam->id);
             }
 
-            return  abort('404');
+            $data = compact('current_class','subject','students','exam');
+
+            $pdf = PDF::loadView('admin.pdf-result',$data);
+
+            return $pdf->download(strtolower($subject->alias).'_'.strtolower($current_class->class).'_results.pdf');
         }
 
         return abort('404');
@@ -436,43 +422,30 @@ class AdminController extends Controller
         $subject_id = $request->subject_id;
         $class_id = $request->class_id;
         $today = date('Y-m-d');
-        $exam = Exam::where('subject_id',$subject_id)->where('class_id',$class_id)->where('date', $today)->with('subject','class')->doesntHave('scores')->first();
+        $exam = Exam::where('subject_id',$subject_id)->where('class_id',$class_id)->where('date', $today)->with('subject','class')->doesntHave('scores')->firstOrFail();
 
-        if ($exam) {
-            $subject = Subject::where('id',$subject_id)->first();
 
-            if (Gate::allows('view-subject-details', $subject)) {
-                $exam->hasStarted = 1;
-                $exam->save();
+        if (Gate::allows('view-subject-details', [$subject_id, $class_id])) {
+            $exam->hasStarted = 1;
+            $exam->save();
 
-                return response()->json(['exam' => $exam]) ;
-            }
-
-            return abort('403');
+            return response()->json(['exam' => $exam]) ;
         }
 
-        return abort('404');
+        return abort('403');
     }
 
     public function endExam(Request $request, $id) {
-        $subject_id = $request->subject_id;
-        $exam = Exam::find($id);
+        $exam = Exam::findOrFail($id);
 
+        if (Gate::allows('view-subject-details', [$exam->subject_id, $exam->class_id])) {
+            $exam->hasStarted = 0;
+            $exam->save();
 
-        if ($exam) {
-            $subject = Subject::where('id',$subject_id)->first();
-
-            if (Gate::allows('view-subject-details', $subject)) {
-                $exam->hasStarted = 0;
-                $exam->save();
-
-                return response()->json(['exam' => $exam]) ;
-            }
-
-            return abort(403);
+            return response()->json(['exam' => $exam]) ;
         }
 
-        return abort('404');
+        return abort(403);
     }
 
     public function createExam(Request $request) {
@@ -542,6 +515,32 @@ class AdminController extends Controller
         $exam = Exam::find(Session::get('exam_id'));
 
         return response()->json(['exam' => $exam, 'message' => 'Settings updated successfully']);
+    }
+
+    public function getAccountPage() {
+        return view('admin.manage-account');
+    }
+
+    public function confirmPassword(Request $request) {
+        $check = Hash::check($request->password, Auth::user()->password);
+
+        return response()->json(['valid' => $check]);
+    }
+
+    public function updatePassword(Request $request) {
+        $request->validate([
+            'password' => ['required', 'string'],
+        ]);
+
+
+        $admin = Admin::find(Auth::id());
+        $admin->password = bcrypt($request->password);
+
+        $admin->save();
+
+        $message = "Your password has successfully been updated!";
+
+        return compact('message');
     }
 
 }

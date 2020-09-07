@@ -1,45 +1,22 @@
 <template>
-    <div class="col-md-4">
-        <v-card width="25rem" class="p-3">
-            <div class="row">
-                <div class="col-md-6 border-right text-center">
-                    <span style="color: #2340e6">{{teacher.username}}</span>
-                    <hr>
-                    <div class="mt-3" v-if="getSubjects.length > 0">
-                        {{getSubjects[0]}} <span class="grey--text caption" v-if="getSubjects.length > 1">(+{{getSubjects.length - 1}} other subjects)</span>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <v-menu offset-y close-on-click close-on-content-click>
-                        <template v-slot:activator="{ on, attrs }">
-                            <v-btn class="float-right" v-bind="attrs" v-on="on" small tile outlined>
-                                <v-icon small>mdi-dots-vertical</v-icon> OPTIONS
-                            </v-btn>
-                        </template>
-                        <v-list shaped dense flat>
-                            <v-list-item-group>
-                                <v-list-item @click="editDialog = true">
-                                    <v-list-item-icon>
-                                        <v-icon small>mdi-pencil</v-icon>
-                                    </v-list-item-icon>
-                                    <v-list-item-content>
-                                        <v-list-item-title>Update Subjects</v-list-item-title>
-                                    </v-list-item-content>
-                                </v-list-item>
-                                <v-list-item class="text-danger" @click="deleteDialog = true">
-                                    <v-list-item-icon>
-                                        <v-icon small>mdi-delete</v-icon>
-                                    </v-list-item-icon>
-                                    <v-list-item-content>
-                                        <v-list-item-title class="text-danger">Revoke User Access</v-list-item-title>
-                                    </v-list-item-content>
-                                </v-list-item>
-                            </v-list-item-group>
-                        </v-list>
-                    </v-menu>
-                </div>
-            </div>
-        </v-card>
+    <tr>
+        <td>{{number}}</td>
+        <td>{{teacher.username}}</td>
+        <td>{{getSubjects}}</td>
+        <td>
+            <v-btn small text :color="yellow" title="Update subjects for this teacher" @click="editDialog=true">
+                <v-icon>
+                    mdi-pencil
+                </v-icon>
+            </v-btn>
+        </td>
+        <td>
+            <v-btn small text :color="yellow" title="Revoke User Access" @click="deleteDialog=true">
+                <v-icon>
+                    mdi-close
+                </v-icon>
+            </v-btn>
+        </td>
 
         <v-dialog v-model="editDialog" max-width="600" persistent>
             <v-card>
@@ -59,7 +36,7 @@
             <v-card>
                 <v-card-title class="headline">Revoke User Access?</v-card-title>
                 <v-card-text>
-                Please confirm that you want to permanently revoke this user's access to the administrative section of this platform.
+                Please confirm that you want to permanently revoke <strong>{{teacher.username}}</strong>'s access to the administrative section of this platform.
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
@@ -68,7 +45,7 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-    </div>
+    </tr>
 </template>
 
 <script>
@@ -157,7 +134,7 @@ export default {
                 return `${subject.subject.subject_name} (${subject.classes.map(single => single.class).join()})`
             })
 
-            return subjects
+            return subjects.join()
         }
     },
     mounted() {

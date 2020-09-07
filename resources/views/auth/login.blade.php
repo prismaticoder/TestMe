@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="/docs/4.1/assets/img/favicons/favicon.ico">
+    <link rel="icon" href="{{asset('/img/logo.png')}}">
 
-    <title>Oasis CBT | Student Login Page</title>
+    <title>{{config('app.name')}} | {{config('app.schoolAlias')}} - Student Login</title>
 
 
     <!-- Bootstrap core CSS -->
@@ -55,32 +55,47 @@
         border-top-left-radius: 0;
         border-top-right-radius: 0;
         }
+
+        .loginBtn:hover {
+            color: black;
+            border: solid #e67d23 1.5px;
+            background-color: transparent
+        }
+
+        .loginBtn {
+            background-color: #e67d23;
+            color: black;
+
+        }
     </style>
   </head>
 
   <body class="text-center">
-    <form class="form-signin" method="POST" action="{{ route('login') }}">
+    <form class="form-signin" autocomplete="off" method="POST" action="{{ route('login') }}">
 
             <h1>Student Login</h1>
             @csrf
 
             @if ($errors->any())
-                {{-- @foreach ($errors as $error) --}}
-                    <strong style="color:red">{{$errors}}</strong>
-                {{-- @endforeach --}}
+                @foreach ($errors->all() as $error)
+                    <div class="alert alert-danger" role="alert">
+                        <strong>{{$error}}</strong><button type="button" class="close" data-dismiss='alert' aria-label="Close"><span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                @endforeach
             @endif
 
-            <label for="email" class="mt-3">{{ __('Surname') }}</label>
-            <input id="email" type="text" class="form-control" name="lastname" required>
+            <label for="lastname" class="mt-3">{{ __('Surname') }}</label>
+            <input id="lastname" type="text" class="form-control" name="lastname" required>
 
-            <label for="email" class="mt-3">{{ __('First Name') }}</label>
-            <input id="email" type="text" class="form-control" name="firstname" required>
+            <label for="firstname" class="mt-3">{{ __('First Name') }}</label>
+            <input id="firstname" type="text" class="form-control" name="firstname" required>
 
-            <label for="email" class="mt-3">{{ __('Examination Number') }}</label>
-            <input id="email" type="number" class="form-control" name="code" required>
+            <label for="code" class="mt-3">{{ __('Examination Number') }}</label>
+            <input id="code" type="number" class="form-control" name="code" required>
 
             <div >
-                <button type="submit" class="btn btn-primary mt-3">
+                <button type="submit" class="btn loginBtn btn-block mt-4">
                     {{ __('Login') }}
                 </button>
 

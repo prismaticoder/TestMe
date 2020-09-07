@@ -34,7 +34,7 @@ class LoginController extends Controller
         $credentials = $request->only('username','password');
 
         if(Auth::guard('admins')->attempt($credentials)) {
-            return redirect()->intended(route('dashboard'));
+            return redirect()->intended('/admin');
         }
 
         return view('admin.login')->withErrors('Incorrect Username or Password!');

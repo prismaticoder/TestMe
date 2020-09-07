@@ -14,6 +14,18 @@ Vue.prototype.$http = axios
 Vue.prototype.$http.defaults.baseURL = `${process.env.MIX_APP_URL}/api`
 Vue.prototype.$location = window.location
 
+Vue.prototype.$http.interceptors.response.use(undefined, function (err) {
+    let originalRequest = err.config
+
+    if (err.response.status === 419 && !originalRequest._retry) {
+      window.location.reload()
+    }
+
+    else {
+      throw err
+    }
+})
+
 //vuetify
 import Vuetify from 'vuetify';
 Vue.use(Vuetify)
@@ -57,10 +69,12 @@ Vue.component('Questions', require('./components/Questions.vue').default);
 Vue.component('Timer', require('./components/Timer.vue').default);
 Vue.component('add-question', require('./components/admin/AddQuestion.vue').default)
 Vue.component('subjects', require('./components/admin/Subjects.vue').default)
+Vue.component('all-subjects', require('./components/admin/AllSubjects.vue').default)
 Vue.component('all-results', require('./components/admin/AllResults.vue').default)
 Vue.component('class-students', require('./components/admin/ClassStudents.vue').default)
 Vue.component('admin-section', require('./components/admin/AdminSection.vue').default)
 Vue.component('teachers', require('./components/admin/Teachers.vue').default)
+Vue.component('manage-account', require('./components/admin/ManageAccount.vue').default)
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

@@ -8,11 +8,23 @@
         ADD NEW TEACHER
     </v-btn>
 
+    <table class="table table-md table-bordered w-100 text-center">
+        <thead>
+            <th>S/N</th>
+            <th>USERNAME</th>
+            <th>SUBJECTS TAUGHT</th>
+            <th colspan="2">OPTIONS</th>
+        </thead>
+        <tbody>
+            <SingleTeacher v-for="(teacher,index) in teachers" :key="teacher.id" :teacher="teacher" :subjects="subjects" :number="index+1" :yellow="yellow" :items="subjectList" @updateTeacher="updateTeacher" @deleteTeacher="deleteTeacher"/>
+        </tbody>
+    </table>
+
     <v-dialog v-model="createDialog" max-width="600" :persistent="loading">
         <v-card>
             <v-card-title class="headline">Add New Teacher</v-card-title>
             <v-container>
-                <v-text-field class="mt-3" v-model="username" label="Username" placeholder="Type username here..." hint="Usernames can be a combination of the person's names e.g adekunle.ciroma" persistent-hint></v-text-field>
+                <v-text-field class="mt-3" v-model="username" label="Username" placeholder="Type username here..." hint="Usernames can be a combination of the person's names or subjects e.g adekunle.ciroma, oyewo.physics" persistent-hint></v-text-field>
                 <v-text-field class="mt-3" :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'" :type="showPass ? 'text' : 'password'" v-model="password" label="Password" placeholder="Enter preferred user password" hint="Password can be changed later after the user logs in" persistent-hint @click:append="showPass = !showPass"></v-text-field>
                 <v-text-field class="mt-3" :color="password == confPassword ? '' : '#abb1'" :append-icon="showConf ? 'mdi-eye' : 'mdi-eye-off'" :type="showConf ? 'text' : 'password'" :rules="rule" v-model="confPassword" :disabled="!password" label="Confirm Password" placeholder="Confirm Password" @click:append="showConf = !showConf"></v-text-field>
                 <v-autocomplete class="mt-3" v-model="subjectArray" placeholder="Start typing to see list of subjects" :items="subjectList" chips deletable-chips label="Subjects" multiple hint="Subjects this teacher will be teaching" persistent-hint></v-autocomplete>
@@ -26,16 +38,12 @@
         </v-card>
     </v-dialog>
 
-      <div class="row justify-content-center">
-           <SingleTeacher v-for="(teacher,index) in teachers" :key="teacher.id" :teacher="teacher" :subjects="subjects" :number="index+1" :items="subjectList" @updateTeacher="updateTeacher" @deleteTeacher="deleteTeacher"/>
-
-            <v-snackbar v-model="snackbar">
-                {{ snackbarText }}
-                <v-btn color="pink" text @click="snackbar = false">
-                    Close
-                </v-btn>
-            </v-snackbar>
-      </div>
+    <v-snackbar v-model="snackbar">
+        {{ snackbarText }}
+        <v-btn color="pink" text @click="snackbar = false">
+            Close
+        </v-btn>
+    </v-snackbar>
   </div>
 </template>
 
@@ -51,6 +59,7 @@ export default {
         return {
             subjects: this.allsubjects,
             teachers: this.allteachers,
+            yellow:  "#e67d23",
             showPass: false,
             showConf: false,
             loading: false,
@@ -76,6 +85,7 @@ export default {
         },
         deleteTeacher(id) {
             this.teachers = this.teachers.filter(teacher => teacher.id !== id)
+
             this.snackbarText = "Access successfully revoked"
             this.snackbar = true
         },

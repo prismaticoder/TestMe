@@ -27,17 +27,23 @@ class Classes extends Model
         return  $mark ? $mark->hasStarted : 0;
     }
 
-    public function getCurrentExam($subject_id) {
+    public function hasPendingExamToday($subject_id) {
         //check if a specific class has started exams for a specific subject
         $exam = Exam::where('subject_id',$subject_id)->where('class_id',$this->id)->orderBy('date','desc')->first();
 
         if (!$exam) {
-            return null;
+            return false;
         }
         else {
             //only return true for subjects that have questions
-            return $exam;
+            return $exam->date == date('Y-m-d') && !$exam->hasBeenWritten && count($exam->questions) > 0;
         }
+    }
+
+    public function getAllExams($subject_id) {
+        $exams = Exam::where('subject_id',$subject_id)->where('class_id',$this->id)->orderBy('date','desc')->get();
+
+        return $exams;
     }
 
 

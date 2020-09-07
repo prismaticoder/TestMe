@@ -3,6 +3,7 @@
 @section('title', 'Main Dashboard')
 @section('pageHeader', 'Main Dashboard')
 @section('content')
+@can('superAdminGate')
     <main role="main">
         <h4>Students</h4>
         <hr>
@@ -23,6 +24,7 @@
         </div>
     </main>
     <hr>
+@endcan
     <div id="app" data-app="true">
         <subjects :subjects="{{$subjects}}" :exams="{{$exams}}" :classes="{{$classes}}"></subjects>
     </div>
