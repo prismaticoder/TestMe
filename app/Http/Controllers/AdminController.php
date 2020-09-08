@@ -156,7 +156,7 @@ class AdminController extends Controller
 
         if (Gate::allows('view-subject-details', [$subject->id, $class_id])) {
             //Get the exam with the latest date, that is the current exam.
-            $exams = Exam::where('subject_id',$subject->id)->where('class_id',$class_id)->orderBy('date','desc')->get();
+            $exams = Exam::where('subject_id',$subject->id)->where('class_id',$class_id)->orderBy('date','desc')->orderBy('updated_at','desc')->get();
             $classes = Auth::user()->isSuperAdmin() ? $subject->classes : $subject->adminSubjects()->where('admin_id', Auth::id())->first()->classes;
 
             if (count($exams) > 0) {
@@ -402,7 +402,7 @@ class AdminController extends Controller
         if (Gate::allows('view-subject-details', [$subject->id, $class_id])) {
 
             $students = User::where('class_id',$class_id)->orderBy('lastname')->get();
-            $exam = Exam::where('id', $exam_id)->where('subject_id',$subject->id)->where('class_id',$class_id)->firstOrFail();
+            $exam = Exam::findOrFail($exam_id);
 
             foreach ($students as $student) {
                 $student->score = $student->getScore($exam->id);
@@ -422,7 +422,7 @@ class AdminController extends Controller
         $subject_id = $request->subject_id;
         $class_id = $request->class_id;
         $today = date('Y-m-d');
-        $exam = Exam::where('subject_id',$subject_id)->where('class_id',$class_id)->where('date', $today)->with('subject','class')->doesntHave('scores')->firstOrFail();
+        $exam = Exam::where('subject_id',$subject_id)->where('class_id',$class_id)->where('hasStarted',0)->where('date', $today)->orderBy('updated_at','desc')->with('subject','class')->firstOrFail();
 
 
         if (Gate::allows('view-subject-details', [$subject_id, $class_id])) {

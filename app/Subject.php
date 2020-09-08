@@ -41,8 +41,7 @@ class Subject extends Model
     }
 
     public function getStartedExam($class_id) {
-        $today = date('Y-m-d');
-        $exam = Exam::where('subject_id',$this->id)->where('class_id',$class_id)->where('date', $today)->where('hasStarted', 1)->first();
+        $exam = Exam::where('subject_id',$this->id)->where('class_id',$class_id)->where('hasStarted', 1)->orderBy('date', 'desc')->orderBy('updated_at','desc')->first();
 
         return $exam ? $exam : null;
     }

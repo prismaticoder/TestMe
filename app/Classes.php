@@ -29,19 +29,19 @@ class Classes extends Model
 
     public function hasPendingExamToday($subject_id) {
         //check if a specific class has started exams for a specific subject
-        $exam = Exam::where('subject_id',$subject_id)->where('class_id',$this->id)->orderBy('date','desc')->first();
+        $exam = Exam::where('subject_id',$subject_id)->where('class_id',$this->id)->orderBy('date','desc')->orderBy('updated_at','desc')->first();
 
         if (!$exam) {
             return false;
         }
         else {
             //only return true for subjects that have questions
-            return $exam->date == date('Y-m-d') && !$exam->hasBeenWritten && count($exam->questions) > 0;
+            return $exam->date == date('Y-m-d') && count($exam->questions) > 0;
         }
     }
 
     public function getAllExams($subject_id) {
-        $exams = Exam::where('subject_id',$subject_id)->where('class_id',$this->id)->orderBy('date','desc')->get();
+        $exams = Exam::where('subject_id',$subject_id)->where('class_id',$this->id)->orderBy('date','desc')->orderBy('updated_at','desc')->get();
 
         return $exams;
     }
