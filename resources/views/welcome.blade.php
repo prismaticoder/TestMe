@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Welcome Page</title>
+    <link rel="icon" href="{{asset('/img/logo.png')}}">
+    <title>{{config('app.name')}} | {{config('app.schoolAlias')}} - Welcome</title>
 
 
     <!-- Bootstrap core CSS -->
@@ -161,7 +162,7 @@
 
   <main role="main" class="inner cover">
     <h1 class="cover-heading">{{config('app.schoolName')}} CBT</h1>
-    <p class="lead">Welcome to the {{config('app.schoolName')}} Computer Based Testing Platform, do follow instructions and goodluck in your exams.</p>
+    <p class="lead">Welcome to {{config('app.schoolName')}} Computer Based Testing Platform, do follow instructions and goodluck in your exams.</p>
     <p class="lead">
           @if (Route::has('login'))
                 <div class="top-right links">
@@ -183,7 +184,7 @@
 
   <footer class="mastfoot mt-auto">
     <div class="inner">
-      <p>&copy;{{date('Y')}} OASIS-CBT</p>
+      <p>&copy;{{date('Y')}} {{config('app.name')}}</p>
     </div>
   </footer>
 </div>

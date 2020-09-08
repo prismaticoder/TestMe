@@ -81,7 +81,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarText">
-                <ul class="navbar-nav mx-auto col-md-5">
+                <ul class="navbar-nav mx-auto col-md-6">
                     <li class="nav-item">
                         <a class="nav-link active" href="">{{Auth::user()->fullName}} (Exam No {{Auth::user()->code}})</a>
                     </li>
