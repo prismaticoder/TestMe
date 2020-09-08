@@ -98,6 +98,13 @@
     </div>
 <script src="{{asset('/js/app.js')}}"></script>
 
-<script src="{{asset('/js/jquery.js')}}"></script>
+<script>
+    window.onbeforeunload = function () {
+        if (window.formSubmitting) {
+            return undefined;
+        }
+        return "Are you sure you want to leave this page? Changes you made may not be saved"
+    }
+</script>
 </body>
 </html>
