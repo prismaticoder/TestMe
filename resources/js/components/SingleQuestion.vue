@@ -8,21 +8,23 @@
         <v-card-text>
             <p v-html="question.question"></p>
 
-            <v-list two-line>
+            <v-list two-line :key="question.id">
                 <v-list-item-group v-model="selected">
-                    <v-list-item v-for="(option,index) in question.options" :key="index">
-                        <template v-slot:default="{ active }">
-                            <v-list-item-action>
-                            <v-checkbox
-                                :input-value="active"
-                                color="primary"
-                            ></v-checkbox>
-                            </v-list-item-action>
+                    <template v-for="(option,index) in question.options">
+                        <v-list-item :key="index">
+                            <template v-slot:default="{ active }">
+                                <v-list-item-action>
+                                <v-checkbox
+                                    :input-value="active"
+                                    color="primary"
+                                ></v-checkbox>
+                                </v-list-item-action>
 
-                            <v-list-item-content v-html="option.body">
-                            </v-list-item-content>
-                        </template>
-                    </v-list-item>
+                                <v-list-item-content v-html="option.body">
+                                </v-list-item-content>
+                            </template>
+                        </v-list-item>
+                    </template>
                 </v-list-item-group>
             </v-list>
 
@@ -73,7 +75,7 @@ export default {
     props: ['question', 'number', 'totalCount', 'selectedOption'],
     data() {
         return {
-            newSelection: this.selectedOption || null,
+            newSelection: this.selectedOption !== undefined ? this.selectedOption : null,
             dialog: false,
             yellow:  "#e67d23",
             btnLoading: false

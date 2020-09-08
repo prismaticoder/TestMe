@@ -156,7 +156,7 @@ class AdminController extends Controller
 
         if (Gate::allows('view-subject-details', [$subject->id, $class_id])) {
             //Get the exam with the latest date, that is the current exam.
-            $exams = Exam::where('subject_id',$subject->id)->where('class_id',$class_id)->orderBy('date','desc')->orderBy('updated_at','desc')->get();
+            $exams = Exam::where('subject_id',$subject->id)->where('class_id',$class_id)->orderBy('date','desc')->orderBy('updated_at','desc')->with('subject','class')->get();
             $classes = Auth::user()->isSuperAdmin() ? $subject->classes : $subject->adminSubjects()->where('admin_id', Auth::id())->first()->classes;
 
             if (count($exams) > 0) {
@@ -436,7 +436,7 @@ class AdminController extends Controller
     }
 
     public function endExam(Request $request, $id) {
-        $exam = Exam::findOrFail($id);
+        $exam = Exam::with('subject','class')->findOrFail($id);
 
         if (Gate::allows('view-subject-details', [$exam->subject_id, $exam->class_id])) {
             $exam->hasStarted = 0;
@@ -465,6 +465,8 @@ class AdminController extends Controller
         $table->date = $date;
         $table->save();
 
+        $table->load('subject','class');
+
         Session::put('exam_id', $table->id);
 
         return response()->json(['exam' => $table, 'message' => 'Exam created successfully']);
@@ -482,6 +484,8 @@ class AdminController extends Controller
         $table->minutes = $minutes;
         $table->date = $date;
         $table->save();
+
+        $table->load('subject','class');
 
         return response()->json(['exam' => $table, 'message' => 'Settings updated successfully']);
     }
@@ -512,7 +516,7 @@ class AdminController extends Controller
             }
         });
 
-        $exam = Exam::find(Session::get('exam_id'));
+        $exam = Exam::with('subject','class')->find(Session::get('exam_id'));
 
         return response()->json(['exam' => $exam, 'message' => 'Settings updated successfully']);
     }
