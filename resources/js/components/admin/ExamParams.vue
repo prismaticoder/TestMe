@@ -10,7 +10,7 @@
                     <v-btn v-show="!exam.hasBeenWritten && examCount > 1" :color="yellow" @click="$emit('alterPQList', 'open')" small tile title="Import some of the previous examination questions into the current examination">
                     EXAM PQ TEMPLATES
                     </v-btn>
-                    <v-btn v-show="exam.hasBeenWritten" @click="dialog=true" class="ml-2" :color="yellow" small tile title="Create New Examination">
+                    <v-btn v-show="exam.hasBeenWritten && !exam.hasStarted" @click="dialog=true" class="ml-2" :color="yellow" small tile title="Create New Examination">
                         CREATE NEW EXAM
                     </v-btn>
                 </div>
