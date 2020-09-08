@@ -1,6 +1,6 @@
 <template>
     <div>
-        <span class="navbar-text center" style="margin-right:40px;">
+        <span class="navbar-text center text-white" style="margin-right:40px;">
 
             <h4>
                     TIME LEFT:
