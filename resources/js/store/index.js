@@ -60,6 +60,7 @@ export default {
             .then(() => {
                 localStorage.removeItem('exam_params')
                 localStorage.removeItem('choices')
+                window.formSubmitting = true;
                 resolve()
             })
             .catch(err => {

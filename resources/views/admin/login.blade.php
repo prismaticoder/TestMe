@@ -18,7 +18,7 @@
         height: 100%;
         }
 
-        body {
+        /* body {
         display: -ms-flexbox;
         display: flex;
         -ms-flex-align: center;
@@ -26,7 +26,7 @@
         padding-top: 40px;
         padding-bottom: 40px;
         background-color: #f5f5f5;
-        }
+        } */
 
         .form-signin {
         width: 100%;
@@ -69,13 +69,44 @@
             color: black;
 
         }
+
+        ul .nav-link:hover {
+            border-bottom: solid #e67d23 2px
+        }
+
+        ul>.nav-item>.active {
+            border-bottom: solid #e67d23 2px
+        }
+
+        ul .nav-link {
+            padding: 8px;
+            margin-left: 12px;
+        }
     </style>
   </head>
 
   <body class="text-center">
-    <form class="form-signin" autocomplete="off" action="{{route('admin-login')}}" method="post">
+    <nav class="navbar navbar-expand-lg sticky-top navbar-dark bg-dark">
+        <a href="{{route('dashboard')}}">
+            <img src="{{asset('/img/logo.png')}}" class="mr-2" height="45" width="45">
+        </a>
+        <a class="navbar-brand" href="{{route('dashboard')}}">
+            {{config('app.name')}} | {{config('app.schoolAlias')}}
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav mx-auto col-md-1 mx-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+        </div>
+    </nav>
 
-      <h1 class="h3 mb-3 font-weight-normal">Teacher Login</h1>
+    <form class="form-signin mt-5" autocomplete="off" action="{{route('admin-login')}}" method="post">
+
+      <h1 class="h3 mb-3 font-weight-normal mt-5">Teacher Login</h1>
 
       <hr>
 

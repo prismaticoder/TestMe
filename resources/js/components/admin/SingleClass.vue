@@ -64,7 +64,6 @@ export default {
             .then(res => {
                 this.loading = false
                 this.dialog = false
-                console.log(res.data)
                 this.$emit('startNewExam', res.data.exam)
             })
             .catch(err => {

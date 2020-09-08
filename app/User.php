@@ -30,6 +30,10 @@ class User extends Authenticatable
         return $this->hasMany(Score::class);
     }
 
+    public function class() {
+        return $this->belongsTo(Classes::class);
+    }
+
     public function getFullNameAttribute() {
         return ucfirst(strtolower($this->lastname)) . ' ' . ucfirst(strtolower($this->firstname));
     }
@@ -38,6 +42,14 @@ class User extends Authenticatable
         $score = $this->scores()->where('exam_id', $exam_id)->first();
 
         return $score ? ['actual_score' => $score->actual_score, 'computed_score' => $score->computed_score] : null;
+    }
+
+    public function getAllStartedExams() {
+        $exams = Exam::where('class_id', $this->class_id)->where('hasStarted',1)->whereDoesntHave('scores',function($q) {
+            $q->where('user_id',$this->id);
+        })->get();
+
+        return $exams;
     }
 
     /**

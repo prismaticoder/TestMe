@@ -43,7 +43,7 @@
 
         <div class="col-md-10 bg-white">
 
-            <ExamParams :exam="examArray[0]" :examCount="examArray.length" :yellow="yellow" :subject="subject" :classId="classId" @setExam="setExam" @alterPQList="alterPQList"/>
+            <ExamParams :exam="examArray[0]" :examCount="examArray.length" :questionCount="questions.length" :yellow="yellow" :subject="subject" :classId="classId" @setExam="setExam" @alterPQList="alterPQList"/>
 
             <div class="container">
                 <h3 class="text-center">Question</h3>

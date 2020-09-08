@@ -9,8 +9,9 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="/docs/4.1/assets/img/favicons/favicon.ico">
+    <link rel="icon" href="{{asset('/img/logo.png')}}">
 
-    <title>Oasis CBT | Students Home</title>
+    <title>{{config('app.name')}} | {{config('app.schoolAlias')}} - All Current Exams</title>
 
 
     <!-- Bootstrap core CSS -->
@@ -37,88 +38,91 @@
           font-weight: bold;
         }
 
+        ul .nav-link:hover {
+            border-bottom: solid #e67d23 2px
+        }
+
+        ul>.nav-item>.active {
+            border-bottom: solid #e67d23 2px
+        }
+
+        ul .nav-link {
+            padding: 8px;
+            margin-left: 12px;
+        }
+
+        .logoutBtn, .examBtn:hover {
+            color: white;
+            border: solid #e67d23 2px;
+            background-color: transparent
+        }
+
+        .examBtn:hover {
+            color: black
+        }
+
+        .logoutBtn:hover, .examBtn {
+            background-color: #e67d23;
+            color: black;
+
+        }
+
+
     </style>
   </head>
 
   <body>
-  <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">{{config('app.schoolName')}} COMPUTER BASED TESTING (CBT) EXAMINATION</a>
+    <nav class="navbar navbar-expand-lg sticky-top navbar-dark bg-dark">
+        <a href="/">
+            <img src="{{asset('/img/logo.png')}}" class="mr-2" height="45" width="45">
+        </a>
+        <a class="navbar-brand" href="{{route('home')}}">
+            {{config('app.name')}} | {{config('app.schoolAlias')}} HOME
+        </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarText">
-            <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-                <a class="nav-link" href=""></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href=""></a>
-            </li>
+            <ul class="navbar-nav mx-auto col-md-2">
+                <li class="nav-item">
+                    <a class="nav-link active" href="">{{Auth::user()->fullName}} ({{Auth::user()->class->class}})</a>
+                </li>
             </ul>
-            <span class="navbar-text">
-            <a class="nav-link" href="{{route('logout')}}">Sign out</a>
+            <span>
+                <a class="mt-2 nav-link logoutBtn" href="{{route('logout')}}">Sign Out</a>
             </span>
         </div>
     </nav>
 
 
-    <div class="container classes">
-        <h1>Choose Subject to start exam</h1>
 
+    <div class="container">
+
+        <h3 class="mt-5 text-center">All Current Exams</h3>
+        <hr>
+
+        @if (count($exams) > 0)
         <main class="card-columns mt-3">
-              @foreach ($subjects as $subject)
-              <div class="card">
-              <div class="card-body">
-                    <p class="card-text">{{strtoupper($subject->alias)}}</p>
-                  </div>
-                  <div class="card-footer">
-                    <small class="text-muted">
-                    <a href="{{route('exam',['subject'=>$subject->alias])}}" class="btn btn-primary">Start Exam</a>
-                    </small>
-                  </div>
+            @foreach ($exams as $exam)
+            <div class="card">
+            <div class="card-body">
+                  <p class="card-text">{{strtoupper($exam->subject->subject_name)}}</p>
                 </div>
-              @endforeach
-        </main>
+                <div class="card-footer">
+                  <small class="text-muted">
+                  <a href="{{route('exam',['subject'=>$exam->subject->alias])}}" class="btn examBtn">Start Exam</a>
+                  </small>
+                </div>
+              </div>
+            @endforeach
+      </main>
+        @else
+        <p class="mt-3">
+            Please wait for an exam to be started by the invigilator...
+        </p>
+        @endif
 
 
         </div>
-
-        <!-- Modal -->
-        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalCenterTitle">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <p>Exam Instructions etc</p>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Start Exam</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
-    <script src="../../assets/js/vendor/popper.min.js"></script>
-
-    <script src="{{asset('js/jquery.js')}}"></script>
-    <script src="{{asset('js/bootstrap.min.js')}}"></script>
-
-    <!-- Icons -->
-    <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
-    <script>
-      feather.replace()
-    </script>
-
   </body>
 </html>

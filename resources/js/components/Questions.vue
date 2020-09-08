@@ -21,31 +21,33 @@
         <div class="col-md-10 question-body">
             <SingleQuestion v-if="currentQuestion" :question="currentQuestion" :totalCount="questions.length" :selectedOption="selectedOption" :number="questionNumber" @storeChoice="storeChoice" v-on:updateSelection="updateSelection"/>
 
-            <div class="card" v-else>
-                <div class="card-body">
-                <h5 class="card-title">Question No <span class="questionNo">0</span> of <span class="questionCount">{{questions.length}}</span></h5>
+            <v-card shaped outlined class="p-3" v-else>
+                <v-card-title>
+                    {{mainsubject.subject_name.toUpperCase()}} EXAMINATION
+                </v-card-title>
                 <hr>
-                    <span class="card-text question">
-                        <h5>INSTRUCTIONS</h5>
-                        <ul class="list-group">
-                            <li class="list-group-item">This exam will last for <strong>{{examtime}}</strong></li>
-                            <li class="list-group-item">Read every question carefully</li>
-                            <li class="list-group-item">Manage your time well</li>
-                            <li class="list-group-item">Good luck!</li>
-                        </ul>
-                    </span>
-                </div>
-                <ul class="list-group list-group-flush">
-                        <label for="radio1"><li class="list-group-item radios"><input type="radio" name="options" class="radioBtn" value="0"><span class="options"> -</span></li></label>
-                        <label for="radio2"><li class="list-group-item radios"><input type="radio" name="options" class="radioBtn" value="1"><span class="options"> -</span></li></label>
-                        <label for="radio3"><li class="list-group-item radios"><input type="radio" name="options" class="radioBtn" value="2"><span class="options"> -</span></li></label>
-                        <label for="radio4"><li class="list-group-item radios"><input type="radio" name="options" class="radioBtn" value="3"><span class="options"> -</span></li></label>
-                </ul>
-                <div class="card-body">
-                    <button v-if="!hasStarted" class="btn btn-primary card-link" @click="startExam">START EXAM</button>
-                    <button v-else class="btn btn-primary card-link" @click="startExam">CONTINUE</button>
-                </div>
-            </div>
+
+                <v-card-text>
+                    <h5>INSTRUCTIONS</h5>
+                    <hr>
+                    <p><v-icon small>mdi-chevron-right</v-icon> This examination will last for <strong>{{examtime}}</strong></p>
+                    <hr>
+                    <p><v-icon small>mdi-chevron-right</v-icon> Study every question carefully</p>
+                    <hr>
+                    Best of Luck!
+
+                </v-card-text>
+
+                <v-card-actions>
+                    <v-btn tile color="primary" @click="startExam">
+                        <span v-if="!hasStarted">Start Exam</span>
+                        <span v-else>Continue</span>
+                        <v-icon small>
+                            mdi-arrow-right
+                        </v-icon>
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
         </div>
     </div>
 </template>
@@ -59,7 +61,7 @@ export default {
     components: {
         SingleQuestion
     },
-    props: ['questions', 'hours', 'minutes', 'subject', 'classId'],
+    props: ['questions', 'hours', 'minutes', 'subject', 'classId', 'mainsubject'],
     data() {
         return {
             currentQuestion: localStorage.getItem('current') || null,

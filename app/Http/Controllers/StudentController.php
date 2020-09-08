@@ -25,8 +25,9 @@ class StudentController extends Controller
     }
 
     public function index() {
-        $subjects = Subject::all();
-        return view('home',compact('subjects'));
+        $exams = Auth::user()->getAllStartedExams();
+
+        return view('home',compact('exams'));
     }
 
     public function getExamQuestions(\Request $request, $subject) {
@@ -71,7 +72,7 @@ class StudentController extends Controller
         foreach ($choices as $choice) {
             $corresponding_question = $questions[$choice->question - 1];
 
-            if ($choice->choice) {
+            if ($choice->choice !== null) {
                 //check if the answer is correct
                 if ($corresponding_question->options[$choice->choice]->isCorrect) {
                     $score += 1;

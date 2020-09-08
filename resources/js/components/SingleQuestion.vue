@@ -1,25 +1,58 @@
 <template>
-    <div class="card">
-        <div class="card-body">
-        <h5 class="card-title">Question No <span class="questionNo">{{number}}</span> of <span class="questionCount">{{totalCount}}</span></h5>
+    <v-card shaped outlined class="p-3">
+        <v-card-title>
+            Question No {{number}} of {{totalCount}}
+        </v-card-title>
         <hr>
-            <p v-html="question.question"></p>
-        </div>
-        <ul class="list-group list-group-flush">
-            <label v-for="(option,index) in question.options" :key="option.id">
-                <li class="list-group-item radios">
-                    <input type="radio" v-model="selected" name="options" class="radioBtn" :value="index">
-                    <span v-html="option.body"></span>
-                </li>
-            </label>
-        </ul>
-        <div class="card-body">
-            <button :disabled="number == 1" class="btn btn-secondary card-link" @click="$emit('storeChoice', 'previous', newSelection, number)">Previous Question</button>
-            <button v-if="number !== totalCount" @click="$emit('storeChoice', 'next', newSelection, number)"  class="btn btn-primary card-link">Next Question</button>
-            <button v-else @click="dialog = true"  class="btn btn-primary card-link">Submit</button>
-        </div>
 
-        <v-dialog v-model="dialog" persistent max-width="350">
+        <v-card-text>
+            <p v-html="question.question"></p>
+
+            <v-list two-line :key="question.id">
+                <v-list-item-group v-model="selected">
+                    <template v-for="(option,index) in question.options">
+                        <v-list-item :key="index">
+                            <template v-slot:default="{ active }">
+                                <v-list-item-action>
+                                <v-checkbox
+                                    :input-value="active"
+                                    color="primary"
+                                ></v-checkbox>
+                                </v-list-item-action>
+
+                                <v-list-item-content v-html="option.body">
+                                </v-list-item-content>
+                            </template>
+                        </v-list-item>
+                    </template>
+                </v-list-item-group>
+            </v-list>
+
+        </v-card-text>
+
+        <v-card-actions>
+            <v-btn tile color="danger" :disabled="number == 1" @click="$emit('storeChoice', 'previous', newSelection, number)">
+                <v-icon small>
+                    mdi-arrow-left
+                </v-icon>
+                Previous Question
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn tile color="primary" outlined v-if="number !== totalCount" @click="$emit('storeChoice', 'next', newSelection, number)">
+                Next Question
+                <v-icon small>
+                    mdi-arrow-right
+                </v-icon>
+            </v-btn>
+            <v-btn tile v-else @click="dialog = true" color="success">
+                Submit
+                <v-icon small>
+                    mdi-check
+                </v-icon>
+            </v-btn>
+        </v-card-actions>
+
+        <v-dialog v-model="dialog" :persistent="btnLoading" max-width="350">
             <v-card>
                 <v-card-title class="headline">Submit Examination?</v-card-title>
                 <v-card-text>
@@ -33,7 +66,7 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-    </div>
+    </v-card>
 </template>
 
 <script>
@@ -42,8 +75,9 @@ export default {
     props: ['question', 'number', 'totalCount', 'selectedOption'],
     data() {
         return {
-            newSelection: this.selectedOption || null,
+            newSelection: this.selectedOption !== undefined ? this.selectedOption : null,
             dialog: false,
+            yellow:  "#e67d23",
             btnLoading: false
         }
     },
@@ -71,7 +105,7 @@ export default {
             },
             set(newValue) {
                 this.newSelection = newValue
-                this.$emit('updateSelection', newValue)
+                this.$store.commit('UPDATE_SELECTION', newValue)
             }
 
         }
