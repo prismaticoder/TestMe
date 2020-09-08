@@ -72,7 +72,7 @@ class StudentController extends Controller
         foreach ($choices as $choice) {
             $corresponding_question = $questions[$choice->question - 1];
 
-            if ($choice->choice) {
+            if ($choice->choice !== null) {
                 //check if the answer is correct
                 if ($corresponding_question->options[$choice->choice]->isCorrect) {
                     $score += 1;
