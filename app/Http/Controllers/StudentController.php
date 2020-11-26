@@ -4,12 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Exam;
 use Illuminate\Http\Request;
-use Auth;
 use App\Question;
 use App\Subject;
 use App\Option;
 use App\Score;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class StudentController extends Controller
@@ -30,7 +29,7 @@ class StudentController extends Controller
         return view('home',compact('exams'));
     }
 
-    public function getExamQuestions(\Request $request, $subject) {
+    public function getExamQuestions(Request $request, $subject) {
         $subject = Subject::where('alias',$subject)->first();
         $user = Auth::user();
         $class_id = $user->class_id;
@@ -43,7 +42,7 @@ class StudentController extends Controller
             $hours = $exam->hours;
             $minutes = $exam->minutes;
             $subject_id = $subject->id;
-            $seed = Auth::user()->code;
+            $seed = substr(Auth::user()->code,0,4);
 
             $questions = Question::where('exam_id',$exam->id)->with('options:id,question_id,body')->inRandomOrder($seed)->get();
 
@@ -60,7 +59,7 @@ class StudentController extends Controller
         $exam_id = Session::get('exam_id');
 
         //first mark all the answers
-        $seed = Auth::user()->code;
+        $seed = substr(Auth::user()->code,0,4);
 
         $questions = Question::where('exam_id',$exam_id)->with('options')->inRandomOrder($seed)->get();
 
