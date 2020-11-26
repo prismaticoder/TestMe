@@ -166,7 +166,7 @@ export default {
                     ["formula"]
                     ],
                  },
-                placeholder: "Enter value here",
+                placeholder: "Type text here",
                 theme: 'snow',
                 readonly: true
             },
@@ -297,7 +297,24 @@ export default {
         }
     },
     mounted() {
-        window.katex = katex
+        window.katex = katex;
+
+        // Uncomment this line if you ever plan on implementing pasting with plain text
+        // let editors = document.querySelectorAll(".ql-editor");
+
+        // editors.forEach(function(editor) {
+        //     editor.addEventListener("paste", function(e) {
+        //         // cancel paste
+        //         e.preventDefault();
+
+        //         // get text representation of clipboard
+        //         var text = (e.originalEvent || e).clipboardData.getData('text/plain');
+
+        //         // insert text manually
+        //         document.execCommand("insertHTML", false, text);
+        //     });
+        // });
+
     },
     computed: {
         pastExams() {
