@@ -17,6 +17,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/downloadSampleExcelFile', function () {
+    return response()->download(public_path('upload_format.xlsx'),'upload-students-sample.xlsx');
+});
+
 Route::post('register/institution', function(){
     return view('register.institution');
 });
@@ -52,11 +56,13 @@ Route::group(['prefix' => 'api'], function () {
     Route::patch('/start-exam','AdminController@startExam');
     Route::patch('/end-exam/{id}','AdminController@endExam');
     Route::post('/useTemplate/{template_id}','AdminController@createExamFromTemplate');
-    Route::post('/students', 'AdminController@addStudent');
+    Route::post('/students/single', 'AdminController@addStudent');
+    Route::post('/students/multiple', 'AdminController@addMultipleStudents');
     Route::put('/students/{id}','AdminController@updateStudent');
     Route::delete('/students/{id}','AdminController@deleteStudent');
     Route::get('/disableStudent/{id}','AdminController@disableStudent');
     Route::get('/restoreStudent/{id}','AdminController@restoreStudent');
+
     Route::group(['prefix' => 'admins', 'middleware' => ['auth:admins']], function() {
         Route::post('/','Admin\AdminSectionController@createAdmin')->middleware('can:superAdminGate');
         Route::get('/teachers','Admin\AdminSectionController@getAllTeachers')->middleware('can:superAdminGate');
@@ -70,6 +76,7 @@ Route::group(['prefix' => 'api'], function () {
         Route::put('/updatePassword', 'AdminController@updatePassword');
 
     });
+
     Route::get('/generateNumber', function() {
         $characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
 
