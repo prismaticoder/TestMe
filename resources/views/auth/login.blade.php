@@ -92,7 +92,7 @@
             <input id="firstname" type="text" class="form-control" name="firstname" required>
 
             <label for="code" class="mt-3">{{ __('Examination Number') }}</label>
-            <input id="code" type="number" class="form-control" name="code" required>
+            <input id="code" type="text" class="form-control" name="code" required>
 
             <div >
                 <button type="submit" class="btn loginBtn btn-block mt-4">
