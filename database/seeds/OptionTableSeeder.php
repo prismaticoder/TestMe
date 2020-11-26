@@ -12,6 +12,6 @@ class OptionTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(Option::class,200)->create();
+        factory(Option::class,3000)->create();
     }
 }
