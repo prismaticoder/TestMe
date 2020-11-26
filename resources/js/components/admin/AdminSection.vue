@@ -68,7 +68,7 @@
                     </tbody>
                 </table>
 
-                <v-dialog v-model="teacherDialog" max-width="500" persistent>
+                <v-dialog v-model="teacherDialog" max-width="700" :persistent="loading">
                     <v-card>
                         <v-card-title class="headline">Add New Teacher</v-card-title>
                         <v-container>
@@ -79,7 +79,7 @@
                         </v-container>
                         <v-card-actions>
                             <v-spacer></v-spacer>
-                            <v-btn :disabled="loading" color="green darken-1" text @click="username=password=null; subjectArray.length = 0; teacherDialog=false">CLOSE</v-btn>
+                            <v-btn :disabled="loading" color="green darken-1" text @click="username=password=null; subjectArray = []; teacherDialog=false">CLOSE</v-btn>
                             <v-btn :loading="loading" :disabled="loading || !username || !password || subjectArray.length === 0" color="green darken-1" text @click="createTeacher()">SAVE</v-btn>
                         </v-card-actions>
                     </v-card>
