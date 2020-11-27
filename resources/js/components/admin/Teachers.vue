@@ -16,7 +16,7 @@
             <th colspan="2">OPTIONS</th>
         </thead>
         <tbody>
-            <SingleTeacher v-for="(teacher,index) in teachers" :key="teacher.id" :teacher="teacher" :subjects="subjects" :number="index+1" :yellow="yellow" :items="subjectList" @updateTeacher="updateTeacher" @deleteTeacher="deleteTeacher"/>
+            <SingleTeacher v-for="(teacher,index) in teachers" :key="teacher.id" :teacher="teacher" :subjects="subjects" :classes="allclasses" :number="index+1" :yellow="yellow" :items="subjectList" @updateTeacher="updateTeacher" @deleteTeacher="deleteTeacher"/>
         </tbody>
     </table>
 

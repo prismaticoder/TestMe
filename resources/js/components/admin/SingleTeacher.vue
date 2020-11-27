@@ -51,7 +51,7 @@
 <script>
 export default {
     name: "SingleTeacher",
-    props: ['yellow','teacher','number','subjects','items'],
+    props: ['yellow','teacher','number','subjects','classes','items'],
     data() {
         return {
             editDialog: false,
@@ -131,7 +131,8 @@ export default {
     computed: {
         getSubjects() {
             let subjects = this.teacher.subjects.map((subject) => {
-                return `${subject.subject.subject_name} (${subject.classes.map(single => single.class).join()})`
+                let subjectClasses = subject.classes.map(single => single.class)
+                return `${subject.subject.subject_name} (${subjectClasses.length == this.classes.length ? 'All Classes' : subjectClasses.join()})`
             })
 
             return subjects.join()
