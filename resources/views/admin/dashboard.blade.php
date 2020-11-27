@@ -7,9 +7,10 @@
     <main role="main">
         <h4>Students</h4>
         <hr>
-        <div class="card-deck">
+        <div class="row">
 
             @foreach ($classes as $class)
+            <div class="col-md-4">
                 <div class="card">
                     <div class="card-body">
                     <a href="/admin/students#{{strtolower($class->class)}}" class="text-dark">
@@ -17,8 +18,8 @@
                             <p class="card-text">{{$class->students()->withTrashed()->count()}} Students</p>
                         </a>
                     </div>
-
                 </div>
+            </div>
             @endforeach
 
         </div>
