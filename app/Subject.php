@@ -10,6 +10,10 @@ class Subject extends Model
 
     protected $appends = ['subject_id'];
 
+    public static function findThroughAlias($alias) {
+        return self::where(compact('alias'))->firstOrFail();
+    }
+
     public function scores() {
         return $this->hasMany(Score::class);
     }
