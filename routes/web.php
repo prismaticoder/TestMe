@@ -11,6 +11,8 @@
 |
 */
 
+use App\Http\Controllers\Teacher\QuestionsController;
+use App\Http\Controllers\Teacher\StartedExamsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -47,14 +49,9 @@ Route::get('/home', 'StudentController@index')->name('home');
 
 Route::group(['prefix' => 'api'], function () {
     Route::get('/getQuestions','StudentController@getAjaxQuestions')->name('get-questions');
-    Route::post('/updateQuestion/{id}','AdminController@updateQuestion');
-    Route::post('/addQuestion', 'AdminController@addQuestion')->middleware('check-exam-status');
-    Route::post('/deleteQuestion/{id}','AdminController@deleteQuestion')->middleware('check-exam-status');
     Route::post('/submitExam', 'StudentController@submitExam');
     Route::post('/exams','AdminController@createExam')->middleware('check-exam-status');
     Route::put('/exams/{id}','AdminController@updateExam')->middleware('check-exam-status');
-    Route::patch('/start-exam','AdminController@startExam');
-    Route::patch('/end-exam/{id}','AdminController@endExam');
     Route::post('/useTemplate/{template_id}','AdminController@createExamFromTemplate');
     Route::post('/students/single', 'AdminController@addStudent');
     Route::post('/students/multiple', 'AdminController@addMultipleStudents');
@@ -75,6 +72,17 @@ Route::group(['prefix' => 'api'], function () {
         Route::post('/confirmPassword', 'AdminController@confirmPassword');
         Route::put('/updatePassword', 'AdminController@updatePassword');
 
+        Route::group(['prefix' => 'started-exams'], function() {
+            Route::post('/', [StartedExamsController::class, 'store']);
+            Route::delete('/{id}',[StartedExamsController::class, 'destroy']);
+        });
+
+        Route::group(['prefix' => 'questions', 'middleware' => ['check-exam-status']], function() {
+            Route::post('/', [QuestionsController::class, 'store']);
+            Route::put('/{id}', [QuestionsController::class, 'update']);
+            Route::delete('/{id}', [QuestionsController::class, 'destroy']);
+        });
+
     });
 
     Route::get('/generateNumber', function() {
@@ -93,6 +101,8 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/login', "Admin\LoginController@showLoginForm")->name('admin-login');
     Route::post('/login', "Admin\LoginController@authenticate");
     Route::get('/logout', "Admin\LoginController@logout")->name('admin-logout');
+
+
     Route::get('/', 'AdminController@dashboard')->name('dashboard');
     Route::get('/students', 'AdminController@getAllStudents')->name('students');
     Route::get('/account', 'AdminController@getAccountPage')->name('account');
@@ -100,7 +110,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/{subject}/endexam','AdminController@endExam')->name('end-exam');
     Route::get('/teachers', 'Admin\AdminSectionController@teachersPage')->name('teachers');
     Route::get('/subjects', 'Admin\AdminSectionController@subjectsPage')->name('subjects');
-    Route::get('/{subject}/{class_id}/questions', 'AdminController@getAllQuestions')->name('questions');
+    Route::get('/{subject}/{class_id}/questions', [QuestionsController::class, 'index'])->name('questions');
     Route::get('/{subject}/{class_id}/results', 'AdminController@getSingleResult')->name('results');
     Route::get('/{subject}/{class_id}/results/download/{exam_id}', 'AdminController@downloadResult')->name('download-result');
 
