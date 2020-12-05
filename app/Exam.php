@@ -26,11 +26,33 @@ class Exam extends Model
         return $this->hasMany(Score::class);
     }
 
+    public function scopeStarted($query) {
+        return $query->where('hasStarted',1);
+    }
+
+    public function scopeNotStarted($query) {
+        return $query->where('hasStarted',0)->latest('updated_at');
+    }
+
+    public function scopeCanBeStarted($query) {
+        return $query->notStarted()->where('date', date('Y-m-d'))->has('questions');
+    }
+
     public function getHasBeenWrittenAttribute() {
         return count ($this->scores) > 0 ? true : false;
     }
 
     public function getQuestionsAttribute() {
         return $this->questions()->with('options')->get();
+    }
+
+    public function start() {
+        $this->hasStarted = 1;
+        $this->save();
+    }
+
+    public function end() {
+        $this->hasStarted = 0;
+        $this->save();
     }
 }
