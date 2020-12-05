@@ -2,13 +2,11 @@
 
 namespace App;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Log;
 
-class User extends Authenticatable
+class Student extends Authenticatable
 {
     use Notifiable;
 
@@ -46,27 +44,9 @@ class User extends Authenticatable
 
     public function getAllStartedExams() {
         $exams = Exam::where('class_id', $this->class_id)->where('hasStarted',1)->whereDoesntHave('scores',function($q) {
-            $q->where('user_id',$this->id);
+            $q->where('student_id',$this->id);
         })->get();
 
         return $exams;
     }
-
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    // protected $hidden = [
-    //     'password', 'remember_token',
-    // ];
-
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-      */
-    // protected $casts = [
-    //     'email_verified_at' => 'datetime',
-    // ];
 }
