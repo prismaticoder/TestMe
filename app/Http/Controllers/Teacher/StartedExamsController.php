@@ -18,11 +18,17 @@ class StartedExamsController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'subject_id' => ['required', 'int', 'exists:subjects,id'],
+            'class_id' => ['required', 'int', 'exists:classes,id'],
+        ]);
+
         list($subjectId, $classId) = $request->only('subject_id','class_id');
 
-        $exam = Exam::canBeStarted()->where('subject_id',$subjectId)->where('class_id',$classId)->with('subject','class')->firstOrFail();
+        $exam = Exam::canBeStarted()->where('subject_id',$subjectId)->where('class_id',$classId)->with('subject','class')->first();
 
-        abort_if(! Gate::allows('view-subject-details', [$subjectId, $classId]), 403, "You are not authorized to start an exam for this class subject");
+        abort_if(! $exam, 404, "There are currently no exams that can be started for this class subject");
+        abort_if(Gate::denies('view-subject-details', [$subjectId, $classId]), 403, "You are not authorized to start an exam for this class subject");
 
         $exam->start();
 
@@ -35,11 +41,12 @@ class StartedExamsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(int $id)
     {
-        $exam = Exam::started()->where('id', $id)->with('subject','class')->firstOrFail();
+        $exam = Exam::started()->where('id', $id)->with('subject','class')->first();
 
-        abort_if(! Gate::allows('view-subject-details', [$exam->subject_id, $exam->class_id]), 403, "You are not authorized to end an exam for this class subject");
+        abort_if(! $exam, 404, "This exam does not exist as a started exam");
+        abort_if(! Gate::denies('view-subject-details', [$exam->subject_id, $exam->class_id]), 403, "You are not authorized to end an exam for this class subject");
 
         $exam->end();
 
