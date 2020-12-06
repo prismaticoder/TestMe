@@ -20,7 +20,7 @@ class Student extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'firstname', 'lastname', 'class_id', 'code'
+        'firstname', 'lastname', 'class_id', 'examination_number'
     ];
     protected $appends = ['fullName'];
 
@@ -48,5 +48,15 @@ class Student extends Authenticatable
         })->get();
 
         return $exams;
+    }
+
+    public static function generateExaminationNumber(): string
+    {
+        $characters = 'ABCDEFGHJKLMNPQRTUVWXYZ';
+        $code = mt_rand(2111, 9999) . $characters[rand(0, strlen($characters) - 1)] . $characters[rand(0, strlen($characters) - 1)];
+
+        $check = self::query()->where('examination_number', $code)->exists();
+
+        return $check ? self::generateExaminationNumber() : $code;
     }
 }
