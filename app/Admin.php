@@ -10,13 +10,18 @@ class Admin extends Authenticatable
 {
     use Notifiable;
 
+    public const ROLES = [
+        'ADMIN' => 1,
+        'TEACHER' => 2
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'username', 'password','role_id','subject_id '
+        'username', 'password','role_id'
     ];
 
     /**
@@ -40,7 +45,7 @@ class Admin extends Authenticatable
     ];
 
     public function subjects(){
-        return $this->hasMany(AdminSubject::class);
+        return $this->isAdmin() ? Subject::all() : $this->hasMany(AdminSubject::class)->with('classes','subject');
     }
 
     public function classes(){
@@ -52,8 +57,12 @@ class Admin extends Authenticatable
     }
 
     // i link this with gate
-    public function isSuperAdmin() {
-        return $this->role_id === 1;
+    public function isAdmin() {
+        return $this->role_id === self::ROLES['ADMIN'];
+    }
+
+    public function isTeacher() {
+        return $this->role_id === self::ROLES['TEACHER'];
     }
 }
 

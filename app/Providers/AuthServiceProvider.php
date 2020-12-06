@@ -30,12 +30,12 @@ class AuthServiceProvider extends ServiceProvider
 
         //to define gate for authorizing admin that has different roles
         Gate::define('superAdminGate', function($admin){
-            return $admin->isSuperAdmin();
+            return $admin->isAdmin();
         });
 
         //admin should only view questions of his own subject
         Gate::define('view-subject-details', function($admin, $subject_id, $class_id) {
-            if ($admin->isSuperAdmin()) return true;
+            if ($admin->isAdmin()) return true;
 
             $subject = $admin->subjects()->where('subject_id', $subject_id)->first();
             $check = $subject ? $subject->classes()->where('class_id',$class_id)->first() : false;
