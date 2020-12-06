@@ -36,7 +36,7 @@ class QuestionsController extends Controller
 
         $exams = Exam::where('subject_id',$subject->id)->where('class_id',$classId)->orderByDesc('date')->orderBy('updated_at','desc')->with('subject','class')->get();
 
-        $classes = auth()->user()->isSuperAdmin()
+        $classes = auth()->user()->isAdmin()
                         ? $subject->classes
                         : $subject->adminSubjects()->where('admin_id', auth()->id())->first()->classes;
 
