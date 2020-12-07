@@ -11,6 +11,10 @@
 |
 */
 
+use App\Http\Controllers\Teacher\Admin\RestrictedStudentsController;
+use App\Http\Controllers\Teacher\Admin\StudentsController;
+use App\Http\Controllers\Teacher\DashboardController;
+use App\Http\Controllers\Teacher\ExamsController as TeacherExamsController;
 use App\Http\Controllers\Teacher\QuestionsController;
 use App\Http\Controllers\Teacher\StartedExamsController;
 use Illuminate\Support\Facades\Route;
@@ -50,8 +54,6 @@ Route::get('/home', 'StudentController@index')->name('home');
 Route::group(['prefix' => 'api'], function () {
     Route::get('/getQuestions','StudentController@getAjaxQuestions')->name('get-questions');
     Route::post('/submitExam', 'StudentController@submitExam');
-    Route::post('/exams','AdminController@createExam')->middleware('check-exam-status');
-    Route::put('/exams/{id}','AdminController@updateExam')->middleware('check-exam-status');
     Route::post('/useTemplate/{template_id}','AdminController@createExamFromTemplate');
     Route::post('/students/single', 'AdminController@addStudent');
     Route::post('/students/multiple', 'AdminController@addMultipleStudents');
@@ -60,7 +62,7 @@ Route::group(['prefix' => 'api'], function () {
     Route::get('/disableStudent/{id}','AdminController@disableStudent');
     Route::get('/restoreStudent/{id}','AdminController@restoreStudent');
 
-    Route::group(['prefix' => 'admins', 'middleware' => ['auth:admins']], function() {
+    Route::group(['middleware' => ['auth:admins']], function() {
         Route::post('/','Admin\AdminSectionController@createAdmin')->middleware('can:superAdminGate');
         Route::get('/teachers','Admin\AdminSectionController@getAllTeachers')->middleware('can:superAdminGate');
         Route::post('/teachers','Admin\AdminSectionController@createTeacher')->middleware('can:superAdminGate');
@@ -71,6 +73,11 @@ Route::group(['prefix' => 'api'], function () {
         Route::put('/subjects/{id}','Admin\AdminSectionController@updateSubject')->middleware('can:superAdminGate');
         Route::post('/confirmPassword', 'AdminController@confirmPassword');
         Route::put('/updatePassword', 'AdminController@updatePassword');
+
+        Route::group(['prefix' => 'exams', 'middleware' => ['check-exam-status']], function() {
+            Route::post('/', [TeacherExamsController::class, 'store']);
+            Route::put('/{id}',[TeacherExamsController::class, 'update']);
+        });
 
         Route::group(['prefix' => 'started-exams'], function() {
             Route::post('/', [StartedExamsController::class, 'store']);
@@ -83,14 +90,18 @@ Route::group(['prefix' => 'api'], function () {
             Route::delete('/{id}', [QuestionsController::class, 'destroy']);
         });
 
-    });
+        Route::group(['prefix' => 'students', 'middleware' => ['can:superAdminGate']], function() {
+            Route::post('/', [StudentsController::class, 'store']);
+            Route::put('/{id}', [StudentsController::class, 'update']);
+            Route::delete('/{id}', [StudentsController::class, 'destroy']);
+            Route::post('/students/multiple', 'AdminController@addMultipleStudents');
 
-    Route::get('/generateNumber', function() {
-        $characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+        });
 
-        $code = mt_rand(5111, 9999) . $characters[rand(0, strlen($characters) - 1)] . $characters[rand(0, strlen($characters) - 1)];
-
-        dd($code);
+        Route::group(['prefix' => 'restricted-students', 'middleware' => ['can:superAdminGate']], function() {
+            Route::post('/', [RestrictedStudentsController::class, 'store']);
+            Route::delete('/{id}', [RestrictedStudentsController::class, 'destroy']);
+        });
 
     });
 });
@@ -103,7 +114,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/logout', "Admin\LoginController@logout")->name('admin-logout');
 
 
-    Route::get('/', 'AdminController@dashboard')->name('dashboard');
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/students', 'AdminController@getAllStudents')->name('students');
     Route::get('/account', 'AdminController@getAccountPage')->name('account');
     Route::get('/{subject}/hostexam','AdminController@hostExam')->name('host-exam');
@@ -115,21 +126,3 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/{subject}/{class_id}/results/download/{exam_id}', 'AdminController@downloadResult')->name('download-result');
 
 });
-
-//function to add new teacher (username, password and subject, c'est fini)
-//function to add new admin (like a superadmin) - username and password only. Confirm that the user wants to add the person as an admin
-
-//Function to update admin details. Only the details of the admin that is logged in (like his/her username and password), the person's username and password
-//function to delete a teacher, that is to revoke their access.
-
-//can't delete an admin, can only revoke the person's access. Admins have equal rights so it should be very minimal
-//teacher can also change password but not subject
-//function to add the new teacher to the database on the place that the user is located
-//admin cannot change teacher's password, he can only change his own password and add a new teacher
-
-//why does a teacher's password have to be renewed everyday?
-//Teacher can change password but not subject
-
-//username should have no spaces in between. An example is aremu.physics or aremu_physics or olaosebikan-chemistry
-//main admin username can be anything.
-//so main admin can only add and delete teachers

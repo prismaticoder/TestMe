@@ -16,7 +16,7 @@
                 <v-expansion-panel class="col-md-4 border m-1" v-for="subject in subjects" :key="subject.id">
                         <v-expansion-panel-header><h6>{{subject.subject_name.toUpperCase()}}</h6></v-expansion-panel-header>
                             <v-expansion-panel-content>
-                                <SingleClass :single="single" :subject="subject" :exams="allExams" :yellow="yellow" @startNewExam="startNewExam" @endExam="endExam" v-for="single in subject.classes" :key="single.id" />
+                                <SingleClass :single="single" :subject="subject" :startedExams="allStartedExams" :pendingExamsForToday="allPendingExamsForToday" :yellow="yellow" @startNewExam="startNewExam" @endExam="endExam" v-for="single in subject.classes" :key="single.id" />
                             </v-expansion-panel-content>
                 </v-expansion-panel>
             </v-expansion-panels>
@@ -30,12 +30,13 @@ import StartedExam from './StartedExam';
 
 export default {
     name: "Subjects",
-    props: ['subjects', 'classes', 'exams'],
+    props: ['subjects', 'classes', 'startedExams', 'pendingExamsForToday'],
     data() {
         return {
             yellow: "#e67d23",
             dark: "#343a40",
-            allExams: this.exams
+            allStartedExams: this.startedExams,
+            allPendingExamsForToday: this.pendingExamsForToday
         }
     },
     components: {
@@ -45,11 +46,11 @@ export default {
     methods: {
         startNewExam(exam) {
             let newExam = {id: exam.id, subject: exam.subject, class: exam.class}
-            this.allExams.push(newExam)
+            this.allStartedExams.push(newExam)
         },
 
         endExam(id) {
-            this.allExams = this.allExams.filter(exam => exam.id !== id)
+            this.allStartedExams = this.allStartedExams.filter(exam => exam.id !== id)
         }
     }
 }

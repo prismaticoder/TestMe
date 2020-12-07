@@ -111,7 +111,7 @@ export default {
                 }
             })
 
-            this.$http.post(`admins/teachers`, {
+            this.$http.post(`teachers`, {
                 username: this.username,
                 password: this.password,
                 subjects

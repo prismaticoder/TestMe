@@ -96,7 +96,7 @@ export default {
                 }
             })
 
-            this.$http.put(`admins/teachers/${this.teacher.id}`, {
+            this.$http.put(`teachers/${this.teacher.id}`, {
                 subjects
             })
             .then(res => {
@@ -114,7 +114,7 @@ export default {
         deleteTeacher() {
             this.loading = true
 
-            this.$http.delete(`admins/teachers/${this.teacher.id}`)
+            this.$http.delete(`teachers/${this.teacher.id}`)
             .then(res => {
                 this.loading = false
                 this.deleteDialog = false

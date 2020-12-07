@@ -71,7 +71,7 @@ export default {
         updateSubject() {
             this.loading = true
 
-            this.$http.put(`admins/subjects/${this.subject.id}`, {
+            this.$http.put(`subjects/${this.subject.id}`, {
                 name: this.name,
                 alias: this.alias,
                 classes: this.classes
