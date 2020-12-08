@@ -20,6 +20,7 @@ class CreateStudentsTable extends Migration
             $table->string('firstname');
             $table->string('lastname');
             $table->string('examination_number');
+            $table->softDeletes();
             $table->timestamps();
 
             $table->index('examination_number');

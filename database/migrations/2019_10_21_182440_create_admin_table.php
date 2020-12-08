@@ -17,6 +17,8 @@ class CreateAdminTable extends Migration
             $table->bigIncrements('id');
             $table->string('username');
             $table->string('password');
+            $table->integer('role_id')->unsigned()->default(2);
+            $table->foreign('role_id')->references('id')->on('roles');
             $table->timestamps();
         });
     }

@@ -16,7 +16,7 @@ class CreateAdminsubjectClassTable extends Migration
         Schema::create('adminsubject_class', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('adminsubject_id');
-            $table->foreign('adminsubject_id')->references('id')->on('admin_subject')->onDelete('cascade');
+            $table->foreign('adminsubject_id')->references('id')->on('admin_subjects')->onDelete('cascade');
             $table->integer('class_id')->unsigned();
             $table->foreign('class_id')->references('id')->on('classes')->onDelete('cascade');
         });

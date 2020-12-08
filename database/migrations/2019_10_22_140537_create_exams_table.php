@@ -23,7 +23,7 @@ class CreateExamsTable extends Migration
             $table->date('date');
             $table->integer('hours');
             $table->integer('minutes');
-            $table->boolean('hasStarted')->default(0);
+            $table->boolean('has_started')->default(0);
             $table->timestamps();
         });
     }

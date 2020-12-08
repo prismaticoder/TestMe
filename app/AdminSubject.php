@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class AdminSubject extends Model
 {
     //
-    protected $table = 'admin_subject';
+    protected $table = 'admin_subjects';
     protected $fillable = ['admin_id','subject_id'];
     protected $appends = ['subject_name','alias'];
     public $timestamps = false;
