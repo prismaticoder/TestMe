@@ -56,6 +56,15 @@ class Admin extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
+    public function scopeTeacher($query) {
+        return $query->where('role_id', self::ROLES['TEACHER']);
+    }
+
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = bcrypt($value);
+    }
+
     // i link this with gate
     public function isAdmin() {
         return $this->role_id === self::ROLES['ADMIN'];
