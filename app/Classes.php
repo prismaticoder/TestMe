@@ -10,7 +10,7 @@ class Classes extends Model
     protected $table = 'classes';
 
     public function students() {
-        return $this->hasMany(User::class, 'class_id');
+        return $this->hasMany(Student::class, 'class_id');
     }
 
     public function subjects() {
