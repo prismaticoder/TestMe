@@ -28,6 +28,10 @@ class Student extends Authenticatable
         return $this->hasMany(Score::class);
     }
 
+    public function submissions() {
+        return $this->hasMany(Submission::class);
+    }
+
     public function class() {
         return $this->belongsTo(Classes::class);
     }
@@ -43,7 +47,7 @@ class Student extends Authenticatable
     }
 
     public function getAllStartedExams() {
-        $exams = Exam::where('class_id', $this->class_id)->where('hasStarted',1)->whereDoesntHave('scores',function($q) {
+        $exams = Exam::where('class_id', $this->class_id)->where('has_started',1)->whereDoesntHave('scores',function($q) {
             $q->where('student_id',$this->id);
         })->get();
 
