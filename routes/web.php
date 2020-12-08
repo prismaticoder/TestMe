@@ -13,6 +13,7 @@
 
 use App\Http\Controllers\Teacher\Admin\RestrictedStudentsController;
 use App\Http\Controllers\Teacher\Admin\StudentsController;
+use App\Http\Controllers\Teacher\Admin\TeachersController;
 use App\Http\Controllers\Teacher\DashboardController;
 use App\Http\Controllers\Teacher\ExamsController as TeacherExamsController;
 use App\Http\Controllers\Teacher\QuestionsController;
@@ -91,19 +92,26 @@ Route::group(['prefix' => 'api'], function () {
             Route::delete('/{id}', [QuestionsController::class, 'destroy']);
         });
 
-        Route::group(['prefix' => 'students', 'middleware' => ['can:superAdminGate']], function() {
-            Route::post('/', [StudentsController::class, 'store']);
-            Route::put('/{id}', [StudentsController::class, 'update']);
-            Route::delete('/{id}', [StudentsController::class, 'destroy']);
-            Route::post('/students/multiple', 'AdminController@addMultipleStudents');
+        Route::group(['middleware' => ['can:superAdminGate']], function() {
+            Route::group(['prefix' => 'teachers'], function() {
+                Route::get('/', [TeachersController::class, 'index']);
+                Route::post('/', [TeachersController::class, 'store']);
+                Route::put('/{id}', [TeachersController::class, 'update']);
+                Route::delete('/{id}', [TeachersController::class, 'destroy']);
+            });
 
+            Route::group(['prefix' => 'students'], function() {
+                Route::post('/', [StudentsController::class, 'store']);
+                Route::put('/{id}', [StudentsController::class, 'update']);
+                Route::delete('/{id}', [StudentsController::class, 'destroy']);
+                Route::post('/students/multiple', 'AdminController@addMultipleStudents');
+            });
+
+            Route::group(['prefix' => 'restricted-students'], function() {
+                Route::post('/', [RestrictedStudentsController::class, 'store']);
+                Route::delete('/{id}', [RestrictedStudentsController::class, 'destroy']);
+            });
         });
-
-        Route::group(['prefix' => 'restricted-students', 'middleware' => ['can:superAdminGate']], function() {
-            Route::post('/', [RestrictedStudentsController::class, 'store']);
-            Route::delete('/{id}', [RestrictedStudentsController::class, 'destroy']);
-        });
-
     });
 });
 
