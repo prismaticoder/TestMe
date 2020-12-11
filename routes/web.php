@@ -11,8 +11,10 @@
 |
 */
 
+use App\Http\Controllers\Teacher\AccountPasswordController;
 use App\Http\Controllers\Teacher\Admin\RestrictedStudentsController;
 use App\Http\Controllers\Teacher\Admin\StudentsController;
+use App\Http\Controllers\Teacher\Admin\SubjectsController;
 use App\Http\Controllers\Teacher\Admin\TeachersController;
 use App\Http\Controllers\Teacher\DashboardController;
 use App\Http\Controllers\Teacher\ExamsController as TeacherExamsController;
@@ -65,17 +67,6 @@ Route::group(['prefix' => 'api'], function () {
     Route::get('/restoreStudent/{id}','AdminController@restoreStudent');
 
     Route::group(['middleware' => ['auth:admins']], function() {
-        Route::post('/','Admin\AdminSectionController@createAdmin')->middleware('can:superAdminGate');
-        Route::get('/teachers','Admin\AdminSectionController@getAllTeachers')->middleware('can:superAdminGate');
-        Route::post('/teachers','Admin\AdminSectionController@createTeacher')->middleware('can:superAdminGate');
-        Route::put('/teachers/{id}','Admin\AdminSectionController@updateTeacher')->middleware('can:superAdminGate');
-        Route::delete('/teachers/{id}','Admin\AdminSectionController@deleteTeacher')->middleware('can:superAdminGate');
-        Route::get('/subjects','Admin\AdminSectionController@getAllSubjects')->middleware('can:superAdminGate');
-        Route::post('/subjects','Admin\AdminSectionController@createSubject')->middleware('can:superAdminGate');
-        Route::put('/subjects/{id}','Admin\AdminSectionController@updateSubject')->middleware('can:superAdminGate');
-        Route::post('/confirmPassword', 'AdminController@confirmPassword');
-        Route::put('/updatePassword', 'AdminController@updatePassword');
-
         Route::group(['prefix' => 'exams', 'middleware' => ['check-exam-status']], function() {
             Route::post('/', [TeacherExamsController::class, 'store']);
             Route::put('/{id}',[TeacherExamsController::class, 'update']);
@@ -86,6 +77,17 @@ Route::group(['prefix' => 'api'], function () {
             Route::delete('/{id}',[StartedExamsController::class, 'destroy']);
         });
 
+        Route::group(['prefix' => 'update-password'], function() {
+            Route::post('/', [AccountPasswordController::class, 'update']);
+            Route::post('/verify', [AccountPasswordController::class, 'verify']);
+        });
+
+        Route::group(['prefix' => 'questions', 'middleware' => ['check-exam-status']], function() {
+            Route::post('/', [QuestionsController::class, 'store']);
+            Route::put('/{id}', [QuestionsController::class, 'update']);
+            Route::delete('/{id}', [QuestionsController::class, 'destroy']);
+        });
+
         Route::group(['prefix' => 'questions', 'middleware' => ['check-exam-status']], function() {
             Route::post('/', [QuestionsController::class, 'store']);
             Route::put('/{id}', [QuestionsController::class, 'update']);
@@ -94,10 +96,15 @@ Route::group(['prefix' => 'api'], function () {
 
         Route::group(['middleware' => ['can:superAdminGate']], function() {
             Route::group(['prefix' => 'teachers'], function() {
-                Route::get('/', [TeachersController::class, 'index']);
                 Route::post('/', [TeachersController::class, 'store']);
                 Route::put('/{id}', [TeachersController::class, 'update']);
                 Route::delete('/{id}', [TeachersController::class, 'destroy']);
+            });
+
+            Route::group(['prefix' => 'subjects'], function() {
+                Route::post('/', [SubjectsController::class, 'store']);
+                Route::put('/{id}', [SubjectsController::class, 'update']);
+                Route::delete('/{id}', [SubjectsController::class, 'destroy']);
             });
 
             Route::group(['prefix' => 'students'], function() {
@@ -128,8 +135,10 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/account', 'AdminController@getAccountPage')->name('account');
     Route::get('/{subject}/hostexam','AdminController@hostExam')->name('host-exam');
     Route::get('/{subject}/endexam','AdminController@endExam')->name('end-exam');
-    Route::get('/teachers', 'Admin\AdminSectionController@teachersPage')->name('teachers');
-    Route::get('/subjects', 'Admin\AdminSectionController@subjectsPage')->name('subjects');
+
+    Route::get('/teachers', [TeachersController::class, 'index'])->name('teachers');
+    Route::get('/subjects', [SubjectsController::class, 'index'])->name('subjects');
+
     Route::get('/{subject}/{class_id}/questions', [QuestionsController::class, 'index'])->name('questions');
 
     Route::get('/{subject}/{class_id}/results', [SubjectResultsController::class, 'index'])->name('results');
