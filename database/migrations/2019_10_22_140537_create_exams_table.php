@@ -19,12 +19,17 @@ class CreateExamsTable extends Migration
             $table->foreign('class_id')->references('id')->on('classes');
             $table->integer('subject_id')->unsigned();
             $table->foreign('subject_id')->references('id')->on('subjects');
+            $table->unsignedBigInteger('duplicated_from')->nullable();
             $table->integer('base_score');
             $table->date('date');
             $table->integer('hours');
             $table->integer('minutes');
             $table->boolean('has_started')->default(0);
             $table->timestamps();
+        });
+
+        Schema::table('exams', function (Blueprint $table) {
+            $table->foreign('duplicated_from')->references('id')->on('exams')->onDelete('SET NULL');
         });
     }
 
