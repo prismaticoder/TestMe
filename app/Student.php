@@ -28,10 +28,6 @@ class Student extends Authenticatable
         return $this->belongsToMany(Exam::class, 'submissions')->withPivot('actual_score','computed_score');
     }
 
-    public function scores() {
-        return $this->hasMany(Score::class);
-    }
-
     public function submissions() {
         return $this->hasMany(Submission::class);
     }
@@ -48,12 +44,6 @@ class Student extends Authenticatable
 
     public function getSeedAttribute() {
         return substr($this->code, 0, 4);
-    }
-
-    public function getScore($exam_id) {
-        $score = $this->scores()->where('exam_id', $exam_id)->first();
-
-        return $score ? ['actual_score' => $score->actual_score, 'computed_score' => $score->computed_score] : null;
     }
 
     public function getAvailableExams() {
