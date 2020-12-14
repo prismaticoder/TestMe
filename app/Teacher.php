@@ -6,7 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class Admin extends Authenticatable
+class Teacher extends Authenticatable
 {
     use Notifiable;
 
@@ -45,7 +45,7 @@ class Admin extends Authenticatable
     ];
 
     public function subjects(){
-        return $this->isAdmin() ? Subject::all() : $this->hasMany(AdminSubject::class)->with('classes','subject');
+        return $this->isAdmin() ? Subject::all() : $this->hasMany(TeacherSubject::class)->with('classes','subject');
     }
 
     public function classes(){
@@ -56,8 +56,12 @@ class Admin extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
-    public function scopeTeacher($query) {
+    public function scopeNotAdmin($query) {
         return $query->where('role_id', self::ROLES['TEACHER']);
+    }
+
+    public function scopeAdmin($query) {
+        return $query->where('role_id', self::ROLES['ADMIN']);
     }
 
     public function setPasswordAttribute($value)

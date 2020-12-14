@@ -4,11 +4,10 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class AdminSubject extends Model
+class TeacherSubject extends Model
 {
-    //
-    protected $table = 'admin_subjects';
-    protected $fillable = ['admin_id','subject_id'];
+    protected $table = "teacher_subject";
+    protected $fillable = ['teacher_id', 'subject_id'];
     protected $appends = ['subject_name','alias'];
     public $timestamps = false;
 
@@ -16,12 +15,12 @@ class AdminSubject extends Model
         return $this->belongsTo(Subject::class);
     }
 
-    public function admin() {
-        return $this->belongsTo(Admin::class);
+    public function teacher() {
+        return $this->belongsTo(Teacher::class);
     }
 
     public function classes() {
-        return $this->belongsToMany(Classes::class, 'adminsubject_class', 'adminsubject_id', 'class_id');
+        return $this->belongsToMany(Classes::class, 'teachersubject_class', 'teachersubject_id', 'class_id');
     }
 
     public function getSubjectNameAttribute() {
