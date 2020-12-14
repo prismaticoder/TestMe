@@ -27,7 +27,7 @@
 <body>
     <div class="container-fluid">
         <h3 class="text-center mt-5">
-            {{$current_class->class}} {{$subject->subject_name}} CBT Examination Results <br>(Exam Date: {{Carbon\Carbon::parse($exam->date)->format('l, jS \o\f F Y')}})
+            {{$currentClass->name}} {{$subject->name}} CBT Examination Results <br>(Exam Date: {{date('l, jS \o\f F Y', strtotime($exam->date))}})
         </h3>
         <hr>
 
@@ -46,10 +46,10 @@
                 @foreach ($students as $student)
                 <tr>
                     <td>{{$loop->iteration}}</td>
-                    <td>{{$student->code}}</td>
+                    <td>{{$student->examination_number}}</td>
                     <td>{{$student->fullName}}</td>
-                    <td>{{$student->score ? $student->score['actual_score'] : "-"}}</td>
-                    <td>{{$student->score ? $student->score['computed_score'] : "-"}}</td>
+                    <td>{{$student->pivot->actual_score}}</td>
+                    <td>{{$student->pivot->computed_score}}</td>
                 </tr>
                 @endforeach
 
