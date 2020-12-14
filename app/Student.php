@@ -24,6 +24,10 @@ class Student extends Authenticatable
     ];
     protected $appends = ['fullName'];
 
+    public function exams() {
+        return $this->belongsToMany(Exam::class, 'submissions')->withPivot('actual_score','computed_score');
+    }
+
     public function scores() {
         return $this->hasMany(Score::class);
     }
@@ -37,7 +41,13 @@ class Student extends Authenticatable
     }
 
     public function getFullNameAttribute() {
-        return ucfirst(strtolower($this->lastname)) . ' ' . ucfirst(strtolower($this->firstname));
+        return ucwords(
+            strtolower("{$this->lastname} {$this->firstname}")
+        );
+    }
+
+    public function getSeedAttribute() {
+        return substr($this->code, 0, 4);
     }
 
     public function getScore($exam_id) {
@@ -46,12 +56,15 @@ class Student extends Authenticatable
         return $score ? ['actual_score' => $score->actual_score, 'computed_score' => $score->computed_score] : null;
     }
 
-    public function getAllStartedExams() {
-        $exams = Exam::where('class_id', $this->class_id)->where('has_started',1)->whereDoesntHave('scores',function($q) {
-            $q->where('student_id',$this->id);
-        })->get();
+    public function getAvailableExams() {
 
-        return $exams;
+        return Exam::started()
+                ->where('class_id', $this->class_id)
+                ->whereDoesntHave('submissions',function($q) {
+                    $q->where('student_id',$this->id);
+                })
+                ->get();
+
     }
 
     public static function generateExaminationNumber(): string
