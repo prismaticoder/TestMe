@@ -11,6 +11,7 @@
     <table class="table table-md table-bordered w-100 text-center">
         <thead>
             <th>S/N</th>
+            <th>NAME</th>
             <th>USERNAME</th>
             <th>SUBJECTS TAUGHT</th>
             <th colspan="2">OPTIONS</th>
@@ -138,7 +139,7 @@ export default {
             let iteration = 1;
             this.subjects.forEach(subject => {
                 subject.classes.forEach(single => {
-                    subjectList.push({text: `${subject.subject_name} (${single.class})`, value: iteration, subject_id: subject.id, class_id: single.id})
+                    subjectList.push({text: `${subject.name} (${single.name})`, value: iteration, subject_id: subject.id, class_id: single.id})
                     iteration++
                 })
             })

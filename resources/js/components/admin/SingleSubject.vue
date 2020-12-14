@@ -1,7 +1,7 @@
 <template>
     <tr>
         <td>{{number}}</td>
-        <td>{{subject.subject_name}}</td>
+        <td>{{subject.name}}</td>
         <td v-for="single in allclasses" :key="single.id">
             <v-icon small v-if="subject.classes.find(one => one.class == single.class)">
                 mdi-check
@@ -27,7 +27,7 @@
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn :disabled="loading" color="green darken-1" text @click="backToPrevious">CLOSE</v-btn>
-                    <v-btn :loading="loading" :disabled="(loading || !name || classes.length === 0) || (name == subject.subject_name && isEqual)" color="green darken-1" text @click="updateSubject()">SAVE</v-btn>
+                    <v-btn :loading="loading" :disabled="(loading || !name || classes.length === 0) || (name == subject.name && isEqual)" color="green darken-1" text @click="updateSubject()">SAVE</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -47,7 +47,7 @@ export default {
     props: ['yellow','subject','number','allclasses'],
     data() {
         return {
-            name: this.subject.subject_name,
+            name: this.subject.name,
             classes: this.subject.classes.map(single => single.id),
             items: this.allclasses.map((single) => {return {text: single.class, value: single.id}}),
             editDialog: false,
@@ -60,7 +60,7 @@ export default {
     },
     methods: {
         backToPrevious() {
-            this.name = this.subject.subject_name
+            this.name = this.subject.name
             this.alias = this.subject.alias
             this.classes = this.subject.classes.map(single =>  single.id)
             this.editDialog = false

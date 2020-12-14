@@ -1,6 +1,6 @@
 <template>
     <span class="col-md-4 border-bottom border-right">
-        {{exam.subject.subject_name}} ({{exam.class.class}})
+        {{exam.subject.name}} ({{exam.class.name}})
         <v-btn tile small outlined class="float-right" :color="yellow" @click="dialog = true" title="End Exam">
             End Exam
         </v-btn>
@@ -9,7 +9,7 @@
             <v-card>
                 <v-card-title class="headline">End Exam?</v-card-title>
                 <v-card-text>
-                Please confirm that you want to put an end to this exam: <strong>{{exam.subject.subject_name}} ({{exam.class.class}})</strong>
+                Please confirm that you want to put an end to this exam: <strong>{{exam.subject.name}} ({{exam.class.name}})</strong>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>

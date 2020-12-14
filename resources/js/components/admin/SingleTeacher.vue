@@ -1,6 +1,7 @@
 <template>
     <tr>
         <td>{{number}}</td>
+        <td>{{teacher.full_name}}</td>
         <td>{{teacher.username}}</td>
         <td>{{getSubjects}}</td>
         <td>
@@ -132,7 +133,7 @@ export default {
         getSubjects() {
             let subjects = this.teacher.subjects.map((subject) => {
                 let subjectClasses = subject.classes.map(single => single.class)
-                return `${subject.subject.subject_name} (${subjectClasses.length == this.classes.length ? 'All Classes' : subjectClasses.join()})`
+                return `${subject.subject.name} (${subjectClasses.length == this.classes.length ? 'All Classes' : subjectClasses.join()})`
             })
 
             return subjects.join()
