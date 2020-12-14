@@ -20,6 +20,8 @@ class CreateExamsTable extends Migration
             $table->integer('subject_id')->unsigned();
             $table->foreign('subject_id')->references('id')->on('subjects');
             $table->unsignedBigInteger('duplicated_from')->nullable();
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->foreign('created_by')->references('id')->on('teachers')->onDelete('SET NULL');
             $table->integer('base_score');
             $table->date('date');
             $table->integer('hours');
