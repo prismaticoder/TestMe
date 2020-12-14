@@ -106,7 +106,7 @@
             @foreach ($exams as $exam)
             <div class="card">
             <div class="card-body">
-                  <p class="card-text">{{strtoupper($exam->subject->subject_name)}}</p>
+                  <p class="card-text">{{strtoupper($exam->subject->name)}}</p>
                 </div>
                 <div class="card-footer">
                   <small class="text-muted">

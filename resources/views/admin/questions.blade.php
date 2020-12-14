@@ -1,5 +1,5 @@
 @extends('layouts.main')
-@section('title') {{$current_class->class}} {{ucfirst($subject->subject_name)}} Questions @endsection
+@section('title') {{$currentClass->name}} {{ucfirst($subject->name)}} Questions @endsection
 @section('content')
 
     <div id="app">

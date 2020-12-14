@@ -9,7 +9,7 @@
     <link rel="icon" href="{{asset('/img/logo.png')}}">
 
 
-    <title>{{config('app.name')}} | {{config('app.schoolAlias')}} - {{ucfirst($subject->subject_name). ' ' . Auth::user()->class->class}} Examination</title>
+    <title>{{config('app.name')}} | {{config('app.schoolAlias')}} - {{ucfirst($subject->name). ' ' . Auth::user()->class->name}} Examination</title>
 
         <!-- Bootstrap core CSS -->
         <link rel="stylesheet" href="{{asset('/css/bootstrap.min.css')}}">
@@ -72,7 +72,7 @@
                 <img src="{{asset('/img/logo.png')}}" class="mr-2" height="45" width="45">
             </a>
             <a class="navbar-brand" href="">
-                {{config('app.name')}} | {{config('app.schoolAlias')}} {{strtoupper($subject->subject_name) . ' ' . Auth::user()->class->class}} EXAMINATION
+                {{config('app.name')}} | {{config('app.schoolAlias')}} {{strtoupper($subject->name) . ' ' . Auth::user()->class->class}} EXAMINATION
             </a>
             <div class="order-5">
                 <Timer :hours="{{$hours}}" :minutes="{{$minutes}}"></Timer>
