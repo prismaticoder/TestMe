@@ -28,7 +28,7 @@ class StartedExamsController extends Controller
         $exam = Exam::canBeStarted()->where('subject_id',$subjectId)->where('class_id',$classId)->with('subject','class')->first();
 
         abort_if(! $exam, 404, "There are currently no exams that can be started for this class subject");
-        abort_if(Gate::denies('view-subject-details', [$subjectId, $classId]), 403, "You are not authorized to start an exam for this class subject");
+        abort_if(Gate::denies('access-class-subject', [$classId, $subjectId]), 403, "You are not authorized to start an exam for this class subject");
 
         $exam->start();
 
@@ -46,7 +46,7 @@ class StartedExamsController extends Controller
         $exam = Exam::started()->where('id', $id)->with('subject','class')->first();
 
         abort_if(! $exam, 404, "This exam does not exist as a started exam");
-        abort_if(! Gate::denies('view-subject-details', [$exam->subject_id, $exam->class_id]), 403, "You are not authorized to end an exam for this class subject");
+        abort_if(! Gate::denies('access-class-subject', [$exam->class_id, $exam->subject_id]), 403, "You are not authorized to end an exam for this class subject");
 
         $exam->end();
 

@@ -33,14 +33,14 @@ class AuthServiceProvider extends ServiceProvider
             return $admin->isAdmin();
         });
 
-        //admin should only view questions of his own subject
-        Gate::define('view-subject-details', function($admin, $subject_id, $class_id) {
-            if ($admin->isAdmin()) return true;
+        Gate::define('access-class-subject', function($teacher, int $classId, int $subjectId) {
+            if ($teacher->isAdmin()) {
+                return true;
+            }
 
-            $subject = $admin->subjects()->where('subject_id', $subject_id)->first();
-            $check = $subject ? $subject->classes()->where('class_id',$class_id)->first() : false;
+            $subject = $teacher->subjects()->where('subject_id', $subjectId)->first();
 
-            return $check ? true : false;
+            return $subject ? $subject->classes()->where('class_id',$classId)->exists() : false;
         });
     }
 }

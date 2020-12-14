@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Option;
 use App\Question;
 use App\Subject;
+use DOMDocument;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -14,7 +15,7 @@ use Illuminate\Support\Facades\Storage;
 
 class QuestionsController extends Controller
 {
-    private $domDocument;
+    private ?DOMDocument $domDocument;
 
     public function __construct()
     {
@@ -30,20 +31,20 @@ class QuestionsController extends Controller
     public function index(string $subjectAlias, int $classId)
     {
         $subject = Subject::findThroughAlias($subjectAlias);
-        $current_class = $subject->classes()->where('class_id', $classId)->firstOrFail();
+        $currentClass = $subject->classes()->where('class_id', $classId)->firstOrFail();
 
-        abort_if(! Gate::allows('view-subject-details', [$subject->id, $classId]), 404, "Page not found");
+        abort_if(! Gate::allows('access-class-subject', [$currentClass->id, $subject->id]), 404, "Page not found");
 
-        $exams = Exam::where('subject_id',$subject->id)->where('class_id',$classId)->orderByDesc('date')->orderBy('updated_at','desc')->with('subject','class')->get();
+        $exams = Exam::belongsToClassSubject($classId, $subject->id)->with('subject','class')->latest('updated_at')->get();
 
         $classes = auth()->user()->isAdmin()
                         ? $subject->classes
-                        : $subject->adminSubjects()->where('admin_id', auth()->id())->first()->classes;
+                        : $subject->teacherSubjects()->where('admin_id', auth()->id())->first()->classes;
 
 
         (count($exams) > 0) ? session()->put('exam_id', $exams[0]->id) : session()->forget('exam_id');
 
-        return view('admin.questions', compact('subject','class_id','current_class','classes','exams'));
+        return view('admin.questions', compact('subject','class_id','currentClass','classes','exams'));
     }
 
     /**
@@ -70,7 +71,7 @@ class QuestionsController extends Controller
                 Option::create([
                     'question_id' => $createdQuestion->id,
                     'body' => $option,
-                    'isCorrect' => (bool) $request->correct === $key
+                    'is_correct' => (bool) $request->correct === $key
                 ]);
             }
 
@@ -111,7 +112,7 @@ class QuestionsController extends Controller
                 $option = $this->loadAsHtml($option)->storeImages()->save();
 
                 $question->options[$key]->body = $option;
-                $question->options[$key]->isCorrect = (bool) $request->correct === $key;
+                $question->options[$key]->is_correct = (bool) $request->correct === $key;
 
                 $question->push();
             }
