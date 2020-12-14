@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Teacher\Admin;
 
-use App\Admin;
-use App\AdminSubject;
+use App\Classes;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateTeacherRequest;
 use App\Http\Requests\UpdateTeacherRequest;
+use App\Subject;
+use App\Teacher;
+use App\TeacherSubject;
 use Illuminate\Support\Facades\DB;
 
 class TeachersController extends Controller
@@ -18,9 +20,14 @@ class TeachersController extends Controller
      */
     public function index()
     {
-        $teachers = Admin::teacher()->get();
+        $subjects = Subject::with('classes')->get();
+        $classes = Classes::all();
+        $type = 'teachers';
+        $teachers = Teacher::notAdmin()->orderBy('username')->with(['subjects' => function ($q) {
+            $q->with('classes','subject');
+        }])->get();
 
-        return $this->sendSuccessResponse("Teachers retrieved successfully", $teachers);
+        return view('admin.teacher-subject', compact('subjects','classes','type','teachers'));
     }
 
     /**
@@ -34,11 +41,12 @@ class TeachersController extends Controller
         DB::beginTransaction();
 
         try {
-            $teacher = Admin::create([
-                'username' => $request->username,
-                'password' => $request->password,
-                'role_id' => Admin::ROLES['TEACHER']
-            ]);
+            $teacher = Teacher::create(
+                array_merge(
+                    $request->only('title','firstname','lastname','username','password'),
+                    ['role_id' => Teacher::ROLES['TEACHER']]
+                )
+            );
 
             foreach ($request->subjects as $subject) {
                 $this->createSubjectWithClasses($teacher->id,$subject);
@@ -65,15 +73,16 @@ class TeachersController extends Controller
      */
     public function update(UpdateTeacherRequest $request, $id)
     {
-        $teacher = Admin::teacher()->where('id', $id)->first();
+        $teacher = Teacher::notAdmin()->where('id', $id)->first();
 
         abort_if(! $teacher, 404, "Teacher not found");
 
         DB::beginTransaction();
 
         try {
-            $teacher->username = $request->username;
-            $teacher->save();
+            $teacher->update(
+                $request->only('title','firstname','lastname','username')
+            );
 
             $teacher->subjects()->delete();
 
@@ -101,7 +110,7 @@ class TeachersController extends Controller
      */
     public function destroy($id)
     {
-        $teacher = Admin::teacher()->where('id', $id)->first();
+        $teacher = Teacher::notAdmin()->where('id', $id)->first();
 
         abort_if(! $teacher, 404, "Teacher not found");
 
@@ -111,11 +120,11 @@ class TeachersController extends Controller
 
     private function createSubjectWithClasses(int $teacherId, array $subjectWithClasses): void
     {
-        $adminSubject = AdminSubject::create([
-            'admin_id' => $teacherId,
+        $teacherSubject = TeacherSubject::create([
+            'teacher_id' => $teacherId,
             'subject_id' => $subjectWithClasses['subject_id']
         ]);
 
-        $adminSubject->classes()->sync($subjectWithClasses['classes']);
+        $teacherSubject->classes()->sync($subjectWithClasses['classes']);
     }
 }
