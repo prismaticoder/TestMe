@@ -6,7 +6,7 @@
         <hr>
 
         <v-card-text>
-            <p v-html="question.question"></p>
+            <p v-html="question.body"></p>
 
             <v-list two-line :key="question.id">
                 <v-list-item-group v-model="selected">
@@ -31,14 +31,14 @@
         </v-card-text>
 
         <v-card-actions>
-            <v-btn tile color="danger" :disabled="number == 1" @click="$emit('storeChoice', 'previous', newSelection, number)">
+            <v-btn tile color="danger" :disabled="number == 1" @click="$emit('store-choice', 'previous', newSelection, number)">
                 <v-icon small>
                     mdi-arrow-left
                 </v-icon>
                 Previous Question
             </v-btn>
             <v-spacer></v-spacer>
-            <v-btn tile color="primary" outlined v-if="number !== totalCount" @click="$emit('storeChoice', 'next', newSelection, number)">
+            <v-btn tile color="primary" outlined v-if="number !== totalCount" @click="$emit('store-choice', 'next', newSelection, number)">
                 Next Question
                 <v-icon small>
                     mdi-arrow-right

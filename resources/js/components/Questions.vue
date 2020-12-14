@@ -23,7 +23,7 @@
 
             <v-card shaped outlined class="p-3" v-else>
                 <v-card-title>
-                    {{mainsubject.subject_name.toUpperCase()}} EXAMINATION
+                    {{mainsubject.name.toUpperCase()}} EXAMINATION
                 </v-card-title>
                 <hr>
 
