@@ -24,6 +24,8 @@ class Teacher extends Authenticatable
         'firstname', 'lastname', 'title', 'username', 'password','role_id'
     ];
 
+    protected $appends = ['full_name'];
+
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -67,6 +69,12 @@ class Teacher extends Authenticatable
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = bcrypt($value);
+    }
+
+    public function getFullNameAttribute() {
+        return strtoupper(
+            "{$this->title}. {$this->lastname} {$this->firstname}"
+        );
     }
 
     // i link this with gate
