@@ -18,7 +18,8 @@ class CreateOptionsTable extends Migration
             $table->unsignedBigInteger('question_id');
             $table->foreign('question_id')->references('id')->on('questions')->onDelete('cascade');
             $table->longText('body');
-            $table->boolean('isCorrect')->default(0);
+            $table->boolean('is_correct')->default(0);
+            $table->timestamps();
         });
     }
 
