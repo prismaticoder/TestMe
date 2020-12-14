@@ -51,7 +51,7 @@ class Exam extends Model
     }
 
     public function getHasBeenWrittenAttribute() {
-        return count ($this->scores) > 0 ? true : false;
+        return count($this->submissions) > 0;
     }
 
     public function getQuestionsAttribute() {
