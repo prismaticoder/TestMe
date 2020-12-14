@@ -4,69 +4,51 @@ namespace App\Http\Controllers\Student;
 
 use App\Exam;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CreateExamRequest;
-use App\Http\Requests\UpdateExamRequest;
+use App\Question;
+use App\Subject;
 
 class ExamsController extends Controller
 {
-
     /**
-     * Show the form for creating a new resource.
+     * Get All available exams that a student can partake in
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function index()
     {
-        //
+        $exams = auth()->user()->getAvailableExams();
+
+        return view('home',compact('exams'));
     }
 
     /**
-     * Create a new exam
+     * Get single exam
      *
-     * @param  \App\Http\Requests\CreateExamRequest  $request
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function store(CreateExamRequest $request)
+    public function show($subjectAlias)
     {
-        abort_if($request->hours === 0 && $request->minutes === 0, 400, "Hour and minute cannot both have values as zero!");
+        $subject = Subject::findThroughAlias($subjectAlias);
 
-        $exam = Exam::create($request->only('subject_id','class_id','base_score','hours','minutes','dates'));
-        $exam->load('subject','class');
+        //check if the subject has any exam to be hosted on the particular day
+        $exam = Exam::started()
+                    ->belongsToClassSubject(auth()->user()->class_id, $subject->id)
+                    ->whereDoesntHave('submissions', function($query) {
+                        $query->where('student_id', auth()->id());
+                    })
+                    ->latest('updated_at')
+                    ->first();
+
+        abort_if(! $exam, 404, "Page not found");
+
+        $hours = $exam->hours;
+        $minutes = $exam->minutes;
+
+        $questions = Question::where('exam_id',$exam->id)->with('options:id,question_id,body')->inRandomOrder(auth()->user()->seed)->get();
 
         session()->put('exam_id', $exam->id);
 
-        return $this->sendSuccessResponse("Exam created successfully", $exam, 201);
-    }
-
-    /**
-     * Update an existing exam
-     *
-     * @param  \App\Http\Requests\UpdateExamRequest  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateExamRequest $request, $id)
-    {
-        $exam = Exam::find($id);
-
-        abort_if($request->hours === 0 && $request->minutes === 0, 400, "Hour and minute cannot both have values as zero!");
-        abort_if(! $exam, 404, "Exam not found");
-
-        $exam->update($request->validated());
-
-        $exam->load('subject','class');
-
-        return $this->sendSuccessResponse("Exam settings updated successfully", $exam);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        return view('exam', compact('questions','user','subject','hours','minutes','exam'));
     }
 }
