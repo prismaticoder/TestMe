@@ -26,8 +26,9 @@
     </main>
     <hr>
 @endcan
+
     <div id="app" data-app="true">
-        <subjects :subjects="{{$subjects}}" :exams="{{$exams}}" :classes="{{$classes}}"></subjects>
+    <subjects :subjects="{{$subjects}}" :started-exams="{{$startedExams}}" :pending-exams-for-today="{{$pendingExamsForToday}}" :classes="{{$classes}}"></subjects>
     </div>
 
 
