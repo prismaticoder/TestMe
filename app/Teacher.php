@@ -47,7 +47,22 @@ class Teacher extends Authenticatable
     ];
 
     public function subjects(){
-        return $this->isAdmin() ? Subject::all() : $this->hasMany(TeacherSubject::class)->with('classes','subject');
+        return $this->isAdmin()
+                    ? Subject::orderBy('name')
+                        ->with(['classes' => function($q) {
+                                return $q->orderBy('name');
+                            }
+                        ])
+                        ->get()
+                    : $this->hasMany(TeacherSubject::class)
+                        ->with(
+                            ['classes' => function($q) {
+                                return $q->orderBy('name');
+                            }],
+                            ['subject' => function($q) {
+                                return $q->orderBy('name');
+                            }]
+                        );
     }
 
     public function classes(){
