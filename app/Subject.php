@@ -3,12 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
 
 class Subject extends Model
 {
 
     protected $appends = ['subject_id'];
+    protected $fillable = ['name', 'alias'];
 
     public static function findThroughAlias($alias) {
         return self::where(compact('alias'))->firstOrFail();
