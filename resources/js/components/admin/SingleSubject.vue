@@ -3,7 +3,7 @@
         <td>{{number}}</td>
         <td>{{subject.name}}</td>
         <td v-for="single in allclasses" :key="single.id">
-            <v-icon small v-if="subject.classes.find(one => one.class == single.class)">
+            <v-icon small v-if="subject.classes.find(one => one.name == single.name)">
                 mdi-check
             </v-icon>
         </td>
@@ -31,13 +31,6 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-
-        <v-snackbar v-model="snackbar">
-            {{ snackbarText }}
-            <v-btn color="pink" text @click="snackbar = false">
-                Close
-            </v-btn>
-        </v-snackbar>
     </tr>
 </template>
 
@@ -49,13 +42,11 @@ export default {
         return {
             name: this.subject.name,
             classes: this.subject.classes.map(single => single.id),
-            items: this.allclasses.map((single) => {return {text: single.class, value: single.id}}),
+            items: this.allclasses.map((single) => {return {text: single.name, value: single.id}}),
             editDialog: false,
             loading: false,
             disableDialog: false,
             deleteDialog: false,
-            snackbar: false,
-            snackbarText: ''
         }
     },
     methods: {
@@ -64,9 +55,6 @@ export default {
             this.alias = this.subject.alias
             this.classes = this.subject.classes.map(single =>  single.id)
             this.editDialog = false
-        },
-        changeSlug() {
-            this.alias = this.name.toLowerCase().split(' ').join('-')
         },
         updateSubject() {
             this.loading = true
@@ -79,19 +67,19 @@ export default {
             .then(res => {
                 this.loading = false
                 this.editDialog = false
-                this.$emit('updateSubject', res.data.subject, this.number - 1)
+                this.$noty.success(res.data.message)
+                this.$emit('update-subject', res.data.data, this.number - 1)
             })
             .catch(err => {
                 this.loading = false
                 this.editDialog = false
-                console.log(err.response.data)
-                alert("Sorry, there was an error updating this subject, please try again later")
+                this.$noty.error(err.response.data.message)
             })
         },
     },
     computed: {
         getClassList() {
-            let classArray = this.subject.classes.map(single => single.class)
+            let classArray = this.subject.classes.map(single => single.name)
 
             return classArray.join()
         },

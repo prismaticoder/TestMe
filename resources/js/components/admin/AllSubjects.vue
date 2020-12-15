@@ -19,12 +19,12 @@
                 </tr>
                 <tr>
                     <th v-for="single in allclasses" :key="single.id">
-                        {{single.class}}
+                        {{single.name}}
                     </th>
                 </tr>
             </thead>
             <tbody>
-                <SingleSubject v-for="(subject,index) in subjects" :key="subject.id" :allclasses="allclasses" :subject="subject" :number="index+1" :yellow="yellow" @updateSubject="updateSubject"/>
+                <SingleSubject v-for="(subject,index) in subjects" :key="subject.id" :allclasses="allclasses" :subject="subject" :number="index+1" :yellow="yellow" @update-subject="updateSubject"/>
             </tbody>
         </table>
 
@@ -60,13 +60,11 @@ export default {
         return {
             subjects: this.allsubjects,
             name: null,
-            items: this.allclasses.map((single) => {return {text: single.class, value: single.id}}),
+            items: this.allclasses.map((single) => {return {text: single.name, value: single.id}}),
             classes: [],
             dialog: false,
             loading: false,
-            yellow:  "#e67d23",
-            snackbar: false,
-            snackbarText: '',
+            yellow:  "#e67d23"
         }
     },
     methods: {
@@ -76,29 +74,23 @@ export default {
         createSubject() {
             this.loading = true
 
-            this.$http.post(`admins/subjects`, {
+            this.$http.post(`subjects`, {
                 name: this.name,
                 classes: this.classes
             })
             .then(res => {
                 this.loading = false
                 this.dialog = false
-                this.subjects.push(res.data.subject)
-                this.subjects.sort((a, b) => (a.subject_name > b.subject_name) ? 1 : -1);
-                this.snackbarText = res.data.message
-                this.snackbar = true
+                this.$noty.success(res.data.message)
+                this.subjects.push(res.data.data)
+                this.subjects.sort((a, b) => (a.name > b.name) ? 1 : -1);
             })
             .catch(err => {
                 this.loading = false
                 this.dialog = false
-                console.log(err.response.data)
-                alert("Sorry, there was an error creating this subject, please try again later")
+                this.$noty.error(err.response.data.message)
             })
         },
     }
 }
 </script>
-
-<style>
-
-</style>
