@@ -20,10 +20,14 @@ class RestrictedStudentsController extends Controller
             'id' => ['required', 'int', 'exists:students,id']
         ]);
 
-        $student = Student::find($request->id);
+        $student = Student::withTrashed()->find($request->id);
+
+        abort_if(! $student, 404, "Student not found");
+        abort_if($student->trashed(), 400, "This student's access has already been restricted");
+
         $student->delete();
 
-        return $this->sendSuccessResponse("Student access restricted");
+        return $this->sendSuccessResponse("Student access restricted successfully!", $student);
     }
 
     /**
@@ -34,12 +38,13 @@ class RestrictedStudentsController extends Controller
      */
     public function destroy(int $id)
     {
-        $student = Student::onlyTrashed()->where('id',$id)->first();
+        $student = Student::withTrashed()->find($id);
 
         abort_if(! $student, 404, "Student not found");
+        abort_if(! $student->trashed(), 400, "This student already has access to examinations");
 
         $student->restore();
 
-        $this->sendSuccessResponse("Student access restored successfully");
+        return $this->sendSuccessResponse("Student access restored successfully", $student);
     }
 }

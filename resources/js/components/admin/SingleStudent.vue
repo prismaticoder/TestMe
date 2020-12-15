@@ -1,7 +1,7 @@
 <template>
     <tr>
         <td>{{number}}</td>
-        <td>{{student.code}}</td>
+        <td>{{student.examination_number}}</td>
         <td>{{student.fullName}}</td>
         <td>
             <v-btn small text :color="yellow" title="Edit Student Details" @click="editDialog=true">
@@ -118,52 +118,48 @@ export default {
             .then(res => {
                 this.editDialog = false;
                 this.loading = false
-                this.$emit('updateStudent', res.data.student, this.number - 1)
-                this.snackbar = true;
-                this.snackbarText = res.data.message
+                this.$emit('update-student', res.data.data, this.number - 1)
+                this.$noty.success(res.data.message)
             })
             .catch(err => {
                 this.editDialog = false;
-                this.loading = false
-                console.log(err.response.data)
-                alert("Sorry, there was an error updating this student's details, please try again")
+                this.loading = false;
+                this.$noty.error(err.response.data.message)
             })
         },
         disableStudent() {
             this.loading = true;
 
-            this.$http.get(`/disableStudent/${this.student.id}`)
+            this.$http.post(`restricted-students`, {
+                id: this.student.id
+            })
             .then(res => {
                 this.disableDialog = false;
                 this.loading = false
-                this.$emit('updateStudent', res.data.student, this.number - 1)
-                this.snackbar = true;
-                this.snackbarText = res.data.message
+                this.$emit('update-student', res.data.data, this.number - 1)
+                this.$noty.success(res.data.message)
             })
             .catch(err => {
                 this.disableDialog = false;
-                this.loading = false
-                console.log(err.response.data)
-                alert("Sorry, there was an error disabling this student's examination access, please try again")
+                this.loading = false;
+                this.$noty.error(err.response.data.message);
             })
         },
         restoreStudent() {
             this.loading = true;
 
-            this.$http.get(`/restoreStudent/${this.student.id}`)
+            this.$http.delete(`restricted-students/${this.student.id}`)
             .then(res => {
                 this.disableDialog = false;
                 this.loading = false
-                console.log(res.data)
-                this.$emit('updateStudent', res.data.student, this.number - 1)
-                this.snackbar = true;
-                this.snackbarText = res.data.message
+                this.$noty.success(res.data.message);
+                this.$emit('update-student', res.data.data, this.number - 1)
             })
             .catch(err => {
                 this.disableDialog = false;
                 this.loading = false
-                console.log(err.response.data)
-                alert("Sorry, there was an error restoring this student's examination access, please try again")
+                console.log(err.response)
+                this.$noty.error(err.response.data.message);
             })
         },
         deleteStudent() {
@@ -173,19 +169,14 @@ export default {
             .then(res => {
                 this.deleteDialog = false;
                 this.loading = false
-                this.$emit('deleteStudent', this.student)
+                this.$emit('delete-student', this.student)
             })
             .catch(err => {
                 this.deleteDialog = false;
-                this.loading = false
-                console.log(err.response.data)
-                alert("Sorry, there was an error deleting this student from the database, please try again")
+                this.loading = false;
+                this.$noty.error(err.response.data.message);
             })
         }
     }
 }
 </script>
-
-<style>
-
-</style>

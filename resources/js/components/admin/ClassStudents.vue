@@ -1,13 +1,13 @@
 <template>
   <div>
         <v-tabs v-model="tab" :background-color="yellow" centered grow center-active>
-            <v-tab v-for="section in classes" :key="section.id" :href="`#${section.class.toLowerCase()}`" @click="$location.hash = `#${section.class.toLowerCase()}`">
-                {{ section.class }}
+            <v-tab v-for="section in classes" :key="section.id" :href="`#${trimString(section.name)}`" @click="$location.hash = `#${trimString(section.name)}`">
+                {{ section.name }}
             </v-tab>
         </v-tabs>
 
         <v-tabs-items v-model="tab">
-            <v-tab-item v-for="section in classes" :key="section.id" :value="section.class.toLowerCase()" class="text-center">
+            <v-tab-item v-for="section in classes" :key="section.id" :value="trimString(section.name)" class="text-center">
                 <v-btn tile class="m-3" outlined @click="openClassDialog(section)">
                     <v-icon>
                         mdi-plus
@@ -22,23 +22,16 @@
                         <th colspan="3">OPTIONS</th>
                     </thead>
                     <tbody>
-                        <SingleStudent v-for="(student,index) in section.students" :isadmin="isadmin" :key="student.id" :student="student" :number="index+1" :yellow="yellow" @updateStudent="updateStudent" @deleteStudent="deleteStudent"/>
+                        <SingleStudent v-for="(student,index) in section.students" :isadmin="isadmin" :key="student.id" :student="student" :number="index+1" :yellow="yellow" @update-student="updateStudent" @delete-student="deleteStudent"/>
                     </tbody>
                 </table>
             </v-tab-item>
         </v-tabs-items>
 
-        <v-snackbar v-model="snackbar">
-            {{ snackbarText }}
-            <v-btn color="pink" text @click="snackbar = false">
-                Close
-            </v-btn>
-        </v-snackbar>
-
         <v-dialog v-model="dialog" max-width="500">
             <v-card class="mx-auto" max-width="500">
                 <v-card-title class="title font-weight-regular justify-space-between">
-                    <span>{{currentClass.class}} | {{ addStudentModalTitle }}</span>
+                    <span>{{currentClass.name}} | {{ addStudentModalTitle }}</span>
                 </v-card-title>
                 <v-window v-model="step">
                     <v-window-item :value="1">
@@ -73,7 +66,7 @@
                                 <ul class="list-group-flush mt-3">
                                     <li class="list-group-item">The file must be an excel file</li>
                                     <li class="list-group-item">The first row of the file should contain two columns: "Surname" and "First Name", every other row is to enter student details in that format</li>
-                                    <li class="list-group-item">You can <a href="/downloadSampleExcelFile">download this sample file</a> as a reference</li>
+                                    <li class="list-group-item">You can <a href="/download-sample-excel-file">download this sample file</a> as a reference</li>
                                 </ul>
                             </v-card-text>
                             <v-file-input accept=".xlsx,.xls,.csv" v-model="studentList" show-size truncate-length="24" label="Choose File"></v-file-input>
@@ -105,8 +98,6 @@ export default {
             yellow:  "#e67d23",
             classes: this.allclasses,
             currentClass: this.allclasses[0],
-            snackbar: false,
-            snackbarText: '',
             dialog: false,
             step: 1,
             studentList: null,
@@ -123,7 +114,7 @@ export default {
         addStudent(classId) {
             this.loading = true;
 
-            this.$http.post('students/single', {
+            this.$http.post('students', {
                 firstname: this.firstname,
                 lastname: this.lastname,
                 class_id: classId
@@ -133,20 +124,17 @@ export default {
                 this.resetWindowAndClose()
                 this.lastname = null;
                 this.firstname = null
-                this.classes.find(single => single.id == classId).students.push(res.data.student);
+                this.$noty.success(res.data.message)
+                this.classes.find(single => single.id == classId).students.push(res.data.data);
                 this.classes.find(single => single.id == classId).students.sort((a, b) => (a.fullName > b.fullName) ? 1 : -1);
-                this.snackbar = true;
-                this.snackbarText = res.data.message
             })
             .catch(err => {
                 this.loading = false;
                 this.dialog = false;
-                console.log(err.response.data)
-                alert("Sorry, there was an error adding this student")
+                this.$noty.error(err.response.data.message)
             })
         },
         addMultipleStudents(classId) {
-            console.log(classId)
             this.loading = true;
 
             let formData = new FormData();
@@ -157,22 +145,15 @@ export default {
             .then(res => {
                 this.loading = false;
                 this.resetWindowAndClose();
-                if (res.data.success) {
-                    this.classes.find(single => single.id == classId).students = [...res.data.students];
-                    this.classes.find(single => single.id == classId).students.sort((a, b) => (a.fullName > b.fullName) ? 1 : -1);
-                    this.studentList = null
-                    this.snackbar = true;
-                    this.snackbarText = res.data.message
-                }
-                else {
-                    alert(`Upload error: ${res.data.message}`)
-                }
+                this.studentList = null
+                this.$noty.success(res.data.message)
+                this.classes.find(single => single.id == classId).students = [...res.data.data];
+                this.classes.find(single => single.id == classId).students.sort((a, b) => (a.fullName > b.fullName) ? 1 : -1);
             })
             .catch(err => {
                 this.loading = false;
                 this.dialog = false;
-                console.log(err.response.data)
-                alert("Sorry, there was an error adding this student")
+                this.$noty.error(`Upload error: ${err.response.data.message}`)
             })
         },
         updateStudent(student,index) {
@@ -180,12 +161,16 @@ export default {
         },
         deleteStudent(student) {
             this.classes.find(single => single.id == student.class_id).students = this.classes.find(single => single.id == student.class_id).students.filter(theStudent => theStudent.id !== student.id)
-            this.snackbar = true;
-            this.snackbarText = "Student deleted successfully"
+            this.$noty.success("Student deleted successfully!")
         },
         resetWindowAndClose() {
             this.step = 1;
             this.dialog = false
+        },
+        trimString(string) {
+            string = string.trim();
+            string = string.toLowerCase().split(' ').join('');
+            return string;
         }
     },
 
@@ -204,7 +189,3 @@ export default {
     }
 }
 </script>
-
-<style>
-
-</style>
