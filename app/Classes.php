@@ -15,5 +15,9 @@ class Classes extends Model
     public function subjects() {
         return $this->belongsToMany(Subject::class, 'class_subject','class_id');
     }
+
+    public function getTrimmedNameAttribute() {
+        return strtolower(str_replace(' ', '', $this->name));
+    }
 }
 

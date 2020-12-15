@@ -13,8 +13,8 @@
             <div class="col-md-4">
                 <div class="card">
                     <div class="card-body">
-                    <a href="/admin/students#{{strtolower($class->class)}}" class="text-dark">
-                            <h5 class="card-title">{{strtoupper($class->class)}}</h5>
+                    <a href="/admin/students#{{$class->trimmed_name}}" class="text-dark">
+                            <h5 class="card-title">{{strtoupper($class->name)}}</h5>
                             <p class="card-text">{{$class->students()->withTrashed()->count()}} Students</p>
                         </a>
                     </div>
