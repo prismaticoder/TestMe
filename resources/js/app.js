@@ -8,6 +8,12 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+import VueNoty from 'vuejs-noty'
+import 'vuejs-noty/dist/vuejs-noty.css'
+Vue.use(VueNoty, {
+    layout: 'bottomLeft'
+})
+
 //axios
 import axios from 'axios';
 Vue.prototype.$http = axios
@@ -17,12 +23,29 @@ Vue.prototype.$location = window.location
 Vue.prototype.$http.interceptors.response.use(undefined, function (err) {
     let originalRequest = err.config
 
-    if (err.response.status === 419 && !originalRequest._retry) {
-      window.location.reload()
+    if (err.response) {
+        if (err.response.status === 419 && !originalRequest._retry) {
+            window.location.reload()
+        }
+
+        else if (err.response.status === 422 && err.response.data.errors) {
+            const firstError = Object.values(err.response.data.errors)[0];
+            err.response.data.message = firstError[0];
+            throw err
+        }
+
+        else {
+            throw err
+        }
+    }
+
+    else if (err.request) {
+        Vue.prototype.$noty.error("Oops! There was an error sending this request, please confirm that you are connected to the network and try again.")
     }
 
     else {
-      throw err
+        console.log(err.message)
+        Vue.prototype.$noty.error("An error seems to have been encountered sending this request, please refresh the page and try again.")
     }
 })
 
@@ -49,6 +72,7 @@ import VueQuillEditor from 'vue-quill-editor'
 import 'quill/dist/quill.core.css' // import styles
 import 'quill/dist/quill.snow.css' // for snow theme
 import 'quill/dist/quill.bubble.css' // for bubble theme
+import Vue from 'vue';
 
 Vue.use(VueQuillEditor)
 
