@@ -20,7 +20,7 @@ class CreateTeachersTable extends Migration
             $table->string('lastname');
             $table->string('username');
             $table->string('password');
-            $table->integer('role_id')->unsigned()->default(2);
+            $table->unsignedBigInteger('role_id')->default(2);
             $table->foreign('role_id')->references('id')->on('roles');
             $table->timestamps();
         });

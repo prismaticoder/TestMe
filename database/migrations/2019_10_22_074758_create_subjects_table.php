@@ -18,6 +18,8 @@ class CreateSubjectsTable extends Migration
             $table->string('alias');
             $table->string('name');
             $table->timestamps();
+
+            $table->index('alias');
         });
     }
 
