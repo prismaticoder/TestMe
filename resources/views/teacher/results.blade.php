@@ -10,10 +10,12 @@
 
         <div class="row">
             <div class="col-md-8">
-                EXAM DATE: <strong>{{$currentExam ? date('l, jS \o\f F Y', strtotime($currentExam->date)) : 'NIL'}} {{}}</strong>
+                EXAM DATE: <strong>{{$currentExam ? date('l, jS \o\f F Y', strtotime($currentExam->date)) : 'NIL'}}</strong>
             </div>
 
-            <result-options :exams="{{$exams}}" :selected_exam="{{$currentExam}}" :iscurrentexam="{{$isLatestExam}}" :subject="{{$subject}}" :class-id="{{$currentClass->id}}"></result-options>
+            @if ($currentExam)
+                <result-options :exams="{{$exams}}" :selected_exam="{{$currentExam}}" :iscurrentexam="{{$isLatestExam}}" :subject="{{$subject}}" :class-id="{{$currentClass->id}}"></result-options>
+            @endif
         </div>
 
         <table class="table table-sm mt-2 table-bordered text-center">
@@ -24,11 +26,11 @@
                 <th>EXAMINATION NUMBER</th>
                 <th>NAME</th>
                 <th>ACTUAL SCORE</th>
-                <th>COMPUTED SCORE (/{{$currentExam->base_score ?? '-'}})</th>
+                <th>COMPUTED SCORE (/{{$currentExam->base_score ?? ''}})</th>
             </tr>
             </thead>
             <tbody>
-                @if ($students)
+                @if ($students && $students->isNotEmpty())
                     @foreach ($students as $student)
                     <tr>
                         <td>{{$loop->iteration}}</td>
@@ -38,10 +40,16 @@
                         <td>{{$student->pivot->computed_score}}</td>
                     </tr>
                     @endforeach
-                @else
+                @elseif ($currentExam)
                     <tr>
                         <td colspan="5">
                             No submission has been made for this examination yet.
+                        </td>
+                    </tr>
+                @else
+                    <tr>
+                        <td colspan="5">
+                            No examination has been created yet.
                         </td>
                     </tr>
                 @endif

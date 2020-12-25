@@ -31,19 +31,13 @@ class SubjectResultsController extends Controller
         }
 
         $currentExam = $selectedExam ?? ($exams[0] ?? null);
-        $isLatestExam = (bool) ($currentExam && ($currentExam->id === $exams[0]->id));
+        $isLatestExam = json_encode($currentExam && ($currentExam->id === $exams[0]->id));
         $students = $currentExam->students ?? null;
-        $students = Student::orderBy('lastname')
-                            ->where('class_id', $classId)
-                            ->with(['submissions' => function($query) use($currentExam) {
-                                $query->where('exam_id', $currentExam->id ?? null);
-                            }])
-                            ->get();
         $classes = auth()->user()->isAdmin()
-                        ? $subject->classes
-                        : $subject->teacherSubjects()->where('admin_id', auth()->id())->first()->classes;
+                        ? $subject->classes->sortBy('id')
+                        : $subject->teacherSubjects()->where('admin_id', auth()->id())->first()->classes->sortBy('id');
 
-        return view('admin.main-result',compact('subject','currentClass','exams','currentExam','isLatestExam','students','classes'));
+        return view('teacher.results',compact('subject','currentClass','exams','currentExam','isLatestExam','students','classes'));
     }
 
     /**
@@ -64,16 +58,11 @@ class SubjectResultsController extends Controller
 
         abort_if(! $exam, 404, "Exam not found");
 
-        $students = Student::orderBy('lastname')
-                            ->where('class_id', $classId)
-                            ->with(['submissions' => function($query) use($exam) {
-                                $query->where('exam_id', $exam->id);
-                            }])
-                            ->get();
+        $students = $exam->students;
 
         $data = compact('subject','currentClass','exam','students');
 
-        $pdf = PDF::loadView('admin.pdf-result',$data);
+        $pdf = PDF::loadView('teacher.pdf-result',$data);
 
         return $pdf->download(strtolower($subject->alias).'_'.strtolower($currentClass->name).'_results.pdf');
     }
