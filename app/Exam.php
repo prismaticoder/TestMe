@@ -11,7 +11,19 @@ class Exam extends Model
     protected $fillable = ['class_id','subject_id','base_score','hours','minutes','date','has_started'];
     protected $appends = ['hasBeenWritten', 'questions'];
 
-    //
+
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::creating(function ($exam) {
+            $exam->created_by = auth()->id();
+        });
+    }
+
     public function subject() {
         return $this->belongsTo(Subject::class);
     }
@@ -51,11 +63,15 @@ class Exam extends Model
     }
 
     public function getHasBeenWrittenAttribute() {
-        return count($this->submissions) > 0;
+        return $this->submissions->isNotEmpty();
     }
 
     public function getQuestionsAttribute() {
         return $this->questions()->with('options')->get();
+    }
+
+    public function hasBeenWrittenByCurrentUser() {
+        return $this->students()->where('id', auth()->id())->exists();
     }
 
     public function start() {
