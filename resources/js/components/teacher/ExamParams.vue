@@ -35,10 +35,10 @@
                 <v-card-title v-if="!exam.has_started" class="headline">Start Exam?</v-card-title>
                 <v-card-title v-else class="headline">End Exam?</v-card-title>
                 <v-card-text v-if="!exam.has_started">
-                Please confirm that you want to start this exam: <strong>{{exam.subject.name}} ({{exam.class.class}})</strong>
+                Please confirm that you want to start this exam: <strong>{{exam.subject.name}} ({{exam.class.name}})</strong>
                 </v-card-text>
                 <v-card-text v-else>
-                Please confirm that you want to put an end to this exam: <strong>{{exam.subject.name}} ({{exam.class.class}})</strong>
+                Please confirm that you want to put an end to this exam: <strong>{{exam.subject.name}} ({{exam.class.name}})</strong>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
@@ -86,7 +86,7 @@
 <script>
 export default {
     name: "ExamParams",
-    props: ['exam','yellow','examCount','questionCount','subject','classId'],
+    props: ['exam','yellow','examCount','questionCount','subjectId','classId'],
     data() {
         return {
             hours: this.exam.hasBeenWritten ? 0 : this.exam.hours,
@@ -116,20 +116,17 @@ export default {
                 date,
                 base_score: totalMarks,
                 class_id: this.classId,
-                subject_id: this.subject
+                subject_id: this.subjectId
                 })
                 .then(res => {
                     this.loading = false
                     this.dialog = false
-                    this.$emit('setExam', 'create', res.data.exam)
-                    this.snackbar = true
-                    this.snackbarText = res.data.message
+                    this.$noty.success(res.data.message)
+                    this.$emit('setExam', 'create', res.data.data)
                 })
                 .catch(err => {
                     this.loading = false
-                    this.dialog = false
-                    console.log(err.response.data)
-                    alert("There was an error creating this examination, please try again")
+                    this.$noty.error(err.response.data.message)
                 })
             }
 
@@ -148,16 +145,12 @@ export default {
                     .then(res => {
                         this.loading = false
                         this.dialog = false
-                        this.$emit('setExam', 'update', res.data.exam)
-                        this.snackbar = true
-                        this.snackbarText = res.data.message
-
+                        this.$noty.success(res.data.message)
+                        this.$emit('setExam', 'update', res.data.data)
                     })
                     .catch(err => {
                         this.loading = false
-                        this.dialog = false
-                        console.log(err.response.data)
-                        alert("There was an error updating this exam, please try again")
+                        this.$noty.error(err.response.data.message)
                     })
                 }
             }
@@ -173,18 +166,16 @@ export default {
 
             this.$http.post('started-exams', {
                 class_id: this.classId,
-                subject_id: this.subject
+                subject_id: this.subjectId
             })
             .then(res => {
                 this.loading = false
                 this.examDialog = false
-                this.$emit('setExam', 'update', res.data.exam)
+                this.$emit('setExam', 'update', res.data.data)
             })
             .catch(err => {
                 this.loading = false
-                this.examDialog = false
-
-                alert(err.response.data.message);
+                this.$noty.error(err.response.data.message)
             })
         },
         endExam() {
@@ -192,18 +183,16 @@ export default {
 
             this.$http.delete(`started-exams/${this.exam.id}`, {
                 class_id: this.classId,
-                subject_id: this.subject
+                subject_id: this.subjectId
             })
             .then(res => {
                 this.loading = false
                 this.examDialog = false
-                this.$emit('setExam', 'update', res.data.exam)
+                this.$emit('setExam', 'update', res.data.data)
             })
             .catch(err => {
                 this.loading = false
-                this.examDialog = false
-
-                alert(err.response.data.message)
+                this.$noty.error(err.response.data.message)
             })
         }
     },
@@ -232,7 +221,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-
-</style>

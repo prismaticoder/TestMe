@@ -48,7 +48,7 @@
 <script>
 export default {
     name: "CreateExam",
-    props: ['black','yellow','classId','subject'],
+    props: ['black','yellow','classId','subjectId'],
     data() {
         return {
             hours: 0,
@@ -65,9 +65,7 @@ export default {
     },
     methods: {
         backToPrevious() {
-            this.hours = 0
-            this.minutes = 0
-            this.totalMarks = 50
+            [this.hours, this.minutes, this.totalMarks] = [0, 0, 50];
             this.date = new Date().toISOString().substr(0, 10)
             this.dialog = false
         },
@@ -81,26 +79,19 @@ export default {
                 date,
                 base_score: totalMarks,
                 class_id: this.classId,
-                subject_id: this.subject
+                subject_id: this.subjectId
             })
             .then(res => {
                 this.loading = false
                 this.dialog = false
-                this.$emit('setExam', 'create', res.data.exam)
-                this.snackbar = true
-                this.snackbarText = res.data.message
+                this.$noty.success(res.data.message)
+                this.$emit('setExam', 'create', res.data.data)
             })
             .catch(err => {
                 this.loading = false
-                this.dialog = false
-                console.log(err.response.data)
-                alert("There was an error creating this examination, please try again")
+                this.$noty.error(err.response.data.message)
             })
         }
     }
 }
 </script>
-
-<style>
-
-</style>

@@ -43,7 +43,7 @@
 
         <div class="col-md-10 bg-white">
 
-            <ExamParams :exam="examArray[0]" :examCount="examArray.length" :questionCount="questions.length" :yellow="yellow" :subject="subject" :classId="classId" @setExam="setExam" @alterPQList="alterPQList"/>
+            <ExamParams :exam="examArray[0]" :examCount="examArray.length" :questionCount="questions.length" :yellow="yellow" :subjectId="subjectId" :classId="classId" @setExam="setExam" @alterPQList="alterPQList"/>
 
             <div class="container">
                 <h3 class="text-center">Question</h3>
@@ -112,7 +112,7 @@
         <PastExams :yellow="yellow" :black="black" :pastExams="pastExams" :showPQList="showPQList" @usePQTemplate="usePQTemplate" @alterPQList="alterPQList"/>
   </div>
   <div class="container mt-5 mx-auto" v-else>
-        <CreateExam @setExam="setExam" :black="black" :yellow="yellow" :subject="subject" :classId="classId"/>
+        <CreateExam @setExam="setExam" :black="black" :yellow="yellow" :subjectId="subjectId" :classId="classId"/>
   </div>
 
 </template>
@@ -126,7 +126,7 @@ import 'katex/dist/katex.min.css';
 
 export default {
     name: "AddQuestion",
-    props: ['subject', 'classId', 'exams'],
+    props: ['subjectId', 'classId', 'exams'],
     components: {
         ExamParams,
         CreateExam,
@@ -215,18 +215,15 @@ export default {
             })
             .then(res => {
                 this.loading = false
-
-                this.questions.push(res.data.question)
-                this.snackbar = true;
-                this.snackbarText = res.data.message
+                this.$noty.success(res.data.message)
+                this.questions.push(res.data.data)
 
                 this.clearQuestionForm()
                 window.scrollTo(0,0)
             })
             .catch(err => {
                 this.loading = false
-
-                alert(err.response.data.message)
+                this.$noty.error(err.response.data.message)
             })
         },
         updateQuestion() {
@@ -239,22 +236,20 @@ export default {
                 options,
                 correct,
             })
-            .then(({ data }) => {
+            .then(res => {
                 this.loading = false
+                this.$noty.success(res.data.message)
 
-                let index = this.questions.findIndex(question => question.id == data.question.id)
-                this.questions.splice(index, 1, data.question)
+                let index = this.questions.findIndex(question => question.id == res.data.data.id)
+                this.questions.splice(index, 1, res.data.data)
 
-                this.snackbar = true;
-                this.snackbarText = data.message
                 window.scrollTo(0,0)
-
                 this.editorDisabled = true
             })
             .catch(err => {
                 this.loading = false
 
-                alert(err.response.data.message)
+                this.$noty.error(err.response.data.message)
             })
         },
         setExam(type, exam) {
