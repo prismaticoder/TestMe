@@ -4,7 +4,7 @@
 
     <div id="app">
         <v-app>
-            <teacher-questions :subject="{{$subject->id}}" :class-id="{{$class_id}}" :exams="{{$exams}}"></teacher-questions>
+            <teacher-questions :subject-id="{{$subject->id}}" :class-id="{{$currentClass->id}}" :exams="{{$exams}}"></teacher-questions>
         </v-app>
     </div>
 
