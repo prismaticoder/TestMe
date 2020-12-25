@@ -75,7 +75,7 @@
                 {{config('app.name')}} | {{config('app.schoolAlias')}} {{strtoupper($subject->name) . ' ' . Auth::user()->class->class}} EXAMINATION
             </a>
             <div class="order-5">
-                <Timer :hours="{{$hours}}" :minutes="{{$minutes}}"></Timer>
+                <timer :hours="{{$hours}}" :minutes="{{$minutes}}"></timer>
             </div>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -92,7 +92,7 @@
         <div>
             {{-- made it class-id(kebab-case) because HTML converts it to lowercase automatically --}}
             <v-app>
-                <Questions :questions="{{$questions}}" :hours="{{$hours}}" :minutes="{{$minutes}}" :mainsubject="{{$subject}}" :subject="{{$subject->id}}" :class-id="{{$user->class_id}}"></Questions>
+            <questions :questions="{{$questions}}" :hours="{{$hours}}" :minutes="{{$minutes}}" :subject="{{$subject}}" :student="{{auth()->user()}}"></questions>
             </v-app>
         </div>
     </div>

@@ -2,9 +2,9 @@
     <div>
         <h4>Exams in progress...</h4>
         <hr>
-        <div v-if="allExams.length > 0" class="container">
+        <div v-if="allStartedExams.length > 0" class="container">
             <div class="row">
-                <StartedExam v-for="exam in allExams" :key="exam.id" :exam="exam" :yellow="yellow" @endExam="endExam"/>
+                <StartedExam v-for="exam in allStartedExams" :key="exam.id" :exam="exam" :yellow="yellow" @endExam="endExam"/>
             </div>
         </div>
         <p v-else>There are currently no examinations in progress</p>
@@ -29,7 +29,7 @@ import SingleClass from './SingleClass';
 import StartedExam from './StartedExam';
 
 export default {
-    name: "Subjects",
+    name: "Dashboard",
     props: ['subjects', 'classes', 'startedExams', 'pendingExamsForToday'],
     data() {
         return {

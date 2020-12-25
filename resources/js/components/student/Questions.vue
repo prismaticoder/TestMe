@@ -19,11 +19,18 @@
             </div>
         </div>
         <div class="col-md-10 question-body">
+
+            <div>
+                <p class="text-center">
+                    {{student.fullName}} ({{student.examination_number}})
+                </p>
+            </div>
+
             <SingleQuestion v-if="currentQuestion" :question="currentQuestion" :totalCount="questions.length" :selectedOption="selectedOption" :number="questionNumber" @storeChoice="storeChoice" v-on:updateSelection="updateSelection"/>
 
             <v-card shaped outlined class="p-3" v-else>
                 <v-card-title>
-                    {{mainsubject.name.toUpperCase()}} EXAMINATION
+                    {{subject.name.toUpperCase()}} EXAMINATION
                 </v-card-title>
                 <hr>
 
@@ -61,19 +68,22 @@ export default {
     components: {
         SingleQuestion
     },
-    props: ['questions', 'hours', 'minutes', 'subject', 'classId', 'mainsubject'],
+    props: ['questions', 'hours', 'minutes', 'subject'],
     data() {
         return {
-            currentQuestion: localStorage.getItem('current') || null,
+            currentQuestion: null,
             questionNumber: null,
-            choices: this.$store.state.choices,
+            choices: this.$store.getters.choices,
             selectedOption: null
         }
     },
     methods: {
         startExam() {
             if (!this.hasStarted) {
-                this.$store.dispatch('startExam', {hours: this.hours, minutes: this.minutes, subjectId: this.subject, classId: this.classId})
+                this.$store.dispatch('startExam', {
+                    hours: this.hours,
+                    minutes: this.minutes,
+                })
                 .then(() => {
                     this.currentQuestion = this.questions[0]
                     this.questionNumber = 1
@@ -154,10 +164,10 @@ export default {
             let time;
             if (this.hours > 0) {
                 if (this.hours == 1) {
-                    this.minutes == 0 ? time = "1 hour" : time = `1 hour and ${this.minutes} minutes`
+                    time = this.minutes === 0 ? "1 hour" : `1 hour and ${this.minutes} minutes`
                 }
                 else {
-                    this.minutes == 0 ? time = `${this.hours} hours` : time = `${this.hours} hours and ${this.minutes} minutes`
+                    time = this.minutes === 0 ? `${this.hours} hours` : `${this.hours} hours and ${this.minutes} minutes`
                 }
             }
 

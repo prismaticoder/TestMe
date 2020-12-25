@@ -51,7 +51,7 @@
 <script>
 import SingleSubject from './SingleSubject'
 export default {
-    name: "AllSubjects",
+    name: "Subjects",
     props: ['allsubjects', 'allclasses'],
     components: {
         SingleSubject

@@ -150,7 +150,7 @@
   <main role="main" class="inner cover">
 
 
-    <h1 class="cover-heading">{{$subject->subject_name}} Exam</h1><br>
+    <h1 class="cover-heading">{{$subject->name}} Exam</h1><br>
     <p class="lead">Instructions</p>
   <p class="lead">All students can now access the exam page via <strong style="color:orange">{{route('exam',['subject'=>$subject->alias])}}</strong>. Click the "End Exam" button after the exam is fully over to disable student access.</p>
     <p class="lead">Exam Duration</p>

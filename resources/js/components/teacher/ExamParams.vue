@@ -7,16 +7,16 @@
             <!-- <div class="col-md-1"></div> -->
             <div class="col-md-6">
                 <div class="float-right">
-                    <v-btn v-show="!exam.hasBeenWritten && examCount > 1" :color="yellow" @click="$emit('alterPQList', 'open')" small tile title="Import some of the previous examination questions into the current examination">
+                    <v-btn v-show="!exam.hasBeenWritten && examCount > 1" :color="yellow" @click="$emit('alter-pq-list', 'open')" small tile title="Import some of the previous examination questions into the current examination">
                         EXAM PQ TEMPLATES
                     </v-btn>
-                    <v-btn v-show="exam.date == today && questionCount > 0 && !exam.hasStarted" :color="yellow" @click="examDialog = true" small tile title="Start this Examination">
+                    <v-btn v-show="exam.date == today && questionCount > 0 && !exam.has_started" :color="yellow" @click="examDialog = true" small tile title="Start this Examination">
                         START EXAM
                     </v-btn>
-                    <v-btn v-show="exam.hasStarted" :color="yellow" @click="examDialog = true" small tile title="End examination">
+                    <v-btn v-show="exam.has_started" :color="yellow" @click="examDialog = true" small tile title="End examination">
                         END EXAM
                     </v-btn>
-                    <v-btn v-show="exam.hasBeenWritten && !exam.hasStarted" @click="dialog=true" class="ml-2" :color="yellow" small tile title="Create New Examination">
+                    <v-btn v-show="exam.hasBeenWritten && !exam.has_started" @click="dialog=true" class="ml-2" :color="yellow" small tile title="Create New Examination">
                         CREATE NEW EXAM
                     </v-btn>
                 </div>
@@ -32,18 +32,18 @@
 
         <v-dialog v-model="examDialog" max-width="350">
             <v-card>
-                <v-card-title v-if="!exam.hasStarted" class="headline">Start Exam?</v-card-title>
+                <v-card-title v-if="!exam.has_started" class="headline">Start Exam?</v-card-title>
                 <v-card-title v-else class="headline">End Exam?</v-card-title>
-                <v-card-text v-if="!exam.hasStarted">
-                Please confirm that you want to start this exam: <strong>{{exam.subject.subject_name}} ({{exam.class.class}})</strong>
+                <v-card-text v-if="!exam.has_started">
+                Please confirm that you want to start this exam: <strong>{{exam.subject.name}} ({{exam.class.class}})</strong>
                 </v-card-text>
                 <v-card-text v-else>
-                Please confirm that you want to put an end to this exam: <strong>{{exam.subject.subject_name}} ({{exam.class.class}})</strong>
+                Please confirm that you want to put an end to this exam: <strong>{{exam.subject.name}} ({{exam.class.class}})</strong>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn :disabled="loading" color="green darken-1" text @click="examDialog = false">No</v-btn>
-                    <v-btn :loading="loading" :disabled="loading" color="green darken-1" text @click="exam.hasStarted ? endExam() : startExam()">Yes</v-btn>
+                    <v-btn :loading="loading" :disabled="loading" color="green darken-1" text @click="exam.has_started ? endExam() : startExam()">Yes</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -171,7 +171,7 @@ export default {
         startExam() {
             this.loading = true
 
-            this.$http.patch('start-exam', {
+            this.$http.post('started-exams', {
                 class_id: this.classId,
                 subject_id: this.subject
             })
@@ -183,14 +183,14 @@ export default {
             .catch(err => {
                 this.loading = false
                 this.examDialog = false
-                console.error(err.response.data)
-                alert("There was an error starting this exam, please try again")
+
+                alert(err.response.data.message);
             })
         },
         endExam() {
             this.loading = true
 
-            this.$http.patch(`end-exam/${this.exam.id}`, {
+            this.$http.delete(`started-exams/${this.exam.id}`, {
                 class_id: this.classId,
                 subject_id: this.subject
             })
@@ -202,8 +202,8 @@ export default {
             .catch(err => {
                 this.loading = false
                 this.examDialog = false
-                console.error(err.response.data)
-                alert("There was an error ending this exam, please try again")
+
+                alert(err.response.data.message)
             })
         }
     },

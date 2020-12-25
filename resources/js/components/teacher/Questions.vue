@@ -109,7 +109,7 @@
             </div>
         </div>
 
-        <ExamPQList :yellow="yellow" :black="black" :pastExams="pastExams" :showPQList="showPQList" @usePQTemplate="usePQTemplate" @alterPQList="alterPQList"/>
+        <PastExams :yellow="yellow" :black="black" :pastExams="pastExams" :showPQList="showPQList" @usePQTemplate="usePQTemplate" @alterPQList="alterPQList"/>
   </div>
   <div class="container mt-5 mx-auto" v-else>
         <CreateExam @setExam="setExam" :black="black" :yellow="yellow" :subject="subject" :classId="classId"/>
@@ -120,7 +120,7 @@
 <script>
 import ExamParams from './ExamParams'
 import CreateExam from './CreateExam'
-import ExamPQList from './ExamPQList'
+import PastExams from './PastExams'
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 
@@ -130,7 +130,7 @@ export default {
     components: {
         ExamParams,
         CreateExam,
-        ExamPQList
+        PastExams
     },
     data() {
         return {
@@ -187,7 +187,7 @@ export default {
         },
         deleteQuestion() {
             this.btnLoading = true;
-            this.$http.post(`deleteQuestion/${this.currentQuestion.id}`)
+            this.$http.delete(`questions/${this.currentQuestion.id}`)
             .then(res => {
                 this.btnLoading = false
                 this.dialog = false
@@ -199,8 +199,8 @@ export default {
             .catch(err => {
                 this.btnLoading = false
                 this.dialog = false;
-                console.log(err.response.data);
-                alert(err.response.status == 403 ? err.response.data.message : "There was an error deleting this question, please try again.")
+
+                alert(err.response.data.message)
             })
         },
         addQuestion() {
@@ -208,48 +208,53 @@ export default {
             let { question, optionA, optionB, optionC, optionD, correct } = this
             const options = [optionA, optionB, optionC, optionD]
 
-            this.$http.post('addQuestion', {
+            this.$http.post('questions', {
                 question,
                 options,
                 correct,
             })
             .then(res => {
                 this.loading = false
+
                 this.questions.push(res.data.question)
                 this.snackbar = true;
                 this.snackbarText = res.data.message
+
                 this.clearQuestionForm()
                 window.scrollTo(0,0)
             })
             .catch(err => {
                 this.loading = false
-                console.log(err.response.data);
-                alert(err.response.status == 403 ? err.response.data.message : "There was an error submitting this question, please try again.")
+
+                alert(err.response.data.message)
             })
         },
         updateQuestion() {
             this.loading = true
             let { question, optionA, optionB, optionC, optionD, correct } = this
-            const options = [{id: this.currentQuestion.options[0].id, value: optionA}, {id: this.currentQuestion.options[1].id, value: optionB}, {id: this.currentQuestion.options[2].id, value: optionC}, {id: this.currentQuestion.options[3].id, value: optionD}]
+            const options = [optionA, optionB, optionC, optionD]
 
-            this.$http.post(`updateQuestion/${this.currentQuestion.id}`, {
+            this.$http.put(`questions/${this.currentQuestion.id}`, {
                 question,
                 options,
                 correct,
             })
-            .then(res => {
+            .then(({ data }) => {
                 this.loading = false
-                let index = this.questions.findIndex(question => question.id == res.data.question.id)
-                this.questions.splice(index, 1, res.data.question)
+
+                let index = this.questions.findIndex(question => question.id == data.question.id)
+                this.questions.splice(index, 1, data.question)
+
                 this.snackbar = true;
-                this.snackbarText = res.data.message
+                this.snackbarText = data.message
                 window.scrollTo(0,0)
+
                 this.editorDisabled = true
             })
             .catch(err => {
                 this.loading = false
-                console.log(err.response.data);
-                alert("There was an error updating this question, please try again.")
+
+                alert(err.response.data.message)
             })
         },
         setExam(type, exam) {
@@ -266,13 +271,7 @@ export default {
             return new Date(dateString).toLocaleDateString(undefined, options)
         },
         alterPQList(type) {
-            if (type == 'open') {
-                this.showPQList = true
-            }
-
-            else {
-                this.showPQList = false
-            }
+            this.showPQList = (type === 'open');
         },
         usePQTemplate(exam) {
             this.showPQList = false
@@ -283,12 +282,12 @@ export default {
     watch: {
         'currentQuestion'(newValue) {
             if (newValue) {
-                this.question = newValue.question;
+                this.question = newValue.body;
                 this.optionA = newValue.options[0].body
                 this.optionB = newValue.options[1].body
                 this.optionC = newValue.options[2].body
                 this.optionD = newValue.options[3].body
-                this.correct = (newValue.options.findIndex(option => option.isCorrect)).toString()
+                this.correct = (newValue.options.findIndex(option => option.is_correct)).toString()
             }
 
             else {
@@ -328,11 +327,6 @@ export default {
 
 .questions {
     height: 250px;
-}
-
-.option {
-    /* height: 300px; */
-    /* width: 700px; */
 }
 
 .active {

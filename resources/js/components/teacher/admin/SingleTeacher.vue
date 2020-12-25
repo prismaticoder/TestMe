@@ -77,8 +77,39 @@ export default {
         },
         updateTeacher() {
             this.loading = true
+            const subjects = this.prepareSubjectsData();
 
-            //create the proper subject array
+            this.$http.put(`teachers/${this.teacher.id}`, {
+                subjects
+            })
+            .then(res => {
+                this.loading = false
+                this.editDialog = false
+                this.$noty.success(res.data.message)
+                this.$emit('updateTeacher', res.data.data, this.number - 1)
+            })
+            .catch(err => {
+                this.loading = false
+                this.$noty.error(err.response.data.message)
+            })
+        },
+        deleteTeacher() {
+            this.loading = true
+
+            this.$http.delete(`teachers/${this.teacher.id}`)
+            .then(res => {
+                this.loading = false
+                this.deleteDialog = false
+                this.$noty.success(res.data.message)
+                this.$emit('deleteTeacher', this.teacher.id)
+            })
+            .catch(err => {
+                this.loading = false
+                this.deleteDialog = false
+                this.$noty.error(err.response.data.message)
+            })
+        },
+        prepareSubjectsData() {
             let subjects = new Array();
 
             this.subjectArray.forEach(value => {
@@ -97,42 +128,13 @@ export default {
                 }
             })
 
-            this.$http.put(`teachers/${this.teacher.id}`, {
-                subjects
-            })
-            .then(res => {
-                this.loading = false
-                this.editDialog = false
-                this.$emit('updateTeacher', res.data.teacher, this.number - 1)
-            })
-            .catch(err => {
-                this.loading = false
-                this.editDialog = false
-                console.log(err.response.data)
-                alert("Sorry, there was an error updating this subject, please try again later")
-            })
-        },
-        deleteTeacher() {
-            this.loading = true
-
-            this.$http.delete(`teachers/${this.teacher.id}`)
-            .then(res => {
-                this.loading = false
-                this.deleteDialog = false
-                this.$emit('deleteTeacher', this.teacher.id)
-            })
-            .catch(err => {
-                this.loading = false
-                this.deleteDialog = false
-                console.log(err.response.data)
-                alert("Sorry, there was an error revoking this user's access, please try again later")
-            })
+            return subjects;
         }
     },
     computed: {
         getSubjects() {
             let subjects = this.teacher.subjects.map((subject) => {
-                let subjectClasses = subject.classes.map(single => single.class)
+                let subjectClasses = subject.classes.map(single => single.name)
                 return `${subject.subject.name} (${subjectClasses.length == this.classes.length ? 'All Classes' : subjectClasses.join()})`
             })
 

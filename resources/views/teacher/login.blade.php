@@ -129,5 +129,8 @@
         <p class="mt-5 mb-3 text-muted">&copy; {{date('Y')}}</p>
     </form>
   </body>
+
+    <script src="{{asset('js/jquery.js')}}"></script>
+    <script src="{{asset('js/bootstrap.min.js')}}"></script>
 </html>
 

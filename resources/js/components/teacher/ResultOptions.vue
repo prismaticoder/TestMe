@@ -58,7 +58,7 @@
 
 <script>
 export default {
-    name: "AllResults",
+    name: "Results",
     props: ['exams','subject','classId','iscurrentexam','selected_exam'],
     data() {
         return {

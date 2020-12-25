@@ -10,9 +10,10 @@
 
         <div class="row">
             <div class="col-md-8">
-            EXAM DATE: <strong>{{$currentExam ? date('l, jS \o\f F Y', strtotime($currentExam->date)) : 'NIL'}} {{}}</strong>
+                EXAM DATE: <strong>{{$currentExam ? date('l, jS \o\f F Y', strtotime($currentExam->date)) : 'NIL'}} {{}}</strong>
             </div>
-        <all-results :exams="{{$exams}}" :selected_exam="{{$currentExam}}" :iscurrentexam="{{$isLatestExam}}" :subject="{{$subject}}" :class-id="{{$currentClass->id}}"></all-results>
+
+            <result-options :exams="{{$exams}}" :selected_exam="{{$currentExam}}" :iscurrentexam="{{$isLatestExam}}" :subject="{{$subject}}" :class-id="{{$currentClass->id}}"></result-options>
         </div>
 
         <table class="table table-sm mt-2 table-bordered text-center">

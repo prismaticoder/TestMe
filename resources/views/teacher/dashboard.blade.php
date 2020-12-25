@@ -28,7 +28,7 @@
 @endcan
 
     <div id="app" data-app="true">
-    <subjects :subjects="{{$subjects}}" :started-exams="{{$startedExams}}" :pending-exams-for-today="{{$pendingExamsForToday}}" :classes="{{$classes}}"></subjects>
+        <dashboard :subjects="{{$subjects}}" :started-exams="{{$startedExams}}" :pending-exams-for-today="{{$pendingExamsForToday}}" :classes="{{$classes}}"></dashboard>
     </div>
 
 

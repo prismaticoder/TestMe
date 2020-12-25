@@ -87,7 +87,7 @@
 import SingleStudent from './SingleStudent'
 
 export default {
-    name: "ClassStudents",
+    name: "Students",
     props: ['allclasses','isadmin'],
     components: {
         SingleStudent

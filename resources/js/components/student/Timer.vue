@@ -1,6 +1,6 @@
 <template>
     <div>
-        <span class="navbar-text center text-white" style="margin-right:40px;">
+        <span class="navbar-text center text-white" v-bind:class="{'text-danger': examIsAlmostEnding}" style="margin-right:40px;">
 
             <h4>
                     TIME LEFT:
@@ -51,6 +51,8 @@ export default {
             currentMinute: this.hasStarted ? '-' :this.minutes,
             currentSecond: this.hasStarted ? '-' : 0,
             interval: null,
+            duration: null,
+            examIsAlmostEnding: false,
             x: null,
             dialog: false,
             btnLoading: false
@@ -73,6 +75,10 @@ export default {
                     console.log('submission successful!')
                 })
             }
+
+            else if (newValue <= 0.1 * this.duration) {
+                this.examIsAlmostEnding = true;
+            }
         },
         hasStarted(newValue) {
             this.setInterval()
@@ -81,11 +87,13 @@ export default {
     methods: {
         setInterval() {
             let { hasStarted } = this
-            let endTime = this.$store.state.endTime
+            let endTime = this.$store.getters.timeExamEnds
 
             if (hasStarted) {
 
-                this.interval = parseInt(endTime) - new Date().getTime();
+                const examDurationInMilliseconds = parseInt(endTime) - new Date().getTime();
+                this.duration = examDurationInMilliseconds;
+                this.interval = examDurationInMilliseconds;
 
                 this.x = this.interval ? setInterval(this.changeInterval, 1000) : null;
             }

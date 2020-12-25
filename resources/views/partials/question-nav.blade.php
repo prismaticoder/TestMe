@@ -11,7 +11,7 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarText">
-        <ul class="navbar-nav mr-auto">
+        <ul class="navbar-nav mx-auto">
         <li class="nav-item active">
             <a class="nav-link" href="#">{{strtoupper($subject->alias)}} <span class="sr-only">(current)</span></a>
         </li>

@@ -17,7 +17,7 @@
 
     <div id="app">
         <v-app>
-            <all-subjects :allsubjects="{{$subjects}}" :allclasses="{{$classes}}"></all-subjects>
+            <subjects :allsubjects="{{$subjects}}" :allclasses="{{$classes}}"></subjects>
         </v-app>
     </div>
 

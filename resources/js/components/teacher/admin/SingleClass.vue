@@ -1,7 +1,7 @@
 <template>
     <div class="row border-bottom">
         <div class="col-md-12 text-center">
-            <span>{{single.class}}</span>
+            <span>{{single.name}}</span>
         </div>
         <div class="col-md-4">
             <v-btn :href="`/admin/${subject.alias}/${single.id}/questions`" small title="Go to Questions" :color="yellow">
@@ -14,7 +14,7 @@
             </v-btn>
         </div>
         <div class="col-md-4">
-            <v-btn class="ml-n3" v-if="!examStarted" @click="dialog = true" :disabled="!single.hasPendingExamToday" small :color="yellow" :title="single.hasPendingExamToday ? 'Start Exam' : 'You cannot start this exam because exam duration has not been set'">
+            <v-btn class="ml-n3" v-if="!examStarted" @click="dialog = true" :disabled="!examCanBeStarted" small :color="yellow" :title="examCanBeStarted ? 'Start Exam' : 'This exam cannot be started'">
                 Begin Exam
             </v-btn>
             <v-btn v-else class="ml-n3" @click="dialog = true" small title="End Exam" :color="yellow">
@@ -27,10 +27,10 @@
                 <v-card-title v-if="!examStarted" class="headline">Start Exam?</v-card-title>
                 <v-card-title v-else class="headline">End Exam?</v-card-title>
                 <v-card-text v-if="!examStarted">
-                Please confirm that you want to start this exam: <strong>{{subject.subject_name}} ({{single.class}})</strong>
+                Please confirm that you want to start this exam: <strong>{{subject.name}} ({{single.name}})</strong>
                 </v-card-text>
                 <v-card-text v-else>
-                Please confirm that you want to put an end to this exam: <strong>{{subject.subject_name}} ({{single.class}})</strong>
+                Please confirm that you want to put an end to this exam: <strong>{{subject.name}} ({{single.name}})</strong>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
@@ -45,7 +45,7 @@
 <script>
 export default {
     name: "SingleClass",
-    props: ['single', 'subject', 'yellow', 'exams'],
+    props: ['single', 'subject', 'yellow', 'startedExams', 'pendingExamsForToday'],
     data() {
         return {
             loading: false,
@@ -57,7 +57,7 @@ export default {
         startExam() {
             this.loading = true
 
-            this.$http.patch('start-exam', {
+            this.$http.post('started-exams', {
                 class_id: this.single.id,
                 subject_id: this.subject.subject_id
             })
@@ -69,15 +69,14 @@ export default {
             .catch(err => {
                 this.loading = false
                 this.dialog = false
-                console.error(err.response.data)
-                alert("There was an error starting this exam, please try again")
+                alert(err.response.data.message)
             })
         },
         endExam() {
             this.loading = true
 
-            let examId = this.exams.filter(exam => exam.subject.subject_name == this.subject.subject_name && exam.class.class == this.single.class)[0].id
-            this.$http.patch(`end-exam/${examId}`, {
+            let examId = this.startedExams.filter(exam => exam.subject.name == this.subject.name && exam.class.name == this.single.name)[0].id
+            this.$http.delete(`started-exams/${examId}`, {
                 class_id: this.single.id,
                 subject_id: this.subject.subject_id
             })
@@ -89,16 +88,20 @@ export default {
             .catch(err => {
                 this.loading = false
                 this.dialog = false
-                console.error(err.response.data)
-                alert("There was an error ending this exam, please try again")
+                alert(err.response.data.message)
             })
         }
     },
     computed: {
         examStarted() {
-            let check = this.exams.filter(exam => exam.subject.subject_name == this.subject.subject_name && exam.class.class == this.single.class)
+            let check = this.startedExams.filter(exam => exam.subject.name == this.subject.name && exam.class.name == this.single.name)
 
-            return check.length > 0 ? true : false;
+            return check.length > 0;
+        },
+        examCanBeStarted() {
+            let check = this.pendingExamsForToday.filter(exam => exam.subject_id == this.subject.subject_id && exam.class_id == this.single.id)
+
+            return check.length > 0;
         }
     }
 }

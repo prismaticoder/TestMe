@@ -109,12 +109,12 @@ export default {
         confirmPassword() {
             this.loading = true
 
-            this.$http.post('admins/confirmPassword', {
+            this.$http.post('update-password/verify', {
                 password: this.oldPassword
             })
             .then(res => {
                 this.loading = false
-                if (res.data.valid) {
+                if (res.data.password_is_valid) {
                     this.step++
                 }
                 else {
@@ -130,8 +130,9 @@ export default {
         updatePassword() {
             this.loading = true
 
-            this.$http.put('admins/updatePassword', {
-                password: this.newPassword
+            this.$http.post('update-password', {
+                old_password: this.oldPassword,
+                new_password: this.newPassword
             })
             .then(res => {
                 this.loading = false
@@ -147,7 +148,3 @@ export default {
     }
 }
 </script>
-
-<style>
-
-</style>

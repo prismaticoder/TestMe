@@ -38,12 +38,12 @@
             <v-card>
                 <v-card-title class="headline">Import Questions From This Examination?</v-card-title>
                 <v-card-text>
-                Doing this will import a number of questions randomly selected from the selected examination. It is important to note that importing from the same template more than once may lead to a repetition of questions as they are randomly selected from the template. <br>
+                Doing this will randomly import a specified number of questions from this examination. It is important to note that question imports can only be done ONCE, and a maximum of <strong>thirty</strong> is allowed for imports. <br>
                 Kindly enter the number of questions you wish to import from this examination (<strong>Exam Date: {{formatDate(selectedExam.date)}}</strong>) into the current examination in the input field below:
                 </v-card-text>
 
                 <v-col cols="5" sm="6" md="6">
-                    <v-text-field solo type="number" v-model="maxImport" label="Number of questions to import" persistent-hint :hint="`No of Questions in selected examination: ${selectedExam.questions.length}`">
+                    <v-text-field solo type="number" min="1" :max="selectedExam.questions.length > 30 ? 30 : selectedExam.questions.length" v-model="maxImport" label="Number of questions to import" persistent-hint :hint="`No of Questions in selected examination: ${selectedExam.questions.length}`">
                     </v-text-field>
                 </v-col>
 
@@ -61,14 +61,14 @@
 
 <script>
 export default {
-    name: "ExamPQList",
+    name: "PastExams",
     props: ['showPQList','pastExams','yellow','black'],
     data() {
         return {
             dialog: false,
             loading: false,
             selectedExam: {questions: [], date: null},
-            maxImport: 0
+            maxImport: 1
         }
     },
     methods: {
@@ -79,7 +79,7 @@ export default {
         setTemplate() {
             this.loading = true
 
-            this.$http.post(`useTemplate/${this.selectedExam.id}`, {
+            this.$http.post(`duplicate-exams/${this.selectedExam.id}`, {
                 number: this.maxImport
             })
             .then(res => {
