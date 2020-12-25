@@ -38,13 +38,13 @@ class QuestionsController extends Controller
         $exams = Exam::belongsToClassSubject($classId, $subject->id)->with('subject','class')->latest('updated_at')->get();
 
         $classes = auth()->user()->isAdmin()
-                        ? $subject->classes
-                        : $subject->teacherSubjects()->where('admin_id', auth()->id())->first()->classes;
+                        ? $subject->classes->sortBy('id')
+                        : $subject->teacherSubjects()->where('admin_id', auth()->id())->first()->classes->sortBy('id');
 
 
-        (count($exams) > 0) ? session()->put('exam_id', $exams[0]->id) : session()->forget('exam_id');
+        ($exams->isNotEmpty()) ? session()->put('exam_id', $exams[0]->id) : session()->forget('exam_id');
 
-        return view('admin.questions', compact('subject','class_id','currentClass','classes','exams'));
+        return view('teacher.questions', compact('subject','currentClass','classes','exams'));
     }
 
     /**
@@ -55,6 +55,13 @@ class QuestionsController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'question' => ['required', 'string'],
+            'options' => ['required', 'array', 'size:4'],
+            'options.*' => ['required', 'string'],
+            'correct' => ['required', 'int', 'digits_between:0,3']
+        ]);
+
         $question = $this->loadAsHtml($request->question)->storeImages()->save();
 
         DB::beginTransaction();
@@ -65,15 +72,14 @@ class QuestionsController extends Controller
                 'body' => $question,
             ]);
 
-            foreach ($request->options as $key => $option) {
-                $option = $this->loadAsHtml($option)->storeImages()->save();
+            $options = collect($request->options)->map(function ($option, $index) use ($request) {
+                return array(
+                    'body' => $this->loadAsHtml($option)->storeImages()->save(),
+                    'is_correct' => (int)$request->correct === $index
+                );
+            });
 
-                Option::create([
-                    'question_id' => $createdQuestion->id,
-                    'body' => $option,
-                    'is_correct' => (bool) $request->correct === $key
-                ]);
-            }
+            $createdQuestion->options()->createMany($options);
 
             DB::commit();
 
@@ -96,6 +102,12 @@ class QuestionsController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'question' => ['required', 'string'],
+            'options' => ['required', 'array', 'size:4'],
+            'options.*' => ['required', 'string'],
+            'correct' => ['required', 'int', 'digits_between:0,3']
+        ]);
 
         $question = Question::where('id',$id)->with('options')->firstOrFail();
 
@@ -112,7 +124,7 @@ class QuestionsController extends Controller
                 $option = $this->loadAsHtml($option)->storeImages()->save();
 
                 $question->options[$key]->body = $option;
-                $question->options[$key]->is_correct = (bool) $request->correct === $key;
+                $question->options[$key]->is_correct = (int)$request->correct === $key;
 
                 $question->push();
             }
