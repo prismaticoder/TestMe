@@ -43,7 +43,7 @@ class SubmissionsController extends Controller
         $examId = session()->get('exam_id');
         $questions = Question::where(compact('exam_id'))->with('options')->inRandomOrder(auth()->user()->seed)->get();
         $baseScore = Exam::find($examId)->base_score;
-        $averagePoint = $baseScore/count($questions);
+        $averagePoint = $baseScore/$questions->count();
 
         $score = 0;
         foreach ($studentResponses as $response) {

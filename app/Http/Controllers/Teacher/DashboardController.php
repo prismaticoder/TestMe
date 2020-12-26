@@ -15,7 +15,7 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $subjects = auth()->user()->subjects;
+        $subjects = auth()->user()->subjects();
         $classes = Classes::get();
         $startedExams = Exam::started()->get();
         $pendingExamsForToday = Exam::canBeStarted()->get();
@@ -30,6 +30,6 @@ class DashboardController extends Controller
             });
         }
 
-        return view('admin.dashboard',compact('subjects','classes', 'startedExams','pendingExamsForToday'));
+        return view('teacher.dashboard',compact('subjects','classes', 'startedExams','pendingExamsForToday'));
     }
 }

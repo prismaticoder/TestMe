@@ -13,6 +13,6 @@ class ManageAccountController extends Controller
      */
     public function index()
     {
-        return view('admin.manage-account');
+        return view('teacher.manage-account');
     }
 }
