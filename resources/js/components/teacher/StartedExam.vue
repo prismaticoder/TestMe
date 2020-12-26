@@ -35,20 +35,15 @@ export default {
         endExam() {
             this.loading = true
 
-            this.$http.patch(`end-exam/${this.exam.id}`, {
-                class_id: this.exam.class.id,
-                subject_id: this.exam.subject.id
-            })
+            this.$http.delete(`started-exams/${this.exam.id}`)
             .then(res => {
                 this.loading = false
                 this.dialog = false
-                this.$emit('endExam', res.data.exam.id)
+                this.$emit('endExam', res.data.data.id)
             })
             .catch(err => {
                 this.loading = false
-                this.dialog = false
-                console.error(err.response.data)
-                alert("There was an error ending this exam, please try again")
+                this.$noty.error(err.response.data.message);
             })
         }
     }

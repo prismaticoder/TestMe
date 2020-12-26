@@ -1,9 +1,53 @@
 <template>
-    <div class="row border-bottom">
-        <div class="col-md-12 text-center">
-            <span>{{single.name}}</span>
+    <div class="border-bottom py-2">
+        <div class="text-center">
+            <strong>{{single.name}}</strong>
         </div>
-        <div class="col-md-4">
+
+        <div class="row justify-content-center d-flex">
+            <div class="col-lg-4">
+                <v-btn block tile  :href="`/admin/${subject.alias}/${single.id}/questions`" small title="Go to Questions" :color="yellow">
+                    Questions
+                </v-btn>
+            </div>
+            <div class="col-lg-4">
+                <v-btn block tile  :href="`/admin/${subject.alias}/${single.id}/results`" small title="View results of most recent exam" :color="yellow">
+                    Results
+                </v-btn>
+            </div>
+            <div class="col-lg-4">
+                <v-btn block tile  v-if="!examStarted" @click="dialog = true" :disabled="!examCanBeStarted" small :color="yellow" :title="examCanBeStarted ? 'Start Exam' : 'This exam cannot be started'">
+                    Begin Exam
+                </v-btn>
+                <v-btn block tile  v-else @click="dialog = true" small title="End Exam" :color="yellow">
+                    End Exam
+                </v-btn>
+            </div>
+        </div>
+
+        <!-- <v-container>
+            <v-row justify="center">
+                <v-col cols="12" lg="4">
+                    <v-btn :href="`/admin/${subject.alias}/${single.id}/questions`" small title="Go to Questions" :color="yellow">
+                        Questions
+                    </v-btn>
+                </v-col>
+                <v-col cols="12" lg="4">
+                    <v-btn :href="`/admin/${subject.alias}/${single.id}/results`" small title="View results of most recent exam" :color="yellow">
+                        Results
+                    </v-btn>
+                </v-col>
+                <v-col cols="12" lg="4">
+                    <v-btn v-if="!examStarted" @click="dialog = true" :disabled="!examCanBeStarted" small :color="yellow" :title="examCanBeStarted ? 'Start Exam' : 'This exam cannot be started'">
+                        Begin Exam
+                    </v-btn>
+                    <v-btn v-else @click="dialog = true" small title="End Exam" :color="yellow">
+                        End Exam
+                    </v-btn>
+                </v-col>
+            </v-row>
+        </v-container> -->
+        <!-- <div class="col-md-4">
             <v-btn :href="`/admin/${subject.alias}/${single.id}/questions`" small title="Go to Questions" :color="yellow">
                 Questions
             </v-btn>
@@ -20,7 +64,7 @@
             <v-btn v-else class="ml-n3" @click="dialog = true" small title="End Exam" :color="yellow">
                 End Exam
             </v-btn>
-        </div>
+        </div> -->
 
         <v-dialog v-model="dialog" max-width="350">
             <v-card>
@@ -64,31 +108,27 @@ export default {
             .then(res => {
                 this.loading = false
                 this.dialog = false
-                this.$emit('startNewExam', res.data.exam)
+                this.$emit('startNewExam', res.data.data)
             })
             .catch(err => {
                 this.loading = false
                 this.dialog = false
-                alert(err.response.data.message)
+                this.$noty.error(err.response.data.message)
             })
         },
         endExam() {
             this.loading = true
 
             let examId = this.startedExams.filter(exam => exam.subject.name == this.subject.name && exam.class.name == this.single.name)[0].id
-            this.$http.delete(`started-exams/${examId}`, {
-                class_id: this.single.id,
-                subject_id: this.subject.subject_id
-            })
+            this.$http.delete(`started-exams/${examId}`)
             .then(res => {
                 this.loading = false
                 this.dialog = false
-                this.$emit('endExam', res.data.exam.id)
+                this.$emit('endExam', res.data.data.id)
             })
             .catch(err => {
                 this.loading = false
-                this.dialog = false
-                alert(err.response.data.message)
+                this.$noty.error(err.response.data.message)
             })
         }
     },

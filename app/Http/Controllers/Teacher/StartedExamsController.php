@@ -23,7 +23,7 @@ class StartedExamsController extends Controller
             'class_id' => ['required', 'int', 'exists:classes,id'],
         ]);
 
-        list($subjectId, $classId) = $request->only('subject_id','class_id');
+        list('subject_id' => $subjectId, 'class_id' => $classId) = $request->only('subject_id','class_id');
 
         $exam = Exam::canBeStarted()->where('subject_id',$subjectId)->where('class_id',$classId)->with('subject','class')->first();
 
@@ -32,7 +32,7 @@ class StartedExamsController extends Controller
 
         $exam->start();
 
-        return $this->sendSuccessResponse("Exam {$exam->subject->name} started successfully", $exam);
+        return $this->sendSuccessResponse("Exam: <b>{$exam->subject->name}</b> started successfully", $exam);
     }
 
     /**
@@ -46,10 +46,10 @@ class StartedExamsController extends Controller
         $exam = Exam::started()->where('id', $id)->with('subject','class')->first();
 
         abort_if(! $exam, 404, "This exam does not exist as a started exam");
-        abort_if(! Gate::denies('access-class-subject', [$exam->class_id, $exam->subject_id]), 403, "You are not authorized to end an exam for this class subject");
+        abort_if(Gate::denies('access-class-subject', [$exam->class_id, $exam->subject_id]), 403, "You are not authorized to end an exam for this class subject");
 
         $exam->end();
 
-        $this->sendSuccessResponse("Exam {$exam->subject->name} ended successfully", $exam);
+        return $this->sendSuccessResponse("Exam: <b>{$exam->subject->name}</b> ended successfully", $exam);
     }
 }
