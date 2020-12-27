@@ -24,6 +24,18 @@ class Student extends Authenticatable
     ];
     protected $appends = ['fullName'];
 
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::creating(function ($student) {
+            $student->examination_number = self::generateExaminationNumber();
+        });
+    }
+
     public function exams() {
         return $this->belongsToMany(Exam::class, 'submissions')->withPivot('actual_score','computed_score');
     }
@@ -37,9 +49,7 @@ class Student extends Authenticatable
     }
 
     public function getFullNameAttribute() {
-        return ucwords(
-            strtolower("{$this->lastname} {$this->firstname}")
-        );
+        return strtoupper("{$this->lastname} {$this->firstname}");
     }
 
     public function getSeedAttribute() {
@@ -57,13 +67,18 @@ class Student extends Authenticatable
 
     }
 
-    public static function generateExaminationNumber(): string
+    private static function generateExaminationNumber(): string
     {
         $characters = 'ABCDEFGHJKLMNPQRTUVWXYZ';
-        $code = mt_rand(2111, 9999) . $characters[rand(0, strlen($characters) - 1)] . $characters[rand(0, strlen($characters) - 1)];
 
-        $check = self::query()->where('examination_number', $code)->exists();
+        $firstFourCharacters = mt_rand(2111, 9999);
+        $fifthCharacter = $characters[rand(0, strlen($characters) - 1)];
+        $sixthCharacter = $characters[rand(0, strlen($characters) - 1)];
 
-        return $check ? self::generateExaminationNumber() : $code;
+        $uniqueCode = "{$firstFourCharacters}{$fifthCharacter}{$sixthCharacter}";
+
+        $check = self::query()->where('examination_number', $uniqueCode)->exists();
+
+        return $check ? self::generateExaminationNumber() : $uniqueCode;
     }
 }
