@@ -13,10 +13,10 @@ class CreateAdminsubjectClassTable extends Migration
      */
     public function up()
     {
-        Schema::create('adminsubject_class', function (Blueprint $table) {
+        Schema::create('admin_subject_class', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('adminsubject_id');
-            $table->foreign('adminsubject_id')->references('id')->on('admin_subject')->onDelete('cascade');
+            $table->unsignedBigInteger('admin_subject_id');
+            $table->foreign('admin_subject_id')->references('id')->on('admin_subject')->onDelete('cascade');
             $table->integer('class_id')->unsigned();
             $table->foreign('class_id')->references('id')->on('classes')->onDelete('cascade');
         });
@@ -29,6 +29,6 @@ class CreateAdminsubjectClassTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('adminsubject_class');
+        Schema::dropIfExists('admin_subject_class');
     }
 }

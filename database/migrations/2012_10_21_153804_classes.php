@@ -28,6 +28,6 @@ class Classes extends Migration
     public function down()
     {
         //
-        Schema::drop('classes');
+        Schema::dropIfExists('classes');
     }
 }
