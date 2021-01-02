@@ -24,14 +24,16 @@ class StudentController extends Controller
         $this->middleware('auth');
     }
 
-    public function index() {
+    public function index()
+    {
         $exams = Auth::user()->getAllStartedExams();
 
-        return view('home',compact('exams'));
+        return view('home', compact('exams'));
     }
 
-    public function getExamQuestions(\Request $request, $subject) {
-        $subject = Subject::where('alias',$subject)->first();
+    public function getExamQuestions(\Request $request, $subject)
+    {
+        $subject = Subject::where('alias', $subject)->first();
         $user = Auth::user();
         $class_id = $user->class_id;
 
@@ -45,28 +47,27 @@ class StudentController extends Controller
             $subject_id = $subject->id;
             $seed = Auth::user()->code;
 
-            $questions = Question::where('exam_id',$exam->id)->with('options:id,question_id,body')->inRandomOrder($seed)->get();
+            $questions = Question::where('exam_id', $exam->id)->with('options:id,question_id,body')->inRandomOrder($seed)->get();
 
-            Session::put('exam_id', $exam->id);
-
-            return view('exam',compact('questions','user','subject','hours','minutes','exam'));
+            return view('exam', compact('questions', 'user', 'subject', 'hours', 'minutes', 'exam'));
         }
 
         return abort('404');
     }
 
-    public function submitExam(Request $request) {
+    public function submitExam(Request $request)
+    {
         $choices = json_decode($request->choices);
         $exam_id = Session::get('exam_id');
 
         //first mark all the answers
         $seed = Auth::user()->code;
 
-        $questions = Question::where('exam_id',$exam_id)->with('options')->inRandomOrder($seed)->get();
+        $questions = Question::where('exam_id', $exam_id)->with('options')->inRandomOrder($seed)->get();
 
         $base_score = Exam::find($exam_id)->base_score;
 
-        $divisor = ($base_score)/count($questions);
+        $divisor = ($base_score) / count($questions);
         //Now mark in Accordance
         $score = 0;
         foreach ($choices as $choice) {
@@ -77,9 +78,7 @@ class StudentController extends Controller
                 if ($corresponding_question->options[$choice->choice]->isCorrect) {
                     $score += 1;
                 }
-            }
-
-            else {
+            } else {
                 continue;
             }
         }
@@ -92,10 +91,10 @@ class StudentController extends Controller
         $scoreTable->save();
 
         return response()->json('submission successful');
-
     }
 
-    public function submitSuccess() {
+    public function submitSuccess()
+    {
         return view('submit-success');
     }
 }

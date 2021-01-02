@@ -21,6 +21,6 @@ $factory->define(User::class, function (Faker $faker) {
         'firstname' => $faker->firstName,
         'lastname' => $faker->lastName,
         'code' => $faker->unique()->numberBetween(5000,9000),
-        'class_id' => $faker->numberBetween(1,3)
+        'class_id' => $faker->numberBetween(1,5),
     ];
 });

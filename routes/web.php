@@ -42,7 +42,7 @@ Route::get('/exam/{subject}','StudentController@getExamQuestions')->name('exam')
 Route::get('/home', 'StudentController@index')->name('home');
 
 Route::group(['prefix' => 'api'], function () {
-    Route::get('/getQuestions','StudentController@getAjaxQuestions')->name('get-questions');
+    Route::get('/getQuestions','StudentController@getExamQuestions')->name('get-questions');
     Route::post('/updateQuestion/{id}','AdminController@updateQuestion');
     Route::post('/addQuestion', 'AdminController@addQuestion')->middleware('check-exam-status');
     Route::post('/deleteQuestion/{id}','AdminController@deleteQuestion')->middleware('check-exam-status');
