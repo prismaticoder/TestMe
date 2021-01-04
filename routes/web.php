@@ -58,9 +58,9 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admins'], function () {
     Route::get('/students', [StudentsController::class, 'index'])->name('students');
     Route::get('/subjects', [SubjectsController::class, 'index'])->name('subjects');
     Route::get('/teachers', [TeachersController::class, 'index'])->name('teachers');
-    Route::get('/{subject}/{class_id}/questions', [QuestionsController::class, 'index'])->name('questions');
-    Route::get('/{subject}/{class_id}/results', [SubjectResultsController::class, 'index'])->name('results');
-    Route::get('/{subject}/{class_id}/results/{exam_id}/download', [SubjectResultsController::class, 'download'])->name('download-result');
+    Route::get('/{subject}/{class}/questions', [QuestionsController::class, 'index'])->name('questions');
+    Route::get('/{subject}/{class}/results', [SubjectResultsController::class, 'index'])->name('results');
+    Route::get('/{subject}/{class}/results/{exam}/download', [SubjectResultsController::class, 'download'])->name('download-result');
 });
 
 Route::group(['prefix' => 'api'], function () {
@@ -93,33 +93,27 @@ Route::group(['prefix' => 'api'], function () {
 
         Route::group(['prefix' => 'questions', 'middleware' => ['check-exam-status']], function() {
             Route::post('/', [QuestionsController::class, 'store']);
-            Route::put('/{id}', [QuestionsController::class, 'update']);
-            Route::delete('/{id}', [QuestionsController::class, 'destroy']);
-        });
-
-        Route::group(['prefix' => 'questions', 'middleware' => ['check-exam-status']], function() {
-            Route::post('/', [QuestionsController::class, 'store']);
-            Route::put('/{id}', [QuestionsController::class, 'update']);
-            Route::delete('/{id}', [QuestionsController::class, 'destroy']);
+            Route::put('/{question}', [QuestionsController::class, 'update']);
+            Route::delete('/{question}', [QuestionsController::class, 'destroy']);
         });
 
         Route::group(['middleware' => ['can:superAdminGate']], function() {
             Route::group(['prefix' => 'teachers'], function() {
                 Route::post('/', [TeachersController::class, 'store']);
-                Route::put('/{id}', [TeachersController::class, 'update']);
-                Route::delete('/{id}', [TeachersController::class, 'destroy']);
+                Route::put('/{teacher}', [TeachersController::class, 'update']);
+                Route::delete('/{teacher}', [TeachersController::class, 'destroy']);
             });
 
             Route::group(['prefix' => 'subjects'], function() {
                 Route::post('/', [SubjectsController::class, 'store']);
-                Route::put('/{id}', [SubjectsController::class, 'update']);
-                Route::delete('/{id}', [SubjectsController::class, 'destroy']);
+                Route::put('/{subject:id}', [SubjectsController::class, 'update']);
+                Route::delete('/{subject:id}', [SubjectsController::class, 'destroy']);
             });
 
             Route::group(['prefix' => 'students'], function() {
                 Route::post('/', [StudentsController::class, 'store']);
                 Route::post('/multiple', [StudentsController::class, 'storeMany']);
-                Route::put('/{id}', [StudentsController::class, 'update']);
+                Route::put('/{student}', [StudentsController::class, 'update']);
                 Route::delete('/{id}', [StudentsController::class, 'destroy']);
             });
 

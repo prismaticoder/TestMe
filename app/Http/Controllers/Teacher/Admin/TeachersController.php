@@ -63,14 +63,12 @@ class TeachersController extends Controller
      * Update a teacher's details
      *
      * @param  \App\Http\Requests\UpdateTeacherRequest  $request
-     * @param  int  $id
+     * @param  \App\Teacher  $teacher
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateTeacherRequest $request, $id)
+    public function update(UpdateTeacherRequest $request, Teacher $teacher)
     {
-        $teacher = Teacher::notAdmin()->where('id', $id)->first();
-
-        abort_if(! $teacher, 404, "Teacher not found");
+        abort_if($teacher->isAdmin(), 404, "Teacher not found");
 
         DB::beginTransaction();
 
@@ -100,14 +98,12 @@ class TeachersController extends Controller
     /**
      * Revoke user access for a teacher
      *
-     * @param  int  $id
+     * @param  \App\Teacher  $teacher
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Teacher $teacher)
     {
-        $teacher = Teacher::notAdmin()->where('id', $id)->first();
-
-        abort_if(! $teacher, 404, "Teacher not found");
+        abort_if($teacher->isAdmin(), 404, "Teacher not found");
 
         $teacher->delete();
         return $this->sendSuccessResponse("Access revoked successfully for user <b>{$teacher->username}</b>");

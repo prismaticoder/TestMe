@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Teacher;
 
+use App\Classes;
 use App\Exam;
 use App\Http\Controllers\Controller;
 use App\Option;
@@ -27,15 +28,11 @@ class QuestionsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(string $subjectAlias, int $classId)
+    public function index(Subject $subject, Classes $class)
     {
-        $subject = Subject::findThroughAlias($subjectAlias);
-        $currentClass = $subject->classes()->where('class_id', $classId)->firstOrFail();
+        abort_if(! Gate::allows('access-class-subject', [$class->id, $subject->id]), 404, "Page not found");
 
-        abort_if(! Gate::allows('access-class-subject', [$currentClass->id, $subject->id]), 404, "Page not found");
-
-        $exams = Exam::belongsToClassSubject($classId, $subject->id)->with('subject','class')->latest('updated_at')->get();
-
+        $exams = Exam::belongsToClassSubject($class->id, $subject->id)->with('subject','class')->latest('updated_at')->get();
         $classes = auth()->user()->isAdmin()
                         ? $subject->classes->sortBy('id')
                         : $subject->teacherSubjects()->where('admin_id', auth()->id())->first()->classes->sortBy('id');
@@ -43,7 +40,7 @@ class QuestionsController extends Controller
 
         ($exams->isNotEmpty()) ? session()->put('exam_id', $exams[0]->id) : session()->forget('exam_id');
 
-        return view('teacher.questions', compact('subject','currentClass','classes','exams'));
+        return view('teacher.questions', compact('subject','class','classes','exams'));
     }
 
     /**
@@ -105,7 +102,7 @@ class QuestionsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Question $question)
     {
         $request->merge(
             array(
@@ -119,8 +116,6 @@ class QuestionsController extends Controller
             'options.*' => ['required', 'string'],
             'correct_option' => ['required', 'string', 'in:'. join(',', array_keys($this->getValidOptionKeys()))]
         ]);
-
-        $question = Question::where('id',$id)->with('options')->firstOrFail();
 
         $questionBody = $this->loadAsHtml($request->question)->storeImages()->save();
 
@@ -143,12 +138,12 @@ class QuestionsController extends Controller
             DB::commit();
 
             $question->refresh();
+            $question->load('options');
 
             return $this->sendSuccessResponse("Question updated successfully", $question);
 
         } catch (\Throwable $e) {
             DB::rollback();
-            logger($e);
             return $this->sendErrorResponse("An error was encountered updating this question: {$e->getMessage()}");
         }
     }
@@ -159,11 +154,9 @@ class QuestionsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Question $question)
     {
-        $question = Question::findOrFail($id);
         $question->delete();
-
         return $this->sendSuccessResponse("Question deleted successfully", null, 204);
     }
 

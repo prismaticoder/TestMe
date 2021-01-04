@@ -23,7 +23,7 @@ class StudentsController extends Controller
             $q->withTrashed()->orderBy('lastname');
           }])->get();
 
-        return view('admin.class-students', compact('classes'));
+        return view('teacher.admin.students', compact('classes'));
     }
 
     /**
@@ -40,9 +40,7 @@ class StudentsController extends Controller
             'class_id' => ['required', 'exists:classes,id']
         ]);
 
-        $examination_number = Student::generateExaminationNumber();
-
-        $student = Student::create(array_merge($validated, compact('examination_number')));
+        $student = Student::create($validated);
 
         return $this->sendSuccessResponse("Student added successfully", $student, 201);
     }
@@ -80,22 +78,17 @@ class StudentsController extends Controller
      * Update a student's details
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Student $student
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, int $id)
+    public function update(Request $request, Student $student)
     {
         $validated = $request->validate([
             'firstname' => ['required', 'string', 'min:2'],
             'lastname' => ['required', 'string', 'min:2']
         ]);
 
-        $student = Student::find($id);
-
-        abort_if(! $student, 404, "Student not found");
-
         $student->update($validated);
-
         return $this->sendSuccessResponse("Student details updated successfully", $student);
     }
 
