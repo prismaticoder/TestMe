@@ -11,6 +11,10 @@ class Exam extends Model
     protected $fillable = ['class_id','subject_id','base_score','hours','minutes','date','has_started'];
     protected $appends = ['hasBeenWritten', 'questions'];
 
+    protected $dates = [
+        'started_at'
+    ];
+
 
     /**
      * The "booted" method of the model.
@@ -45,6 +49,10 @@ class Exam extends Model
     }
 
     public function scopeStarted($query) {
+        return $query->where('has_started',1);
+    }
+
+    public function scopeStartedByCurrentUser($query) {
         return $query->when(auth()->user()->isTeacher(), function($query) {
             return $query->whereIn('subject_id', Arr::pluck(auth()->user()->subjects, 'subject_id'));
         })->where('has_started',1);
@@ -71,16 +79,6 @@ class Exam extends Model
     }
 
     public function hasBeenWrittenByCurrentUser() {
-        return $this->students()->where('id', auth()->id())->exists();
-    }
-
-    public function start() {
-        $this->has_started = 1;
-        $this->save();
-    }
-
-    public function end() {
-        $this->has_started = 0;
-        $this->save();
+        return $this->students()->where('student_id', auth()->id())->exists();
     }
 }

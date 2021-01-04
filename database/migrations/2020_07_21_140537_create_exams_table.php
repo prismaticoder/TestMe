@@ -27,6 +27,7 @@ class CreateExamsTable extends Migration
             $table->integer('hours');
             $table->integer('minutes');
             $table->boolean('has_started')->default(0);
+            $table->timestamp('started_at')->nullable();
             $table->timestamps();
         });
 
