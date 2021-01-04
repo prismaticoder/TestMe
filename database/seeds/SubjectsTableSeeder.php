@@ -12,12 +12,12 @@ class SubjectsTableSeeder extends Seeder
     public function run()
     {
         //Seeder to input every subject into the db
-        $subjects = array(['alias'=>'english','subject_name'=>'English Language'],['alias'=>'mathematics','subject_name'=>'Mathematics'],['alias'=>'rnv','subject_name'=>'Religion and National Values'],['alias'=>'french','subject_name'=>'French'],['alias'=>'ict','subject_name'=>'Information and Communication Technology'],['alias'=>'physics','subject_name'=>'Physics'],['alias'=>'chemistry','subject_name'=>'Chemistry'],['alias'=>'biology','subject_name'=>'Biology'],['alias'=>'basic_science','subject_name'=>'Basic Science'],['alias'=>'basic_tech','subject_name'=>'Basic Technology'],['alias'=>'cca','subject_name'=>'Cultural and Creative Arts'],['alias'=>'music','subject_name'=>'Music'],['alias'=>'phonics','subject_name'=>'Phonics'],['alias'=>'yoruba','subject_name'=>'Yoruba']);
+        $subjects = array(['alias'=>'english','name'=>'English Language'],['alias'=>'mathematics','name'=>'Mathematics'],['alias'=>'rnv','name'=>'Religion and National Values'],['alias'=>'french','name'=>'French'],['alias'=>'ict','name'=>'Information and Communication Technology'],['alias'=>'physics','name'=>'Physics'],['alias'=>'chemistry','name'=>'Chemistry'],['alias'=>'biology','name'=>'Biology'],['alias'=>'basic_science','name'=>'Basic Science'],['alias'=>'basic_tech','name'=>'Basic Technology'],['alias'=>'cca','name'=>'Cultural and Creative Arts'],['alias'=>'music','name'=>'Music'],['alias'=>'phonics','name'=>'Phonics'],['alias'=>'yoruba','name'=>'Yoruba']);
 
         foreach ($subjects as $subject) {
             DB::table('subjects')->insert([
                 'alias' => $subject['alias'],
-                'subject_name' => $subject['subject_name'],
+                'name' => $subject['name'],
             ]);
         }
     }
