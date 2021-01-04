@@ -18,7 +18,7 @@ class ExamsController extends Controller
     {
         $exams = auth()->user()->getAvailableExams();
 
-        return view('home',compact('exams'));
+        return view('student.home',compact('exams'));
     }
 
     /**
@@ -34,21 +34,18 @@ class ExamsController extends Controller
         //check if the subject has any exam to be hosted on the particular day
         $exam = Exam::started()
                     ->belongsToClassSubject(auth()->user()->class_id, $subject->id)
-                    ->whereDoesntHave('submissions', function($query) {
-                        $query->where('student_id', auth()->id());
-                    })
                     ->latest('updated_at')
                     ->first();
 
         abort_if(! $exam, 404, "Page not found");
+        abort_if($exam->hasBeenWrittenByCurrentUser(), 403, "You have already written this examination");
 
         $hours = $exam->hours;
         $minutes = $exam->minutes;
-
         $questions = Question::where('exam_id',$exam->id)->with('options:id,question_id,body')->inRandomOrder(auth()->user()->seed)->get();
 
         session()->put('exam_id', $exam->id);
 
-        return view('exam', compact('questions','user','subject','hours','minutes','exam'));
+        return view('student.exam', compact('subject','exam','hours','minutes','questions'));
     }
 }
