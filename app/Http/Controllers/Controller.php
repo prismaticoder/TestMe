@@ -13,7 +13,7 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    protected function sendSuccessResponse(string $message, ?array $data = [], int $status = 200): JsonResponse
+    protected function sendSuccessResponse(string $message, $data = [], int $status = 200): JsonResponse
     {
         return response()->json(array(
             'success' => true,

@@ -83,9 +83,9 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarText">
-            <ul class="navbar-nav mx-auto col-md-2">
+            <ul class="navbar-nav mx-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" href="">{{Auth::user()->fullName}} ({{Auth::user()->class->class}})</a>
+                    <a class="nav-link active" href="">{{auth()->user()->fullName}} ({{auth()->user()->class->name}})</a>
                 </li>
             </ul>
             <span>
@@ -101,21 +101,23 @@
         <h3 class="mt-5 text-center">All Current Exams</h3>
         <hr>
 
-        @if (count($exams) > 0)
-        <main class="card-columns mt-3">
+        @if ($exams->isNotEmpty())
+
+        <div class="row">
             @foreach ($exams as $exam)
-            <div class="card">
-            <div class="card-body">
-                  <p class="card-text">{{strtoupper($exam->subject->name)}}</p>
+            <div class="col-md-4">
+                <div class="border">
+                    <div class="border-bottom py-3 text-center">
+                        <h4>{{strtoupper($exam->subject->name)}}</h4>
+                    </div>
+                    <div class="mx-auto text-center py-3">
+                        <a href="{{route('exam',['subject'=>$exam->subject->slug])}}" class="btn examBtn">START</a>
+                    </div>
                 </div>
-                <div class="card-footer">
-                  <small class="text-muted">
-                  <a href="{{route('exam',['subject'=>$exam->subject->alias])}}" class="btn examBtn">Start Exam</a>
-                  </small>
-                </div>
-              </div>
+            </div>
             @endforeach
-      </main>
+        </div>
+
         @else
         <p class="mt-3">
             Please wait for an exam to be started by the invigilator...

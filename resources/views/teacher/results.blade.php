@@ -1,10 +1,10 @@
 @extends('layouts.main')
-@section('title') {{$currentClass->name}} {{ucfirst($subject->name)}} Exam Results @endsection
+@section('title') {{$class->name}} {{ucfirst($subject->name)}} Exam Results @endsection
 @section('content')
 
     <div class="container" id="app" data-app="true">
         <h3 class="text-center mt-5">
-            {{$currentClass->name}} {{$subject->name}} Examination Results
+            {{$class->name}} {{$subject->name}} Examination Results
         </h3>
         <hr>
 
@@ -14,7 +14,7 @@
             </div>
 
             @if ($currentExam)
-                <result-options :exams="{{$exams}}" :selected_exam="{{$currentExam}}" :iscurrentexam="{{$isLatestExam}}" :subject="{{$subject}}" :class-id="{{$currentClass->id}}"></result-options>
+                <result-options :exams="{{$exams}}" :selected_exam="{{$currentExam}}" :iscurrentexam="{{$isLatestExam}}" :subject="{{$subject}}" :class-id="{{$class->id}}"></result-options>
             @endif
         </div>
 
