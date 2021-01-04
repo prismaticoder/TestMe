@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\Storage;
 class QuestionsController extends Controller
 {
     private ?DOMDocument $domDocument;
-
     public function __construct()
     {
         $this->domDocument = new \domdocument('1.0', 'utf-8');
@@ -55,11 +54,17 @@ class QuestionsController extends Controller
      */
     public function store(Request $request)
     {
+        $request->merge(
+            array(
+                'correct_option' => strtolower($request->input('correct_option'))
+            )
+        );
+
         $request->validate([
             'question' => ['required', 'string'],
             'options' => ['required', 'array', 'size:4'],
             'options.*' => ['required', 'string'],
-            'correct' => ['required', 'int', 'digits_between:0,3']
+            'correct_option' => ['required', 'string', 'in:'. join(',', array_keys($this->getValidOptionKeys()))]
         ]);
 
         $question = $this->loadAsHtml($request->question)->storeImages()->save();
@@ -75,7 +80,7 @@ class QuestionsController extends Controller
             $options = collect($request->options)->map(function ($option, $index) use ($request) {
                 return array(
                     'body' => $this->loadAsHtml($option)->storeImages()->save(),
-                    'is_correct' => (int)$request->correct === $index
+                    'is_correct' => $this->getValidOptionKeys[$request->correct_option] === $index
                 );
             });
 
@@ -102,11 +107,17 @@ class QuestionsController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->merge(
+            array(
+                'correct_option' => strtolower($request->input('correct_option'))
+            )
+        );
+
         $request->validate([
             'question' => ['required', 'string'],
             'options' => ['required', 'array', 'size:4'],
             'options.*' => ['required', 'string'],
-            'correct' => ['required', 'int', 'digits_between:0,3']
+            'correct_option' => ['required', 'string', 'in:'. join(',', array_keys($this->getValidOptionKeys()))]
         ]);
 
         $question = Question::where('id',$id)->with('options')->firstOrFail();
@@ -117,14 +128,14 @@ class QuestionsController extends Controller
 
         try {
             $question->update([
-                'question' => $questionBody,
+                'body' => $questionBody,
             ]);
 
             foreach ($request->options as $key => $option) {
                 $option = $this->loadAsHtml($option)->storeImages()->save();
 
                 $question->options[$key]->body = $option;
-                $question->options[$key]->is_correct = (int)$request->correct === $key;
+                $question->options[$key]->is_correct = $this->getValidOptionKeys[$request->correct_option] === $key;
 
                 $question->push();
             }
@@ -153,6 +164,11 @@ class QuestionsController extends Controller
         $question->delete();
 
         return $this->sendSuccessResponse("Question deleted successfully", null, 204);
+    }
+
+    private function getValidOptionKeys(): array
+    {
+        return array_flip(range('a','d'));
     }
 
     /**

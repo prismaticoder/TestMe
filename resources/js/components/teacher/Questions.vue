@@ -10,7 +10,12 @@
                 </v-btn>
             </h4>
             <div class="list-group">
-                <span v-for="(question, index) in questions" :key="question.id" class="list-group-item list-group-item-action questionBtn" v-bind:class="{'active': currentQuestion ? currentQuestion.id == questions[index].id : false}"  @click.prevent="editorDisabled = true; currentQuestion = questions[index];">
+                <span
+                    v-for="(question, index) in questions" :key="question.id"
+                    class="list-group-item list-group-item-action questionBtn"
+                    v-bind:class="{'active': currentQuestion ? currentQuestion.id == questions[index].id : false}"
+                    @click.prevent="editorDisabled = true; currentQuestion = questions[index];"
+                >
                     Question {{index + 1}}
                     <v-btn text small dark :color="yellow" @click="dialog = true" class="float-right" title="Remove Question">
                         <v-icon>
@@ -34,85 +39,93 @@
             </v-card>
         </v-dialog>
 
-        <v-snackbar v-model="snackbar">
-            {{ snackbarText }}
-            <v-btn color="pink" text @click="snackbar = false">
-                Close
-            </v-btn>
-        </v-snackbar>
-
         <div class="col-md-10 bg-white">
 
-            <ExamParams :exam="examArray[0]" :examCount="examArray.length" :questionCount="questions.length" :yellow="yellow" :subjectId="subjectId" :classId="classId" @setExam="setExam" @alterPQList="alterPQList"/>
+            <ExamParams
+                :exam="examArray[0]"
+                :examCount="examArray.length"
+                :questionCount="questions.length"
+                :yellow="yellow"
+                :subjectId="subjectId"
+                :classId="classId"
+                @create-exam="createExam"
+                @update-exam="updateExam"
+                @alterPQList="alterPQList"
+            />
 
             <div class="container">
                 <h3 class="text-center">Question</h3>
-                <quill-editor class="questions container" :options="editorOption" v-model="question" />
+                <quill-editor
+                    class="questions container"
+                    v-model="question"
+                    :options="editorOption"
+                />
                 <hr>
             </div>
 
             <h3 class="text-center">Options</h3>
-            <p class="text-center" style="color: #ff5500"><small>(Note: Click the checkbox beside an option to mark it as the correct option)</small></p>
+            <p class="text-center" style="color: #ff5500">
+                <small>(Note: Click the checkbox beside an option to mark it as the correct option)</small>
+            </p>
             <hr>
 
-            <div class="row">
+            <div class="row" v-for="(element, index) in options.length" :key="index">
                 <div class="col-md-1"></div>
                 <div class="col-md-1">
-                    <v-checkbox title="Mark this option as correct" v-model="correct" :color="yellow" value="0" class="d-flex align-items-center h-100"></v-checkbox>
+                    <v-checkbox
+                        title="Mark this option as correct"
+                        v-model="correct"
+                        :color="yellow"
+                        :value="getAlphabetEquivalent(index)"
+                        class="d-flex align-items-center h-100"
+                    >
+                    </v-checkbox>
                 </div>
                 <div class="col-md-8">
-                    <h4>Option A</h4>
-                    <quill-editor :disabled="editorDisabled" @focus="onEditorFocus($event)" :options="editorOption" class="option" v-model="optionA" />
+                    <h4>Option {{getAlphabetEquivalent(index).toUpperCase()}}</h4>
+                    <quill-editor
+                        v-model="options[index]"
+                        class="option"
+                        :disabled="editorDisabled"
+                        :options="editorOption"
+                        @focus="onEditorFocus($event)"
+                    />
                     <hr>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-1">
-                    <v-checkbox title="Mark this option as correct" v-model="correct" :color="yellow" value="1" class="d-flex align-items-center h-100"></v-checkbox>
-                </div>
-                <div class="col-md-8">
-                    <h4>Option B</h4>
-                    <quill-editor :disabled="editorDisabled" @focus="onEditorFocus($event)" :options="editorOption" class="option" v-model="optionB" />
-                    <hr>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-1">
-                    <v-checkbox title="Mark this option as correct" v-model="correct" :color="yellow" value="2" class="d-flex align-items-center h-100"></v-checkbox>
-                </div>
-                <div class="col-md-8">
-                    <h4>Option C</h4>
-                    <quill-editor :disabled="editorDisabled" @focus="onEditorFocus($event)" :options="editorOption" class="option" v-model="optionC" />
-                    <hr>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-1">
-                    <v-checkbox title="Mark this option as correct" v-model="correct" :color="yellow" value="3" class="d-flex align-items-center h-100"></v-checkbox>
-                </div>
-                <div class="col-md-8">
-                    <h4>Option D</h4>
-                    <quill-editor :disabled="editorDisabled" @focus="onEditorFocus($event)" :options="editorOption" class="option" v-model="optionD" />
                 </div>
             </div>
 
             <div class="col-md-4 mx-auto mt-5">
-                <v-btn :loading="loading" :color="yellow" :disabled="!question || !optionA || !optionB || !optionC || !optionD || correct == null || loading" v-if="!currentQuestion" @click="addQuestion" tile block class="col-4 mx-auto">
-                    Add Question
-                </v-btn>
-                <v-btn :loading="loading" :color="yellow" :disabled="!question || !optionA || !optionB || !optionC || !optionD || correct == null || loading" v-else @click="updateQuestion" tile block class="col-4 mx-auto">
-                    Update Question
+                <v-btn
+                    :loading="loading"
+                    :color="yellow"
+                    :disabled="emptyTextInputExists || correct === null || loading"
+                    @click="currentQuestion ? updateQuestion() : createQuestion()"
+                    tile block
+                    class="col-4 mx-auto"
+                >
+                    <span v-if="!currentQuestion">Add Question</span>
+                    <span v-else> Update Question</span>
                 </v-btn>
             </div>
         </div>
 
-        <PastExams :yellow="yellow" :black="black" :pastExams="pastExams" :showPQList="showPQList" @usePQTemplate="usePQTemplate" @alterPQList="alterPQList"/>
+        <PastExams
+            :yellow="yellow"
+            :black="black"
+            :pastExams="pastExams"
+            :showPQList="showPQList"
+            @usePQTemplate="usePQTemplate"
+            @alterPQList="alterPQList"
+        />
   </div>
   <div class="container mt-5 mx-auto" v-else>
-        <CreateExam @setExam="setExam" :black="black" :yellow="yellow" :subjectId="subjectId" :classId="classId"/>
+        <CreateExam
+            :black="black"
+            :yellow="yellow"
+            :subjectId="subjectId"
+            :classId="classId"
+            @create-exam="createExam"
+        />
   </div>
 
 </template>
@@ -125,8 +138,8 @@ import katex from 'katex';
 import 'katex/dist/katex.min.css';
 
 export default {
-    name: "AddQuestion",
-    props: ['subjectId', 'classId', 'exams'],
+    name: "Questions",
+    props: ['subjectId', 'classId', 'exams', 'defaultNumberOfOptions'],
     components: {
         ExamParams,
         CreateExam,
@@ -136,53 +149,46 @@ export default {
         return {
             questions: this.exams.length > 0 ? this.exams[0].questions : [],
             currentQuestion: null,
-            options: ['A','B','C','D'],
             examArray: this.exams,
             question: null,
-            optionA: null,
-            optionB: null,
-            optionC: null,
-            optionD: null,
+            options: new Array(this.defaultNumberOfOptions).fill(""),
             correct: null,
             btnLoading: false,
             dialog: false,
             loading: false,
-            snackbar: false,
-            snackbarText: '',
             showPQList: false,
             editorDisabled: true,
+            yellow: "#e67d23",
+            black: "#343a40",
             editorOption: {
                 modules: {
-                    toolbar: [
-                    ['bold', 'italic', 'underline', 'strike'],
-                    ['blockquote'],
-                    [{ 'header': 1 }, { 'header': 2 }],
-                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                    [{ 'script': 'sub' }, { 'script': 'super' }],
-                    [{ 'indent': '-1' }, { 'indent': '+1' }],
-                    [{ 'align': [] }],
-                    ['clean'],
-                    ['link', 'image', 'video'],
-                    ["formula"]
+                    toolbar:
+                    [
+                        ['bold', 'italic', 'underline', 'strike'],
+                        ['blockquote'],
+                        [{ 'header': 1 }, { 'header': 2 }],
+                        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                        [{ 'script': 'sub' }, { 'script': 'super' }],
+                        [{ 'indent': '-1' }, { 'indent': '+1' }],
+                        [{ 'align': [] }],
+                        ['clean'],
+                        ['link', 'image', 'video'],
+                        ["formula"]
                     ],
                  },
                 placeholder: "Type text here",
                 theme: 'snow',
                 readonly: true
             },
-            yellow: "#e67d23",
-            black: "#343a40"
         }
     },
     methods: {
-        // onEditorBlur(quill) {
-        //     // this.editorDisabled = true
-        // },
         onEditorFocus(quill) {
             this.editorDisabled = false
         },
         clearQuestionForm() {
-            this.question = this.optionA = this.optionB = this.optionC = this.optionD = this.correct = null
+            this.question = this.correct = null
+            this.options = new Array(this.defaultNumberOfOptions).fill("");
             this.editorDisabled = true
         },
         deleteQuestion() {
@@ -203,15 +209,14 @@ export default {
                 alert(err.response.data.message)
             })
         },
-        addQuestion() {
+        createQuestion() {
             this.loading = true
-            let { question, optionA, optionB, optionC, optionD, correct } = this
-            const options = [optionA, optionB, optionC, optionD]
+            let { question, options, correct } = this
 
             this.$http.post('questions', {
                 question,
                 options,
-                correct,
+                correct_option: correct,
             })
             .then(res => {
                 this.loading = false
@@ -228,13 +233,12 @@ export default {
         },
         updateQuestion() {
             this.loading = true
-            let { question, optionA, optionB, optionC, optionD, correct } = this
-            const options = [optionA, optionB, optionC, optionD]
+            let { question, options, correct } = this
 
             this.$http.put(`questions/${this.currentQuestion.id}`, {
                 question,
                 options,
-                correct,
+                correct_option: correct,
             })
             .then(res => {
                 this.loading = false
@@ -248,9 +252,15 @@ export default {
             })
             .catch(err => {
                 this.loading = false
-
                 this.$noty.error(err.response.data.message)
             })
+        },
+        createExam(exam) {
+            this.examArray.unshift(exam)
+            this.questions = exam.questions
+        },
+        updateExam(exam) {
+            this.examArray.splice(0,1,exam)
         },
         setExam(type, exam) {
             if (type == 'create') {
@@ -265,6 +275,12 @@ export default {
             const options = { year: "numeric", month: "long", day: "numeric"}
             return new Date(dateString).toLocaleDateString(undefined, options)
         },
+        getAlphabetEquivalent(index) {
+            return String.fromCharCode(97 + index);
+        },
+        getNumericEquivalent(alphabet) {
+            return alphabet.charCodeAt() - 65;
+        },
         alterPQList(type) {
             this.showPQList = (type === 'open');
         },
@@ -278,15 +294,15 @@ export default {
         'currentQuestion'(newValue) {
             if (newValue) {
                 this.question = newValue.body;
-                this.optionA = newValue.options[0].body
-                this.optionB = newValue.options[1].body
-                this.optionC = newValue.options[2].body
-                this.optionD = newValue.options[3].body
-                this.correct = (newValue.options.findIndex(option => option.is_correct)).toString()
+                newValue.options.forEach((option,index) => {
+                    this.options[index] = option.body
+                })
+                this.correct = this.getAlphabetEquivalent((newValue.options.findIndex(option => option.is_correct)))
             }
 
             else {
-                this.question = this.optionA = this.optionB = this.optionC = this.optionD = this.correct = null
+                this.question = this.correct = null;
+                this.options = new Array(this.defaultNumberOfOptions).fill("")
             }
         }
     },
@@ -313,6 +329,9 @@ export default {
     computed: {
         pastExams() {
             return this.examArray.filter((exam, index) => index !== 0);
+        },
+        emptyTextInputExists() {
+            return !this.question || this.options.includes("");
         }
     }
 }
