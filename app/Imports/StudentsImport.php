@@ -25,8 +25,7 @@ class StudentsImport implements ToModel, WithHeadingRow, WithValidation
         return new Student([
             'lastname' => $row['surname'],
             'firstname' => $row['first_name'],
-            'class_id' => $this->class_id,
-            'examination_number' => Student::generateExaminationNumber()
+            'class_id' => $this->class_id
         ]);
     }
 
