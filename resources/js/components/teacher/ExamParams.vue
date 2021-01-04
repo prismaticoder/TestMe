@@ -2,7 +2,7 @@
     <div class="container">
         <div class="row">
             <div class="text-center col-md-6">
-            Examination Date / Duration / Aggregate Score: <strong>{{refinedDate}} / {{examtime}} / {{totalMarks}} marks</strong> <span v-show="!exam.hasBeenWritten">(<a href="#change" @click.prevent="dialog = true">Change</a>)</span>
+            Examination Date / Duration / Aggregate Score: <strong>{{refinedDate}} / {{examtime}} / {{totalMarks}} marks</strong> <span>(<a href="#change" @click.prevent="updateDialog = true">Change</a>)</span>
             </div>
             <!-- <div class="col-md-1"></div> -->
             <div class="col-md-6">
@@ -16,19 +16,12 @@
                     <v-btn v-show="exam.has_started" :color="yellow" @click="examDialog = true" small tile title="End examination">
                         END EXAM
                     </v-btn>
-                    <v-btn v-show="exam.hasBeenWritten && !exam.has_started" @click="dialog=true" class="ml-2" :color="yellow" small tile title="Create New Examination">
+                    <v-btn v-show="exam.hasBeenWritten && !exam.has_started" @click="createDialog=true" class="ml-2" :color="yellow" small tile title="Create New Examination">
                         CREATE NEW EXAM
                     </v-btn>
                 </div>
             </div>
         </div>
-
-        <v-snackbar v-model="snackbar">
-            {{ snackbarText }}
-            <v-btn color="pink" text @click="snackbar = false">
-                Close
-            </v-btn>
-        </v-snackbar>
 
         <v-dialog v-model="examDialog" max-width="350">
             <v-card>
@@ -48,10 +41,9 @@
             </v-card>
         </v-dialog>
 
-        <v-dialog v-model="dialog" max-width="500" persistent>
+        <v-dialog v-model="updateDialog" max-width="500" persistent>
             <v-card>
-                <v-card-title v-if="!exam.hasBeenWritten" class="headline">Change Exam Parameters</v-card-title>
-                <v-card-title v-else class="headline">Create New Exam</v-card-title>
+                <v-card-title class="headline">Change Exam Parameters</v-card-title>
                 <v-container>
                     <v-row>
                         <v-col cols="12" sm="6" md="6">
@@ -62,11 +54,11 @@
                         </v-col>
                     </v-row>
 
-                    <v-menu ref="dateMenu" v-model="dateMenu" :close-on-content-click="false" transition="scale-transition" offset-y max-width="290px" min-width="290px">
+                    <v-menu ref="dateMenu" v-model="updateDateMenu" :close-on-content-click="false" transition="scale-transition" offset-y max-width="290px" min-width="290px">
                       <template v-slot:activator="{ on }">
-                          <v-text-field readonly v-model="date" label="Date" v-on="on"></v-text-field>
+                          <v-text-field readonly v-model="date" label="Date" v-on="on" persistent-hint :hint="date < today ? 'Date selected must be after or equal to today\'s date' : ''"></v-text-field>
                       </template>
-                      <v-date-picker :color="yellow" :min="today"  v-model="date" no-title @input="dateMenu = false"></v-date-picker>
+                      <v-date-picker :color="yellow" :min="today"  v-model="date" no-title @input="updateDateMenu = false"></v-date-picker>
                     </v-menu>
 
                     <v-text-field type="number" v-model="totalMarks" persistent-hint label="Aggregate Score" hint="Note: student scores will be calculated using this as a base value">
@@ -75,8 +67,40 @@
                 </v-container>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn :disabled="loading" color="green darken-1" text @click="backToPrevious">CLOSE</v-btn>
-                    <v-btn :loading="loading" :disabled="loading || ((hours == 0 && minutes == 0) || totalMarks < 5)" color="green darken-1" text @click="exam.hasBeenWritten ? setExam('create') : setExam('update')">SAVE</v-btn>
+                    <v-btn :disabled="loading" color="green darken-1" text @click="backToPrevious(); updateDialog=false">CLOSE</v-btn>
+                    <v-btn :loading="loading" :disabled="loading || ((hours == 0 && minutes == 0) || totalMarks < 5)" color="green darken-1" text @click="updateExam()">CHANGE</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
+        <v-dialog v-model="createDialog" max-width="500" persistent>
+            <v-card>
+                <v-card-title class="headline">Create New Exam</v-card-title>
+                <v-container>
+                    <v-row>
+                        <v-col cols="12" sm="6" md="6">
+                            <v-select :items="hourArray" v-model="hours" :menu-props="{ maxHeight: '400' }" label="Hours"></v-select>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="6">
+                            <v-select :items="minuteArray" v-model="minutes" :menu-props="{ maxHeight: '400' }" label="Minutes"></v-select>
+                        </v-col>
+                    </v-row>
+
+                    <v-menu ref="dateMenu" v-model="createDateMenu" :close-on-content-click="false" transition="scale-transition" offset-y max-width="290px" min-width="290px">
+                      <template v-slot:activator="{ on }">
+                          <v-text-field readonly v-model="date" label="Date" v-on="on" persistent-hint :hint="date < today ? 'Date selected must be after or equal to today\'s date' : ''"></v-text-field>
+                      </template>
+                      <v-date-picker :color="yellow" :min="today"  v-model="date" no-title @input="createDateMenu = false"></v-date-picker>
+                    </v-menu>
+
+                    <v-text-field type="number" v-model="totalMarks" persistent-hint label="Aggregate Score" hint="Note: student scores will be calculated using this as a base value">
+
+                    </v-text-field>
+                </v-container>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn :disabled="loading" color="green darken-1" text @click="backToPrevious(); createDialog=false">CLOSE</v-btn>
+                    <v-btn :loading="loading" :disabled="loading || ((hours == 0 && minutes == 0) || totalMarks < 5)" color="green darken-1" text @click="createExam()">CREATE</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -89,77 +113,80 @@ export default {
     props: ['exam','yellow','examCount','questionCount','subjectId','classId'],
     data() {
         return {
-            hours: this.exam.hasBeenWritten ? 0 : this.exam.hours,
-            minutes: this.exam.hasBeenWritten ? 0 : this.exam.minutes,
-            totalMarks: this.exam.hasBeenWritten ? 50 : this.exam.base_score,
-            date: this.exam.hasBeenWritten ? new Date().toISOString().substr(0, 10) : this.exam.date,
+            hours: this.exam.hours,
+            minutes: this.exam.minutes,
+            totalMarks: this.exam.base_score,
+            date: this.exam.date,
             today: new Date().toISOString().substr(0, 10),
             hourArray: [0,1,2,3,4,5,6],
             minuteArray: [0,5,10,15,20,25,30,35,40,45,50,55],
-            dialog: false,
+            createDialog: false,
+            updateDialog: false,
             examDialog: false,
             loading: false,
-            dateMenu: false,
-            snackbar: false,
-            snackbarText: ''
+            createDateMenu: false,
+            updateDateMenu: false,
         }
     },
     methods: {
-        setExam(type) {
+        createExam() {
             this.loading = true
             let { hours, minutes, totalMarks, date } = this;
 
-            if (type == 'create') {
-                this.$http.post('exams', {
+            this.$http.post('exams', {
                 hours,
                 minutes,
                 date,
                 base_score: totalMarks,
                 class_id: this.classId,
                 subject_id: this.subjectId
-                })
-                .then(res => {
-                    this.loading = false
-                    this.dialog = false
-                    this.$noty.success(res.data.message)
-                    this.$emit('setExam', 'create', res.data.data)
-                })
-                .catch(err => {
-                    this.loading = false
-                    this.$noty.error(err.response.data.message)
-                })
+            })
+            .then(res => {
+                this.loading = false
+                this.createDialog = false
+                this.$noty.success(res.data.message)
+                this.$emit('create-exam', res.data.data)
+            })
+            .catch(err => {
+                this.loading = false
+                this.$noty.error(err.response.data.message)
+            })
+        },
+        updateExam() {
+            this.loading = true
+            let { hours, minutes, totalMarks, date } = this;
+
+            if (hours == this.exam.hours
+                && minutes == this.exam.minutes
+                && totalMarks == this.exam.base_score
+                && date == this.exam.date)
+            {
+                this.loading = false;
+                this.updateDialog = false
+                return;
             }
 
-            else {
-                if (this.hours == this.exam.hours && this.minutes == this.exam.minutes && this.totalMarks == this.exam.base_score && this.date == this.exam.date) {
-                this.loading = false;
-                this.dialog = false
-                }
-                else {
-                    this.$http.put(`exams/${this.exam.id}`, {
-                        hours,
-                        minutes,
-                        date,
-                        base_score: totalMarks
-                    })
-                    .then(res => {
-                        this.loading = false
-                        this.dialog = false
-                        this.$noty.success(res.data.message)
-                        this.$emit('setExam', 'update', res.data.data)
-                    })
-                    .catch(err => {
-                        this.loading = false
-                        this.$noty.error(err.response.data.message)
-                    })
-                }
-            }
+            this.$http.put(`exams/${this.exam.id}`, {
+                hours,
+                minutes,
+                date,
+                base_score: totalMarks
+            })
+            .then(res => {
+                this.loading = false
+                this.updateDialog = false
+                this.$noty.success(res.data.message)
+                this.$emit('update-exam', res.data.data)
+            })
+            .catch(err => {
+                this.loading = false
+                this.$noty.error(err.response.data.message)
+            })
         },
         backToPrevious() {
             this.hours = this.exam.hours
             this.minutes = this.exam.minutes
             this.totalMarks = this.exam.base_score
-            this.dialog = false
         },
         startExam() {
             this.loading = true
@@ -171,7 +198,7 @@ export default {
             .then(res => {
                 this.loading = false
                 this.examDialog = false
-                this.$emit('setExam', 'update', res.data.data)
+                this.$emit('update-exam', res.data.data)
             })
             .catch(err => {
                 this.loading = false
@@ -188,7 +215,7 @@ export default {
             .then(res => {
                 this.loading = false
                 this.examDialog = false
-                this.$emit('setExam', 'update', res.data.data)
+                this.$emit('update-exam', res.data.data)
             })
             .catch(err => {
                 this.loading = false

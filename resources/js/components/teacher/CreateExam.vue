@@ -85,7 +85,7 @@ export default {
                 this.loading = false
                 this.dialog = false
                 this.$noty.success(res.data.message)
-                this.$emit('setExam', 'create', res.data.data)
+                this.$emit('create-exam', res.data.data)
             })
             .catch(err => {
                 this.loading = false
