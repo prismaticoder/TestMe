@@ -33,24 +33,27 @@ Route::get('/', function () {
 });
 
 Route::get('/success', function() {
-    return view('submit-success');
+    return view('student.submit-success');
 })->name('success');
 
 Route::get('/download-sample-excel-file', function () {
     return response()->download(public_path('upload_format.xlsx'),'upload-students-sample.xlsx');
 });
 
+//Authentication routes
 Route::get('/login', [StudentLoginController::class, 'index'])->name('login');
 Route::post('/login', [StudentLoginController::class, 'login']);
+Route::get('/logout', [StudentLoginController::class, 'logout'])->name('logout');
+Route::get('/admin/login', [TeacherLoginController::class, 'show'])->name('admin-login');
+Route::post('/admin/login', [TeacherLoginController::class, 'authenticate']);
+Route::get('/admin/logout', [TeacherLoginController::class, 'logout'])->name('admin-logout');
+
+
 Route::get('/exams', [StudentExamsController::class, 'index'])->middleware('auth')->name('home');
 Route::get('/exams/{subject}', [StudentExamsController::class, 'show'])->middleware('auth')->name('exam');
-Route::get('/logout', [StudentLoginController::class, 'logout'])->name('logout');
 
-Route::group(['prefix' => 'admin'], function () {
+Route::group(['prefix' => 'admin', 'middleware' => 'auth:admins'], function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/login', [TeacherLoginController::class, 'show'])->name('admin-login');
-    Route::post('/login', [TeacherLoginController::class, 'authenticate']);
-    Route::get('/logout', [TeacherLoginController::class, 'logout'])->name('admin-logout');
     Route::get('/manage-account', [ManageAccountController::class, 'index'])->name('account');
     Route::get('/students', [StudentsController::class, 'index'])->name('students');
     Route::get('/subjects', [SubjectsController::class, 'index'])->name('subjects');
@@ -61,8 +64,12 @@ Route::group(['prefix' => 'admin'], function () {
 });
 
 Route::group(['prefix' => 'api'], function () {
+    Route::get('/network-status', function () {
+        return response()->json([
+            'status' => 'connected'
+        ]);
+    });
     Route::post('/submissions', [SubmissionsController::class, 'store']);
-    Route::post('/useTemplate/{template_id}','AdminController@createExamFromTemplate');
 
     Route::group(['middleware' => ['auth:admins']], function() {
         Route::group(['prefix' => 'exams', 'middleware' => ['check-exam-status']], function() {

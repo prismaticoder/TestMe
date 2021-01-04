@@ -27,7 +27,7 @@ class TeachersController extends Controller
             $q->with('classes','subject');
         }])->get();
 
-        return view('admin.teacher-subject', compact('subjects','classes','type','teachers'));
+        return view('teacher.admin.teacher-subject', compact('subjects','classes','type','teachers'));
     }
 
     /**
@@ -41,12 +41,7 @@ class TeachersController extends Controller
         DB::beginTransaction();
 
         try {
-            $teacher = Teacher::create(
-                array_merge(
-                    $request->only('title','firstname','lastname','username','password'),
-                    ['role_id' => Teacher::ROLES['TEACHER']]
-                )
-            );
+            $teacher = Teacher::create($request->only('title','firstname','lastname','username','password'));
 
             foreach ($request->subjects as $subject) {
                 $this->createSubjectWithClasses($teacher->id,$subject);
@@ -57,7 +52,7 @@ class TeachersController extends Controller
                 $q->with('classes','subject');
             }]);
 
-            return $this->sendSuccessResponse("User <{$teacher->username}> created successfully.", $teacher, 201);
+            return $this->sendSuccessResponse("User <b>{$teacher->username}</b> created successfully.", $teacher, 201);
         } catch (\Throwable $e) {
             DB::rollback();
             return $this->sendErrorResponse("There was an error creating this teacher: {$e->getMessage()}");
@@ -115,7 +110,7 @@ class TeachersController extends Controller
         abort_if(! $teacher, 404, "Teacher not found");
 
         $teacher->delete();
-        return $this->sendSuccessResponse("Access revoked successfully for user <{$teacher->username}>");
+        return $this->sendSuccessResponse("Access revoked successfully for user <b>{$teacher->username}</b>");
     }
 
     private function createSubjectWithClasses(int $teacherId, array $subjectWithClasses): void

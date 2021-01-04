@@ -7,8 +7,14 @@ use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:admins')->only('logout');
+        $this->middleware('guest:admins')->except('logout');
+    }
+
     public function show() {
-        return view('admin.login');
+        return view('teacher.login');
     }
 
     public function authenticate(Request $request) {
@@ -18,7 +24,7 @@ class LoginController extends Controller
             return redirect()->intended('/admin');
         }
 
-        return view('admin.login')->withErrors('Incorrect Username or Password!');
+        return view('teacher.login')->withErrors('Incorrect Username or Password!');
     }
 
     public function logout() {

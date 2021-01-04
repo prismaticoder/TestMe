@@ -53,7 +53,7 @@ class Student extends Authenticatable
     }
 
     public function getSeedAttribute() {
-        return substr($this->code, 0, 4);
+        return substr($this->examination_number, 0, 4);
     }
 
     public function getAvailableExams() {

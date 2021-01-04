@@ -24,10 +24,10 @@ class SubjectResultsController extends Controller
 
         abort_if(Gate::denies('access-class-subject', [$currentClass->id, $subject->id]), 401, "You are not authorized to view results of this subject");
 
-        $exams =  Exam::belongsToClassSubject($classId, $subject->id)->latest('updated_at')->get();
+        $exams =  Exam::belongsToClassSubject($classId, $subject->id)->withCount('questions')->latest('updated_at')->get();
 
         if ($request->query('exam_id')) {
-            $selectedExam = $exams->where('id', $request->query('exam_id'))->first();
+            $selectedExam = $exams->where('id', $request->query('exam_id'))->withCount('questions')->first();
         }
 
         $currentExam = $selectedExam ?? ($exams[0] ?? null);

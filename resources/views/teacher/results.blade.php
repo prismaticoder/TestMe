@@ -25,7 +25,7 @@
             <th>S/N</th>
                 <th>EXAMINATION NUMBER</th>
                 <th>NAME</th>
-                <th>ACTUAL SCORE</th>
+                <th>ACTUAL SCORE (/{{$currentExam->questions_count ?? ''}})</th>
                 <th>COMPUTED SCORE (/{{$currentExam->base_score ?? ''}})</th>
             </tr>
             </thead>

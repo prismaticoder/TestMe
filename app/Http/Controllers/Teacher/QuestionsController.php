@@ -80,7 +80,7 @@ class QuestionsController extends Controller
             $options = collect($request->options)->map(function ($option, $index) use ($request) {
                 return array(
                     'body' => $this->loadAsHtml($option)->storeImages()->save(),
-                    'is_correct' => $this->getValidOptionKeys[$request->correct_option] === $index
+                    'is_correct' => $this->getValidOptionKeys()[$request->correct_option] === $index
                 );
             });
 
@@ -135,7 +135,7 @@ class QuestionsController extends Controller
                 $option = $this->loadAsHtml($option)->storeImages()->save();
 
                 $question->options[$key]->body = $option;
-                $question->options[$key]->is_correct = $this->getValidOptionKeys[$request->correct_option] === $key;
+                $question->options[$key]->is_correct = $this->getValidOptionKeys()[$request->correct_option] === $key;
 
                 $question->push();
             }
@@ -148,6 +148,7 @@ class QuestionsController extends Controller
 
         } catch (\Throwable $e) {
             DB::rollback();
+            logger($e);
             return $this->sendErrorResponse("An error was encountered updating this question: {$e->getMessage()}");
         }
     }

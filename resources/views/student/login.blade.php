@@ -87,7 +87,7 @@
 
         <label for="examination_number" class="mt-3">{{ __('Examination Number') }}</label>
 
-        <input id="examination_number" type="text" class="form-control" name="examination_number" required>
+        <input id="examination_number" type="text" class="form-control text-uppercase" name="examination_number" required>
 
         <div >
             <button type="submit" class="btn loginBtn btn-block mt-4">
