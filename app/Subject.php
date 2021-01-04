@@ -33,6 +33,11 @@ class Subject extends Model
         return 'slug';
     }
 
+    public function getCodeAttribute($value)
+    {
+        return strtoupper($value);
+    }
+
     public function getSubjectIdAttribute() {
         return $this->attributes['id'];
     }
