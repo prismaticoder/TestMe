@@ -17,7 +17,7 @@ class DashboardController extends Controller
     {
         $subjects = auth()->user()->subjects();
         $classes = Classes::get();
-        $startedExams = Exam::started()->get();
+        $startedExams = Exam::startedByCurrentUser()->get();
         $pendingExamsForToday = Exam::canBeStarted()->get();
 
         if ($startedExams) {
