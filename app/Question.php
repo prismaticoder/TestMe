@@ -8,6 +8,7 @@ class Question extends Model
 {
     //Model to interact with the questions table
     protected $fillable = ['exam_id','body'];
+    protected $touches = ['exam'];
 
     public function options() {
         return $this->hasMany(Option::class);
