@@ -15,6 +15,13 @@ class CreateExamsTable extends Migration
     {
         Schema::create('exams', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->integer('base_score');
+            $table->date('date');
+            $table->integer('hours');
+            $table->integer('minutes');
+            $table->integer('unique_code');
+            $table->boolean('has_started')->default(0);
+
             $table->integer('class_id')->unsigned();
             $table->foreign('class_id')->references('id')->on('classes');
             $table->integer('subject_id')->unsigned();
@@ -22,11 +29,7 @@ class CreateExamsTable extends Migration
             $table->unsignedBigInteger('duplicated_from')->nullable();
             $table->unsignedBigInteger('created_by')->nullable();
             $table->foreign('created_by')->references('id')->on('teachers')->onDelete('SET NULL');
-            $table->integer('base_score');
-            $table->date('date');
-            $table->integer('hours');
-            $table->integer('minutes');
-            $table->boolean('has_started')->default(0);
+
             $table->timestamp('started_at')->nullable();
             $table->timestamps();
         });
