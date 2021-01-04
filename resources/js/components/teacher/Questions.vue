@@ -197,16 +197,13 @@ export default {
             .then(res => {
                 this.btnLoading = false
                 this.dialog = false
+                this.$noty.success(res.data.message)
                 this.questions = this.questions.filter(question => question.id !== this.currentQuestion.id)
-                this.snackbar = true;
-                this.snackbarText = res.data.message
                 this.currentQuestion = null
             })
             .catch(err => {
                 this.btnLoading = false
-                this.dialog = false;
-
-                alert(err.response.data.message)
+                this.$noty.error(err.response.data.message)
             })
         },
         createQuestion() {
@@ -277,9 +274,6 @@ export default {
         },
         getAlphabetEquivalent(index) {
             return String.fromCharCode(97 + index);
-        },
-        getNumericEquivalent(alphabet) {
-            return alphabet.charCodeAt() - 65;
         },
         alterPQList(type) {
             this.showPQList = (type === 'open');
