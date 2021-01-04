@@ -24,12 +24,11 @@ class ExamsController extends Controller
     /**
      * Get single exam
      *
-     * @param  int  $id
+     * @param  \App\Subject  $subject
      * @return \Illuminate\Http\Response
      */
-    public function show($subjectAlias)
+    public function show(Subject $subject)
     {
-        $subject = Subject::findThroughAlias($subjectAlias);
 
         //check if the subject has any exam to be hosted on the particular day
         $exam = Exam::started()
