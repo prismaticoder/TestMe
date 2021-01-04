@@ -86,7 +86,7 @@ class Exam extends Model
 
     public function getCodeAttribute()
     {
-        $subjectCode = strtoupper($this->subject->code);
+        $subjectCode = $this->subject->code;
         $classId = $this->class_id;
         $uniqueCode = $this->unique_code;
 
