@@ -32,52 +32,36 @@ class Teacher extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password'
     ];
 
-    // protected $appends = ['admin_subjects'];
-
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
-
-    public function subjects(){
+    public function subjects()
+    {
         return $this->isAdmin()
-                    ? Subject::orderBy('name')
-                        ->with(['classes' => function($q) {
-                                return $q->orderBy('name');
-                            }
-                        ])
-                        ->get()
-                    : $this->hasMany(TeacherSubject::class)
-                        ->with(
-                            ['classes' => function($q) {
-                                return $q->orderBy('name');
-                            }],
-                            ['subject' => function($q) {
-                                return $q->orderBy('name');
-                            }]
-                        );
+                ? Subject::orderBy('name')->with(['classes' => fn($q) => $q->orderBy('name')])->get()
+                : $this->belongsToMany(TeacherSubject::class)->with(
+                    ['classes' => fn($q) => $q->orderBy('name')],
+                    ['subject' => fn($q) => $q->orderBy('name')]
+                );
     }
 
-    public function classes(){
+    public function classes()
+    {
         return $this->belongsToMany(Classes::class);
     }
 
-    public function role() {
+    public function role()
+    {
         return $this->belongsTo(Role::class);
     }
 
-    public function scopeNotAdmin($query) {
+    public function scopeNotAdmin($query)
+    {
         return $query->where('role_id', self::ROLES['TEACHER']);
     }
 
-    public function scopeAdmin($query) {
+    public function scopeAdmin($query)
+    {
         return $query->where('role_id', self::ROLES['ADMIN']);
     }
 
@@ -86,18 +70,21 @@ class Teacher extends Authenticatable
         $this->attributes['password'] = bcrypt($value);
     }
 
-    public function getFullNameAttribute() {
+    public function getFullNameAttribute()
+    {
         return strtoupper(
             "{$this->title}. {$this->lastname} {$this->firstname}"
         );
     }
 
     // i link this with gate
-    public function isAdmin() {
+    public function isAdmin()
+    {
         return $this->role_id === self::ROLES['ADMIN'];
     }
 
-    public function isTeacher() {
+    public function isTeacher()
+    {
         return $this->role_id === self::ROLES['TEACHER'];
     }
 }

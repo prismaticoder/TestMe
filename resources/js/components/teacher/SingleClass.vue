@@ -6,12 +6,12 @@
 
         <div class="row justify-content-center d-flex">
             <div class="col-lg-4">
-                <v-btn block tile  :href="`/admin/${subject.alias}/${single.id}/questions`" small title="Go to Questions" :color="yellow">
+                <v-btn block tile  :href="`/admin/${subject.slug}/${single.id}/questions`" small title="Go to Questions" :color="yellow">
                     Questions
                 </v-btn>
             </div>
             <div class="col-lg-4">
-                <v-btn block tile  :href="`/admin/${subject.alias}/${single.id}/results`" small title="View results of most recent exam" :color="yellow">
+                <v-btn block tile  :href="`/admin/${subject.slug}/${single.id}/results`" small title="View results of most recent exam" :color="yellow">
                     Results
                 </v-btn>
             </div>
@@ -28,12 +28,12 @@
         <!-- <v-container>
             <v-row justify="center">
                 <v-col cols="12" lg="4">
-                    <v-btn :href="`/admin/${subject.alias}/${single.id}/questions`" small title="Go to Questions" :color="yellow">
+                    <v-btn :href="`/admin/${subject.slug}/${single.id}/questions`" small title="Go to Questions" :color="yellow">
                         Questions
                     </v-btn>
                 </v-col>
                 <v-col cols="12" lg="4">
-                    <v-btn :href="`/admin/${subject.alias}/${single.id}/results`" small title="View results of most recent exam" :color="yellow">
+                    <v-btn :href="`/admin/${subject.slug}/${single.id}/results`" small title="View results of most recent exam" :color="yellow">
                         Results
                     </v-btn>
                 </v-col>
@@ -48,12 +48,12 @@
             </v-row>
         </v-container> -->
         <!-- <div class="col-md-4">
-            <v-btn :href="`/admin/${subject.alias}/${single.id}/questions`" small title="Go to Questions" :color="yellow">
+            <v-btn :href="`/admin/${subject.slug}/${single.id}/questions`" small title="Go to Questions" :color="yellow">
                 Questions
             </v-btn>
         </div>
         <div class="col-md-4">
-            <v-btn :href="`/admin/${subject.alias}/${single.id}/results`" small title="View results of most recent exam" :color="yellow">
+            <v-btn :href="`/admin/${subject.slug}/${single.id}/results`" small title="View results of most recent exam" :color="yellow">
                 Results
             </v-btn>
         </div>

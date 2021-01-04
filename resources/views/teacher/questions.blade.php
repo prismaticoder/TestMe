@@ -1,10 +1,10 @@
 @extends('layouts.main')
-@section('title') {{$currentClass->name}} {{ucfirst($subject->name)}} Questions @endsection
+@section('title') {{$class->name}} {{ucfirst($subject->name)}} Questions @endsection
 @section('content')
 
     <div id="app">
         <v-app>
-            <teacher-questions :subject-id="{{$subject->id}}" :class-id="{{$currentClass->id}}" :exams="{{$exams}}" :default-number-of-options="4"></teacher-questions>
+            <teacher-questions :subject-id="{{$subject->id}}" :class-id="{{$class->id}}" :exams="{{$exams}}" :default-number-of-options="4"></teacher-questions>
         </v-app>
     </div>
 

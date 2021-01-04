@@ -7,10 +7,10 @@
                 </v-btn>
             </template>
             <v-list dense>
-                <v-list-item :href="exams.length >= 1 ? `/admin/${subject.alias}/${classId}/results/${selected_exam.id}/download` : ''" :disabled="selected_exam.students.length === 0">
+                <v-list-item :href="exams.length >= 1 ? `/admin/${subject.slug}/${classId}/results/${selected_exam.id}/download` : ''" :disabled="selected_exam.students.length === 0">
                     <v-list-item-title>Download PDF</v-list-item-title>
                 </v-list-item>
-                <v-list-item :href="`/admin/${subject.alias}/${classId}/results`" :disabled="iscurrentexam">
+                <v-list-item :href="`/admin/${subject.slug}/${classId}/results`" :disabled="iscurrentexam">
                     <v-list-item-title>Latest Exam Results</v-list-item-title>
                 </v-list-item>
                 <v-list-item @click="showExamList = true" :disabled="exams.length <= 1">

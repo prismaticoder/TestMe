@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class TeacherSubject extends Model
 {
     protected $fillable = ['teacher_id', 'subject_id'];
-    protected $appends = ['name','alias'];
+    protected $appends = ['name','slug'];
     public $timestamps = false;
 
     public function subject() {
@@ -26,7 +26,7 @@ class TeacherSubject extends Model
         return $this->subject->name;
     }
 
-    public function getAliasAttribute() {
-        return $this->subject->alias;
+    public function getSlugAttribute() {
+        return $this->subject->slug;
     }
 }

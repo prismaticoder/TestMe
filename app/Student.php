@@ -36,35 +36,38 @@ class Student extends Authenticatable
         });
     }
 
-    public function exams() {
+    public function exams()
+    {
         return $this->belongsToMany(Exam::class, 'submissions')->withPivot('actual_score','computed_score');
     }
 
-    public function submissions() {
+    public function submissions()
+    {
         return $this->hasMany(Submission::class);
     }
 
-    public function class() {
+    public function class()
+    {
         return $this->belongsTo(Classes::class);
     }
 
-    public function getFullNameAttribute() {
+    public function getFullNameAttribute()
+    {
         return strtoupper("{$this->lastname} {$this->firstname}");
     }
 
-    public function getSeedAttribute() {
+    public function getSeedAttribute()
+    {
         return substr($this->examination_number, 0, 4);
     }
 
-    public function getAvailableExams() {
+    public function getAvailableExams()
+    {
 
         return Exam::started()
-                ->where('class_id', $this->class_id)
-                ->whereDoesntHave('submissions',function($q) {
-                    $q->where('student_id',$this->id);
-                })
-                ->get();
-
+            ->where('class_id', $this->class_id)
+            ->whereDoesntHave('submissions', fn($q) => $q->where('student_id',$this->id))
+            ->get();
     }
 
     private static function generateExaminationNumber(): string

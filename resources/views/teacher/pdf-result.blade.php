@@ -27,7 +27,7 @@
 <body>
     <div class="container-fluid">
         <h3 class="text-center mt-5">
-            {{$currentClass->name}} {{$subject->name}} CBT Examination Results <br>(Exam Date: {{date('l, jS \o\f F Y', strtotime($exam->date))}})
+            {{$class->name}} {{$subject->name}} CBT Examination Results <br>(Exam Date: {{date('l, jS \o\f F Y', strtotime($exam->date))}})
         </h3>
         <hr>
 

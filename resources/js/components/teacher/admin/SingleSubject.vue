@@ -52,7 +52,6 @@ export default {
     methods: {
         backToPrevious() {
             this.name = this.subject.name
-            this.alias = this.subject.alias
             this.classes = this.subject.classes.map(single =>  single.id)
             this.editDialog = false
         },
@@ -61,7 +60,6 @@ export default {
 
             this.$http.put(`subjects/${this.subject.id}`, {
                 name: this.name,
-                alias: this.alias,
                 classes: this.classes
             })
             .then(res => {

@@ -8,11 +8,7 @@ class Subject extends Model
 {
 
     protected $appends = ['subject_id'];
-    protected $fillable = ['name', 'alias'];
-
-    public static function findThroughAlias($alias) {
-        return self::where(compact('alias'))->firstOrFail();
-    }
+    protected $fillable = ['name', 'slug', 'code'];
 
     public function questions() {
         return $this->hasMany(Question::class);
@@ -25,6 +21,16 @@ class Subject extends Model
     public function teacherSubjects() {
         //get only classes the admin is teaching for that particular subject
         return $this->hasMany(TeacherSubject::class);
+    }
+
+    /**
+     * Get the route key for the model.
+     *
+     * @return string
+     */
+    public function getRouteKeyName()
+    {
+        return 'slug';
     }
 
     public function getSubjectIdAttribute() {
