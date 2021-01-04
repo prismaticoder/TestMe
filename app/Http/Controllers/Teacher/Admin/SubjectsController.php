@@ -21,7 +21,7 @@ class SubjectsController extends Controller
         $type = 'subjects';
         $subjects = Subject::with('classes')->orderBy('name')->get();
 
-        return view('admin.teacher-subject', compact('classes','type','subjects'));
+        return view('teacher.admin.teacher-subject', compact('classes','type','subjects'));
     }
 
     /**
@@ -33,14 +33,18 @@ class SubjectsController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => ['required', 'string', 'unique:subjects,name'],
+            'subject_name' => ['required', 'string', 'unique:subjects,name'],
+            'subject_code' => ['required', 'string', 'size:3', 'alpha', 'unique:subjects,code'],
             'classes' => ['required', 'array'],
             'classes.*' => ['required', 'exists:classes,id']
         ]);
 
+        $slug = $this->generateUniqueSlug($request);
+
         $subject = Subject::create([
-            'name' => $request->name,
-            'alias' => Str::slug($request->name)
+            'name' => $request->subject_name,
+            'code' => $request->subject_code,
+            'slug' => $slug
         ]);
         $subject->classes()->sync($request->classes);
 
@@ -53,24 +57,24 @@ class SubjectsController extends Controller
      * Update a subject's details.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Subject  $subject
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Subject $subject)
     {
         $request->validate([
-            'name' => ['required', 'string', 'unique:subjects,name,'.$id.',id'],
+            'subject_name' => ['required', 'string', 'unique:subjects,name,'.$subject->id.',id'],
+            'subject_code' => ['required', 'string', 'size:3', 'alpha', 'unique:subjects,code,'.$subject->id.',id'],
             'classes' => ['required', 'array'],
             'classes.*' => ['required', 'exists:classes,id']
         ]);
 
-        $subject = Subject::find($id);
-
-        abort_if(! $subject, 404, "Subject not found");
+        $slug = $this->generateUniqueSlug($request);
 
         $subject->update([
-            'name' => $request->name,
-            'alias' => Str::slug($request->name)
+            'name' => $request->subject_name,
+            'code' => $request->subject_code,
+            'slug' => $slug
         ]);
         $subject->classes()->sync($request->classes);
 
@@ -82,16 +86,22 @@ class SubjectsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Subject  $subject
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Subject $subject)
     {
-        $subject = Subject::find($id);
-
-        abort_if(! $subject, 404, "Subject not found");
-
         $subject->delete();
         return $this->sendSuccessResponse("Subject {$subject->name} deleted successfully");
+    }
+
+    private function generateUniqueSlug(Request $request): string
+    {
+        $slug = Str::slug($request->subject_name);
+        if (Subject::where('slug', $slug)->exists()) {
+            $slug .= '-' . strtolower($request->subject_code);
+        }
+
+        return $slug;
     }
 }
