@@ -80,7 +80,7 @@ class Student extends Authenticatable
 
         $uniqueCode = "{$firstFourCharacters}{$fifthCharacter}{$sixthCharacter}";
 
-        $check = self::query()->where('examination_number', $uniqueCode)->exists();
+        $check = self::withTrashed()->where('examination_number', $uniqueCode)->exists();
 
         return $check ? self::generateExaminationNumber() : $uniqueCode;
     }
