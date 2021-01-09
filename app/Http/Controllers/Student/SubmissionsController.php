@@ -3,13 +3,11 @@
 namespace App\Http\Controllers\Student;
 
 use App\Exam;
-use App\Http\Controllers\Controller;
-use App\Question;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class SubmissionsController extends Controller
 {
-
     /**
      * Create a new submission
      *
@@ -27,7 +25,11 @@ class SubmissionsController extends Controller
 
         $examId = session()->get('exam_id');
 
-        abort_if(auth()->user()->submissions()->where('exam_id', $examId)->exists(), 403, "You have already made a submission for this exam");
+        abort_if(
+            auth()->user()->submissions()->where('exam_id', $examId)->exists(),
+            403,
+            'You have already made a submission for this exam'
+        );
 
         $scores = $this->computeExamScore($request->choices);
 
@@ -37,18 +39,16 @@ class SubmissionsController extends Controller
             'computed_score' => $scores['computed']
         ]);
 
-        return $this->sendSuccessResponse("Submission successful!");
+        return $this->sendSuccessResponse('Submission successful!');
     }
 
     private function computeExamScore(array $studentResponses): array
     {
         $examId = session()->get('exam_id');
-        $questions = Question::where('exam_id', $examId)->with('options')->inRandomOrder(auth()->user()->seed)->get();
-        $baseScore = Exam::find($examId)->base_score;
-        $averagePoint = $baseScore/$questions->count();
+        $exam = Exam::findOrFail($examId);
+        $questions = $exam->questions()->with('options')->inRandomOrder(auth()->user()->seed)->get();
 
-        $score = collect($studentResponses)->reduce(function ($currentScore, $response) use($questions) {
-
+        $score = collect($studentResponses)->reduce(function ($currentScore, $response) use ($questions) {
             if (is_null($response['choice'])) {
                 return $currentScore;
             }
@@ -59,9 +59,9 @@ class SubmissionsController extends Controller
             return $currentScore + (int)$chosenOption->is_correct ?? 0;
         }, 0);
 
-        return array(
+        return [
             'actual' => $score,
-            'computed' => $score * $averagePoint
-        );
+            'computed' => $score * $exam->average_point
+        ];
     }
 }

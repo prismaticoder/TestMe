@@ -2,14 +2,14 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class Exam extends Model
 {
-    protected $fillable = ['class_id','subject_id','base_score','hours','minutes','date','has_started'];
-    protected $appends = ['hasBeenWritten', 'questions','code'];
+    protected $fillable = ['class_id', 'subject_id', 'base_score', 'hours', 'minutes', 'date', 'has_started'];
+    protected $appends = ['hasBeenWritten', 'questions', 'code'];
     protected $hidden = [
         'unique_code'
     ];
@@ -17,7 +17,6 @@ class Exam extends Model
     protected $dates = [
         'started_at'
     ];
-
 
     /**
      * The "booted" method of the model.
@@ -49,7 +48,7 @@ class Exam extends Model
 
     public function students()
     {
-        return $this->belongsToMany(Student::class, 'submissions')->withPivot('actual_score','computed_score');
+        return $this->belongsToMany(Student::class, 'submissions')->withPivot('actual_score', 'computed_score');
     }
 
     public function submissions()
@@ -59,19 +58,19 @@ class Exam extends Model
 
     public function scopeStarted($query)
     {
-        return $query->where('has_started',1);
+        return $query->where('has_started', 1);
     }
 
     public function scopeStartedByCurrentUser($query)
     {
-        return $query->when(auth()->user()->isTeacher(), function($query) {
+        return $query->when(auth()->user()->isTeacher(), function ($query) {
             return $query->whereIn('subject_id', Arr::pluck(auth()->user()->subjects, 'subject_id'));
-        })->where('has_started',1);
+        })->where('has_started', 1);
     }
 
     public function scopeNotStarted($query)
     {
-        return $query->where('has_started',0)->latest('updated_at');
+        return $query->where('has_started', 0)->latest('updated_at');
     }
 
     public function scopeCanBeStarted($query)
@@ -93,6 +92,11 @@ class Exam extends Model
         return "{$subjectCode}{$classId}{$uniqueCode}";
     }
 
+    public function getAveragePointAttribute()
+    {
+        return $this->base_score / $this->questions->count();
+    }
+
     public function getHasBeenWrittenAttribute()
     {
         return $this->submissions->isNotEmpty();
@@ -108,10 +112,10 @@ class Exam extends Model
         return $this->students()->where('student_id', auth()->id())->exists();
     }
 
-    public static function generateUniqueExaminationCode(int $classId, int $subjectId)
+    public static function generateUniqueExaminationCode(int $classId, int $subjectId): int
     {
         do {
-            $uniqueCode = mt_rand(10,99);
+            $uniqueCode = mt_rand(10, 99);
         } while (self::where(['class_id' => $classId, 'subject_id' => $subjectId, 'unique_code' => $uniqueCode])->exists());
 
         return $uniqueCode;
