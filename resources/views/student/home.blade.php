@@ -8,67 +8,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+
     <link rel="icon" href="/docs/4.1/assets/img/favicons/favicon.ico">
     <link rel="icon" href="{{asset('/img/logo.png')}}">
+    <link rel="stylesheet" href="{{asset('/css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{asset('/css/home.css')}}">
 
     <title>{{config('app.name')}} | {{config('app.schoolAlias')}} - All Current Exams</title>
 
-
-    <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="{{asset('/css/bootstrap.min.css')}}">
-    {{-- <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"> --}}
-
-    <!-- Custom styles for this template -->
-    <style>
-        body {
-        font-size: .875rem;
-        }
-
-        .feather {
-        width: 16px;
-        height: 16px;
-        vertical-align: text-bottom;
-        }
-
-        .classes {
-          margin-top: 120px;
-        }
-        .card-text {
-          font-size: 20px !important;
-          font-weight: bold;
-        }
-
-        ul .nav-link:hover {
-            border-bottom: solid #e67d23 2px
-        }
-
-        ul>.nav-item>.active {
-            border-bottom: solid #e67d23 2px
-        }
-
-        ul .nav-link {
-            padding: 8px;
-            margin-left: 12px;
-        }
-
-        .logoutBtn, .examBtn:hover {
-            color: white;
-            border: solid #e67d23 2px;
-            background-color: transparent
-        }
-
-        .examBtn:hover {
-            color: black
-        }
-
-        .logoutBtn:hover, .examBtn {
-            background-color: #e67d23;
-            color: black;
-
-        }
-
-
-    </style>
   </head>
 
   <body>
@@ -123,7 +70,6 @@
             Please wait for an exam to be started by the invigilator...
         </p>
         @endif
-
 
         </div>
   </body>

@@ -9,80 +9,9 @@
 
     <title>{{config('app.name')}} | {{config('app.schoolAlias')}} - Teacher Login</title>
 
-
-    <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="{{asset('/css/bootstrap.min.css')}}">
-    <style>
-        html,
-        body {
-        height: 100%;
-        }
+    <link rel="stylesheet" href="{{asset('/css/login.css')}}">
 
-        /* body {
-        display: -ms-flexbox;
-        display: flex;
-        -ms-flex-align: center;
-        align-items: center;
-        padding-top: 40px;
-        padding-bottom: 40px;
-        background-color: #f5f5f5;
-        } */
-
-        .form-signin {
-        width: 100%;
-        max-width: 400px;
-        padding: 15px;
-        margin: auto;
-        }
-        .form-signin .checkbox {
-        font-weight: 400;
-        }
-        .form-signin .form-control {
-        position: relative;
-        box-sizing: border-box;
-        height: auto;
-        padding: 10px;
-        font-size: 16px;
-        }
-        .form-signin .form-control:focus {
-        z-index: 2;
-        }
-        .form-signin input[type="text"] {
-        margin-bottom: -1px;
-        border-bottom-right-radius: 0;
-        border-bottom-left-radius: 0;
-        }
-        .form-signin input[type="password"] {
-        margin-bottom: 10px;
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
-        }
-
-        .loginBtn:hover {
-            color: black;
-            border: solid #e67d23 1.5px;
-            background-color: transparent
-        }
-
-        .loginBtn {
-            background-color: #e67d23;
-            color: black;
-
-        }
-
-        ul .nav-link:hover {
-            border-bottom: solid #e67d23 2px
-        }
-
-        ul>.nav-item>.active {
-            border-bottom: solid #e67d23 2px
-        }
-
-        ul .nav-link {
-            padding: 8px;
-            margin-left: 12px;
-        }
-    </style>
   </head>
 
   <body class="text-center">

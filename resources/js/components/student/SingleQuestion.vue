@@ -92,9 +92,7 @@ export default {
             })
             .catch(err => {
                 this.btnLoading = false;
-                this.dialog = false
-                console.log(err.response.data)
-                alert("Sorry, there was an error submitting your examination. Kindly contact the invigilator for assistance.")
+                this.$noty.error(`Error submitting examination: ${err.response.data.message}`);
             })
         }
     },

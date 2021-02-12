@@ -9,45 +9,20 @@
     <link rel="icon" href="{{asset('/img/logo.png')}}">
 
 
-    <title>{{config('app.name')}} | {{config('app.schoolAlias')}} - {{ucfirst($subject->name). ' ' . Auth::user()->class->name}} Examination</title>
+    <title>{{config('app.name')}} | {{config('app.schoolAlias')}} - {{ucfirst($subject->name). ' ' . auth()->user()->class->name}} Examination</title>
 
         <!-- Bootstrap core CSS -->
         <link rel="stylesheet" href="{{asset('/css/bootstrap.min.css')}}">
     <style>
-        /* html,
-        body {
-        border: border-box;
-        } */
-
         body {
         background-color: #f5f5f5;
 
-        }
-        .question-body {
-           padding: 130px 100px 50px;
-           height: 100vh;
-            overflow-y: scroll;
-        }
-        .question-body input {
-            margin-right: 15px;
-        }
-
-        .radioBtn {
-            width: 15px;
-            height: 15px;
         }
         .sidebar {
             padding: 70px 0 20px;
             height: 100vh;
             overflow-y: scroll;
             background-color: #fff;
-        }
-
-        .radios.disabled:hover {
-            cursor: not-allowed
-        }
-        .radios:hover {
-            border:solid #204d74 1px;
         }
 
         ul .nav-link:hover {
@@ -72,39 +47,21 @@
                 <img src="{{asset('/img/logo.png')}}" class="mr-2" height="45" width="45">
             </a>
             <a class="navbar-brand" href="">
-                {{config('app.name')}} | {{config('app.schoolAlias')}} {{strtoupper($subject->name) . ' ' . Auth::user()->class->class}} EXAMINATION
+                {{config('app.name')}} | {{config('app.schoolAlias')}} {{strtoupper($subject->name) . ' ' . auth()->user()->class->name}} EXAMINATION
             </a>
-            <div class="order-5">
-                <timer :hours="{{$hours}}" :minutes="{{$minutes}}"></timer>
-            </div>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarText">
-                <ul class="navbar-nav mx-auto col-md-6">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="">{{Auth::user()->fullName}} (Exam No {{Auth::user()->code}})</a>
-                    </li>
-                </ul>
-            </div>
+
+            <timer :hours="{{$hours}}" :minutes="{{$minutes}}"></timer>
         </nav>
 
         <div>
             {{-- made it class-id(kebab-case) because HTML converts it to lowercase automatically --}}
             <v-app>
-            <questions :questions="{{$questions}}" :hours="{{$hours}}" :minutes="{{$minutes}}" :subject="{{$subject}}" :student="{{auth()->user()}}"></questions>
+                <questions :questions="{{$questions}}" :hours="{{$hours}}" :minutes="{{$minutes}}" :subject="{{$subject}}" :student="{{auth()->user()}}"></questions>
             </v-app>
         </div>
     </div>
 <script src="{{asset('/js/app.js')}}"></script>
+<script src="{{asset('/js/functions.js')}}"></script>
 
-<script>
-    window.onbeforeunload = function () {
-        if (window.formSubmitting) {
-            return undefined;
-        }
-        return "Are you sure you want to leave this page? Changes you made may not be saved"
-    }
-</script>
 </body>
 </html>

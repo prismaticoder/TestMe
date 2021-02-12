@@ -20,6 +20,7 @@
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.4",
         "facade/ignition": "^2.0",
+        "friendsofphp/php-cs-fixer": "^2.17",
         "fzaninotto/faker": "^1.4",
         "mockery/mockery": "^1.0",
         "nunomaduro/collision": "^4.1",

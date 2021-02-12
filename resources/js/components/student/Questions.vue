@@ -3,7 +3,7 @@
         <div class="col-md-2 sidebar">
             <h4 class="mt-3 mb-3 ml-3">Questions List</h4>
             <div class="list-group">
-                <a href="#question" v-for="(question, index) in questions" :key="question.id" class="list-group-item list-group-item-action" v-bind:class="{'disabled' : !currentQuestion, 'active': questionNumber == index + 1}" :title="hasNotBeenAnswered(index + 1) ? 'You have not responded to this question' : ''" @click.prevent="storeChoice('random', currentSelection, questionNumber, index)">
+                <a href="#question" v-for="(question, index) in questions" :key="question.id" class="list-group-item list-group-item-action text-dark" v-bind:class="{'disabled' : !currentQuestion, 'active': questionNumber == index + 1}" :title="hasNotBeenAnswered(index + 1) ? 'You have not responded to this question' : ''" @click.prevent="storeChoice('random', currentSelection, questionNumber, index)">
                     Question {{index + 1}}
                     <span v-if="!hasNotBeenAnswered(index+1)" class="badge badge-primary text-light badge-pill float-right">
                         <v-icon small class="text-light">
@@ -22,11 +22,11 @@
 
             <div>
                 <p class="text-center">
-                    {{student.fullName}} ({{student.examination_number}})
+                    <strong>{{student.fullName}} ({{student.examination_number}})</strong>
                 </p>
             </div>
 
-            <SingleQuestion v-if="currentQuestion" :question="currentQuestion" :totalCount="questions.length" :selectedOption="selectedOption" :number="questionNumber" @storeChoice="storeChoice" v-on:updateSelection="updateSelection"/>
+            <SingleQuestion v-if="currentQuestion" :question="currentQuestion" :totalCount="questions.length" :selectedOption="selectedOption" :number="questionNumber" @store-choice="storeChoice" v-on:updateSelection="updateSelection"/>
 
             <v-card shaped outlined class="p-3" v-else>
                 <v-card-title>
@@ -68,12 +68,12 @@ export default {
     components: {
         SingleQuestion
     },
-    props: ['questions', 'hours', 'minutes', 'subject'],
+    props: ['questions', 'hours', 'minutes', 'subject', 'student'],
     data() {
         return {
             currentQuestion: null,
             questionNumber: null,
-            choices: this.$store.getters.choices,
+            choices: this.$store.getters.choices || [],
             selectedOption: null
         }
     },
@@ -195,18 +195,5 @@ export default {
         padding: 130px 100px 50px;
         height: 100vh;
         overflow-y: scroll;
-    }
-    .question-body input {
-        margin-right: 15px;
-    }
-
-    .radioBtn {
-        width: 15px;
-        height: 15px;
-    }
-
-    .radios:hover {
-        border:solid #204d74 1px;
-        cursor: pointer;
     }
 </style>

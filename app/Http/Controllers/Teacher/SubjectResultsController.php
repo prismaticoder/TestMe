@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers\Teacher;
 
-use App\Classes;
 use App\Exam;
-use App\Http\Controllers\Controller;
-use App\Student;
+use App\Classes;
 use App\Subject;
-use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade as PDF;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Gate;
 
 class SubjectResultsController extends Controller
@@ -20,9 +19,16 @@ class SubjectResultsController extends Controller
      */
     public function index(Request $request, Subject $subject, Classes $class)
     {
-        abort_if(Gate::denies('access-class-subject', [$class->id, $subject->id]), 401, "You are not authorized to view results of this subject");
+        abort_if(
+            Gate::denies('access-class-subject', [$class->id, $subject->id]),
+            401,
+            "You are not authorized to view results of this subject"
+        );
 
-        $exams =  Exam::belongsToClassSubject($class->id, $subject->id)->withCount('questions')->latest('updated_at')->get();
+        $exams =  Exam::belongsToClassSubject($class->id, $subject->id)
+                    ->withCount('questions')
+                    ->latest('updated_at')
+                    ->get();
 
         if ($request->query('exam_id')) {
             $selectedExam = $exams->where('id', $request->query('exam_id'))->withCount('questions')->first();
@@ -32,10 +38,12 @@ class SubjectResultsController extends Controller
         $isLatestExam = json_encode($currentExam && ($currentExam->id === $exams[0]->id));
         $students = $currentExam->students ?? null;
         $classes = auth()->user()->isAdmin()
-                        ? $subject->classes->sortBy('id')
-                        : $subject->teacherSubjects()->where('admin_id', auth()->id())->first()->classes->sortBy('id');
+                    ? $subject->classes->sortBy('id')
+                    : $subject->teacherSubjects()->where('admin_id', auth()->id())->first()->classes->sortBy('id');
 
-        return view('teacher.results',compact('subject','class','exams','currentExam','isLatestExam','students','classes'));
+        return view('teacher.results',compact(
+            'subject','class','exams','currentExam','isLatestExam','students','classes'
+        ));
     }
 
     /**
@@ -47,15 +55,20 @@ class SubjectResultsController extends Controller
      */
     public function download(Subject $subject, Classes $class, int $examId)
     {
-        abort_if(Gate::denies('access-class-subject', [$class->id, $subject->id]), 401, "You are not authorized to view results of this subject");
+        abort_if(
+            Gate::denies('access-class-subject', [$class->id, $subject->id]),
+            401,
+            "You are not authorized to view results of this subject"
+        );
 
-        $exam = Exam::find($examId);
-        abort_if(! $exam, 404, "Exam not found");
-
+        $exam = Exam::findOrFail($examId);
         $students = $exam->students;
-        $data = compact('subject','class','exam','students');
-        $pdf = PDF::loadView('teacher.pdf-result',$data);
 
-        return $pdf->download(strtolower($subject->slug).'_'.strtolower($class->name).'_results.pdf');
+        $data = compact('subject','class','exam','students');
+
+        $pdf = PDF::loadView('teacher.pdf-result',$data);
+        $fileName = sprintf("%s_%s_results.pdf", strtolower($subject->slug), strtolower($class->name));
+
+        return $pdf->download($fileName);
     }
 }

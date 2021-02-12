@@ -51,7 +51,7 @@ export default {
 
         endExam(id) {
             this.allStartedExams = this.allStartedExams.filter(exam => exam.id !== id)
-        }
+        },
     }
 }
 </script>

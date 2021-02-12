@@ -12,11 +12,11 @@ class SubjectsTableSeeder extends Seeder
     public function run()
     {
         //Seeder to input every subject into the db
-        $subjects = array(['alias'=>'english','name'=>'English Language'],['alias'=>'mathematics','name'=>'Mathematics'],['alias'=>'rnv','name'=>'Religion and National Values'],['alias'=>'french','name'=>'French'],['alias'=>'ict','name'=>'Information and Communication Technology'],['alias'=>'physics','name'=>'Physics'],['alias'=>'chemistry','name'=>'Chemistry'],['alias'=>'biology','name'=>'Biology'],['alias'=>'basic_science','name'=>'Basic Science'],['alias'=>'basic_tech','name'=>'Basic Technology'],['alias'=>'cca','name'=>'Cultural and Creative Arts'],['alias'=>'music','name'=>'Music'],['alias'=>'phonics','name'=>'Phonics'],['alias'=>'yoruba','name'=>'Yoruba']);
+        $subjects = array(['slug'=>'english','name'=>'English Language'],['slug'=>'mathematics','name'=>'Mathematics'],['slug'=>'rnv','name'=>'Religion and National Values'],['slug'=>'french','name'=>'French'],['slug'=>'ict','name'=>'Information and Communication Technology'],['slug'=>'physics','name'=>'Physics'],['slug'=>'chemistry','name'=>'Chemistry'],['slug'=>'biology','name'=>'Biology'],['slug'=>'basic_science','name'=>'Basic Science'],['slug'=>'basic_tech','name'=>'Basic Technology'],['slug'=>'cca','name'=>'Cultural and Creative Arts'],['slug'=>'music','name'=>'Music'],['slug'=>'phonics','name'=>'Phonics'],['slug'=>'yoruba','name'=>'Yoruba']);
 
         foreach ($subjects as $subject) {
             DB::table('subjects')->insert([
-                'alias' => $subject['alias'],
+                'slug' => $subject['slug'],
                 'name' => $subject['name'],
             ]);
         }

@@ -25,7 +25,6 @@ class ExamsController extends Controller
      * Get single exam
      *
      * @param  \App\Subject  $subject
-     * @return \Illuminate\Http\Response
      */
     public function show(Subject $subject)
     {
