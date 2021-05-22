@@ -7,20 +7,18 @@ use Illuminate\Http\Request;
 use App\Subject;
 use App\Classes;
 use App\Exam;
-use App\Mark;
+use App\Imports\StudentsImport;
 use App\Question;
 use App\Option;
 use App\User;
-use Gate;
-use DB;
-use Auth;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Auth as FacadesAuth;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
-use PDF;
-use Illuminate\Support\Facades\Log;
+use Barryvdh\DomPDF\PDF;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AdminController extends Controller
 {
@@ -115,9 +113,9 @@ class AdminController extends Controller
         return compact('student','message');
     }
 
-    public function generateStudentCode($class_id) {
+    protected function generateStudentCode($class_id) {
         $characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
-        $code = mt_rand(5111, 9999) . $characters[rand(0, strlen($characters) - 1)] . $characters[rand(0, strlen($characters) - 1)];
+        $code = mt_rand(2111, 9999) . $characters[rand(0, strlen($characters) - 1)] . $characters[rand(0, strlen($characters) - 1)];
 
         $check = User::where('class_id',$class_id)->where('code', $code)->first();
 
@@ -148,6 +146,28 @@ class AdminController extends Controller
         $message = "Student Added Successfully!";
 
         return compact('student','message');
+    }
+
+    public function addMultipleStudents(Request $request) {
+        $class_id = $request->class_id;
+
+        try {
+            Excel::import(new StudentsImport($class_id), $request->students);
+
+            $students = User::where('class_id',$class_id)->get();
+            $message = "Student details Imported successfully!";
+            $success = true;
+
+            return compact('success','students','message');
+
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            $failures = $e->failures();
+
+            $success = false;
+            $message = $failures[0]->errors();
+
+            return compact('success','message');
+       }
     }
 
     public function getAllQuestions($subject,$class_id) {

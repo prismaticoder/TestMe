@@ -38,7 +38,7 @@ class AuthServiceProvider extends ServiceProvider
             if ($admin->isSuperAdmin()) return true;
 
             $subject = $admin->subjects()->where('subject_id', $subject_id)->first();
-            $check = $subject->classes()->where('class_id',$class_id)->first();
+            $check = $subject ? $subject->classes()->where('class_id',$class_id)->first() : false;
 
             return $check ? true : false;
         });
