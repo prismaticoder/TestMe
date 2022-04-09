@@ -1,10 +1,9 @@
 <?php
 
 namespace App;
-use Auth;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Teacher extends Authenticatable
 {
@@ -12,7 +11,7 @@ class Teacher extends Authenticatable
 
     public const ROLES = [
         'ADMIN' => 1,
-        'TEACHER' => 2
+        'TEACHER' => 2,
     ];
 
     /**
@@ -21,7 +20,7 @@ class Teacher extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'firstname', 'lastname', 'title', 'username', 'password','role_id'
+        'firstname', 'lastname', 'title', 'username', 'password', 'role_id',
     ];
 
     protected $appends = ['full_name'];
@@ -32,16 +31,16 @@ class Teacher extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password'
+        'password',
     ];
 
     public function subjects()
     {
         return $this->isAdmin()
-                ? Subject::orderBy('name')->with(['classes' => fn($q) => $q->orderBy('name')])->get()
-                : $this->belongsToMany(TeacherSubject::class)->with(
-                    ['classes' => fn($q) => $q->orderBy('name')],
-                    ['subject' => fn($q) => $q->orderBy('name')]
+                ? Subject::orderBy('name')->with(['classes' => fn ($q) => $q->orderBy('name')])->get()
+                : $this->hasMany(TeacherSubject::class)->with(
+                    ['classes' => fn ($q) => $q->orderBy('name')],
+                    ['subject' => fn ($q) => $q->orderBy('name')]
                 );
     }
 
@@ -88,7 +87,3 @@ class Teacher extends Authenticatable
         return $this->role_id === self::ROLES['TEACHER'];
     }
 }
-
-
-
-
