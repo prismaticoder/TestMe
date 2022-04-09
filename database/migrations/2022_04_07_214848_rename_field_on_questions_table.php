@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class RenameFieldOnQuestionsTable extends Migration
 {
@@ -16,6 +16,10 @@ class RenameFieldOnQuestionsTable extends Migration
         Schema::table('questions', function (Blueprint $table) {
             $table->renameColumn('question', 'body');
         });
+
+        Schema::table('options', function (Blueprint $table) {
+            $table->renameColumn('isCorrect', 'is_correct');
+        });
     }
 
     /**
@@ -27,6 +31,10 @@ class RenameFieldOnQuestionsTable extends Migration
     {
         Schema::table('questions', function (Blueprint $table) {
             $table->renameColumn('body', 'question');
+        });
+
+        Schema::table('options', function (Blueprint $table) {
+            $table->renameColumn('is_correct', 'isCorrect');
         });
     }
 }
