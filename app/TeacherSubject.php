@@ -7,26 +7,33 @@ use Illuminate\Database\Eloquent\Model;
 class TeacherSubject extends Model
 {
     protected $fillable = ['teacher_id', 'subject_id'];
-    protected $appends = ['name','slug'];
+    protected $appends = ['name', 'slug'];
     public $timestamps = false;
 
-    public function subject() {
+    protected $table = 'teacher_subject';
+
+    public function subject()
+    {
         return $this->belongsTo(Subject::class);
     }
 
-    public function teacher() {
+    public function teacher()
+    {
         return $this->belongsTo(Teacher::class);
     }
 
-    public function classes() {
+    public function classes()
+    {
         return $this->belongsToMany(Classes::class, 'teachersubject_class', 'teachersubject_id', 'class_id');
     }
 
-    public function getNameAttribute() {
+    public function getNameAttribute()
+    {
         return $this->subject->name;
     }
 
-    public function getSlugAttribute() {
+    public function getSlugAttribute()
+    {
         return $this->subject->slug;
     }
 }
