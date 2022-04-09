@@ -77,7 +77,7 @@ export default {
                 hours,
                 minutes,
                 date,
-                base_score: totalMarks,
+                aggregate_score: totalMarks,
                 class_id: this.classId,
                 subject_id: this.subjectId
             })

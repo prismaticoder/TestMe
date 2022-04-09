@@ -115,7 +115,7 @@ export default {
         return {
             hours: this.exam.hours,
             minutes: this.exam.minutes,
-            totalMarks: this.exam.base_score,
+            totalMarks: this.exam.aggregate_score,
             date: this.exam.date,
             today: new Date().toISOString().substr(0, 10),
             hourArray: [0,1,2,3,4,5,6],
@@ -137,7 +137,7 @@ export default {
                 hours,
                 minutes,
                 date,
-                base_score: totalMarks,
+                aggregate_score: totalMarks,
                 class_id: this.classId,
                 subject_id: this.subjectId
             })
@@ -158,7 +158,7 @@ export default {
 
             if (hours == this.exam.hours
                 && minutes == this.exam.minutes
-                && totalMarks == this.exam.base_score
+                && totalMarks == this.exam.aggregate_score
                 && date == this.exam.date)
             {
                 this.loading = false;
@@ -170,7 +170,7 @@ export default {
                 hours,
                 minutes,
                 date,
-                base_score: totalMarks
+                aggregate_score: totalMarks
             })
             .then(res => {
                 this.loading = false
@@ -186,7 +186,7 @@ export default {
         backToPrevious() {
             this.hours = this.exam.hours
             this.minutes = this.exam.minutes
-            this.totalMarks = this.exam.base_score
+            this.totalMarks = this.exam.aggregate_score
         },
         startExam() {
             this.loading = true

@@ -8,14 +8,14 @@ use Illuminate\Database\Eloquent\Builder;
 
 class Exam extends Model
 {
-    protected $fillable = ['class_id', 'subject_id', 'base_score', 'hours', 'minutes', 'date', 'has_started'];
+    protected $fillable = ['class_id', 'subject_id', 'aggregate_score', 'hours', 'minutes', 'date', 'has_started'];
     protected $appends = ['hasBeenWritten', 'questions', 'code'];
     protected $hidden = [
-        'unique_code'
+        'unique_code',
     ];
 
     protected $dates = [
-        'started_at'
+        'started_at',
     ];
 
     /**
@@ -58,19 +58,19 @@ class Exam extends Model
 
     public function scopeStarted($query)
     {
-        return $query->where('has_started', 1);
+        return $query->whereNotNull('started_at');
     }
 
     public function scopeStartedByCurrentUser($query)
     {
         return $query->when(auth()->user()->isTeacher(), function ($query) {
             return $query->whereIn('subject_id', Arr::pluck(auth()->user()->subjects, 'subject_id'));
-        })->where('has_started', 1);
+        })->started();
     }
 
     public function scopeNotStarted($query)
     {
-        return $query->where('has_started', 0)->latest('updated_at');
+        return $query->whereNull('started_at')->latest('updated_at');
     }
 
     public function scopeCanBeStarted($query)
