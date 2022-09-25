@@ -26,7 +26,7 @@
                 <th>EXAMINATION NUMBER</th>
                 <th>NAME</th>
                 <th>ACTUAL SCORE (/{{$currentExam->questions_count ?? ''}})</th>
-                <th>COMPUTED SCORE (/{{$currentExam->base_score ?? ''}})</th>
+                <th>COMPUTED SCORE (/{{$currentExam->aggregate_score ?? ''}})</th>
             </tr>
             </thead>
             <tbody>
@@ -36,8 +36,8 @@
                         <td>{{$loop->iteration}}</td>
                         <td>{{$student->examination_number}}</td>
                         <td>{{$student->fullName}}</td>
-                        <td>{{$student->pivot->actual_score}}</td>
-                        <td>{{$student->pivot->computed_score}}</td>
+                        <td>{{$student->pivot->actual_score ?? '-'}}</td>
+                        <td>{{$student->pivot->computed_score ?? '-'}}</td>
                     </tr>
                     @endforeach
                 @elseif ($currentExam)

@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Teacher;
 
-use App\Exam;
 use App\Classes;
-use App\Subject;
-use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facade as PDF;
+use App\Exam;
 use App\Http\Controllers\Controller;
+use App\Subject;
+use Barryvdh\DomPDF\Facade as PDF;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Gate;
 
 class SubjectResultsController extends Controller
@@ -30,13 +31,14 @@ class SubjectResultsController extends Controller
             ->latest('updated_at')
             ->get();
 
+        $currentExam = $exams->first();
+
         if ($request->query('exam_id')) {
-            $selectedExam = $exams->where('id', $request->query('exam_id'))->first();
+            $currentExam = $exams->where('id', $request->query('exam_id'))->first();
         }
 
-        $currentExam = $selectedExam ?? ($exams[0] ?? null);
         $isLatestExam = json_encode($currentExam && ($currentExam->id === $exams[0]->id));
-        $students = $currentExam->students ?? null;
+        $students = $this->getExamStudents($currentExam, $class);
         $classes = auth()->user()->isAdmin()
                     ? $subject->classes->sortBy('id')
                     : $subject->teacherSubjects()->where('admin_id', auth()->id())->first()->classes->sortBy('id');
@@ -64,7 +66,7 @@ class SubjectResultsController extends Controller
         );
 
         $exam = Exam::findOrFail($examId);
-        $students = $exam->students;
+        $students = $this->getExamStudents($exam, $class);
 
         $data = compact('subject', 'class', 'exam', 'students');
 
@@ -72,5 +74,24 @@ class SubjectResultsController extends Controller
         $fileName = sprintf('%s_%s_results.pdf', strtolower($subject->slug), strtolower($class->name));
 
         return $pdf->download($fileName);
+    }
+
+    /**
+     * Get the students involved in a particular exam.
+     *
+     * @param \App\Exam|null $exam
+     * @param \App\Classes $currentClass
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    private function getExamStudents(?Exam $exam, Classes $currentClass): Collection
+    {
+        if (! $exam || $exam->students->isEmpty()) {
+            return $currentClass->students;
+        }
+
+        $classThatTookExam = $exam->students->isNotEmpty() ? $exam->students->first()->class : $currentClass;
+
+        return $classThatTookExam->students->merge($exam->students);
     }
 }

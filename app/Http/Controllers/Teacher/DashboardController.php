@@ -9,7 +9,7 @@ use App\Http\Controllers\Controller;
 class DashboardController extends Controller
 {
     /**
-     * Display the admin dashboard
+     * Display the admin dashboard.
      *
      * @return \Illuminate\Http\Response
      */
@@ -21,15 +21,15 @@ class DashboardController extends Controller
         $pendingExamsForToday = Exam::canBeStarted()->get();
 
         if ($startedExams) {
-            $startedExams = collect($startedExams)->map(function($exam) {
-                return array(
+            $startedExams = collect($startedExams)->map(function ($exam) {
+                return [
                     'id' => $exam->id,
                     'subject' => $exam->subject,
-                    'class' => $exam->class
-                );
+                    'class' => $exam->class,
+                ];
             });
         }
 
-        return view('teacher.dashboard',compact('subjects','classes', 'startedExams','pendingExamsForToday'));
+        return view('teacher.dashboard', compact('subjects', 'classes', 'startedExams', 'pendingExamsForToday'));
     }
 }
