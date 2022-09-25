@@ -45,7 +45,7 @@ return [
             'driver' => 'token',
             'provider' => 'users',
             'hash' => false,
-      ],
+        ],
         //Add Admin Guard
         'admins' => [
             'driver' => 'session',

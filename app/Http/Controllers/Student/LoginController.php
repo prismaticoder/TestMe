@@ -34,20 +34,22 @@ class LoginController extends Controller
     {
         $this->validateLogin($request);
 
-        $user = Student::where('examination_number', $request->examination_number)->first();
+        $student = Student::where('examination_number', $request->examination_number)->first();
 
-        if (! $user) {
+        if (! $student) {
             return redirect('login')->withErrors('Incorrect Login Credentials');
         }
 
-        auth()->login($user);
+        auth()->login($student);
+
         return redirect()->intended('/exams');
     }
 
     /**
      * Validate the user login request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return void
      *
      * @throws \Illuminate\Validation\ValidationException
@@ -59,9 +61,10 @@ class LoginController extends Controller
         ]);
     }
 
-    public function logout() {
+    public function logout()
+    {
         auth()->logout();
+
         return redirect('/login');
     }
-
 }
