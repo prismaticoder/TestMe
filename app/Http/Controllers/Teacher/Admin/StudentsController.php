@@ -13,7 +13,7 @@ use Throwable;
 class StudentsController extends Controller
 {
     /**
-     * Get all students with classes
+     * Get all students with classes.
      *
      * @return \Illuminate\Http\Response
      */
@@ -21,15 +21,16 @@ class StudentsController extends Controller
     {
         $classes = Classes::with(['students' => function ($q) {
             $q->withTrashed()->orderBy('lastname');
-          }])->get();
+        }])->get();
 
         return view('teacher.admin.students', compact('classes'));
     }
 
     /**
-     * Create a new student
+     * Create a new student.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -37,75 +38,78 @@ class StudentsController extends Controller
         $validated = $request->validate([
             'firstname' => ['required', 'string', 'min:2'],
             'lastname' => ['required', 'string', 'min:2'],
-            'class_id' => ['required', 'exists:classes,id']
+            'class_id' => ['required', 'exists:classes,id'],
         ]);
 
         $student = Student::create($validated);
 
-        return $this->sendSuccessResponse("Student added successfully", $student, 201);
+        return $this->sendSuccessResponse('Student added successfully', $student, 201);
     }
 
     /**
-     * Create multiple students from file upload
+     * Create multiple students from file upload.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function storeMany(Request $request)
     {
         $request->validate([
             'class_id' => ['required', 'int', 'exists:classes,id'],
-            'students' => ['required', 'file', 'mimes:xlsx,xls,csv']
+            'students' => ['required', 'file', 'mimes:xlsx,xls,csv'],
         ]);
 
         try {
             Excel::import(new StudentsImport($request->class_id), $request->students);
 
-            $students = Student::where('class_id',$request->class_id)->get();
-            return $this->sendSuccessResponse("Students added successfully", $students, 201);
+            $students = Student::where('class_id', $request->class_id)->get();
 
+            return $this->sendSuccessResponse('Students added successfully', $students, 201);
         } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
             $failures = $e->failures();
 
             return $this->sendErrorResponse($failures[0]->errors()[0], 422);
-
-       } catch (Throwable $e) {
+        } catch (Throwable $e) {
             return $this->sendErrorResponse("There was an error uploading this file: {$e->getMessage()}");
-       }
+        }
     }
 
     /**
-     * Update a student's details
+     * Update a student's details.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Student $student
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Student $student
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Student $student)
     {
         $validated = $request->validate([
             'firstname' => ['required', 'string', 'min:2'],
-            'lastname' => ['required', 'string', 'min:2']
+            'lastname' => ['required', 'string', 'min:2'],
         ]);
 
         $student->update($validated);
-        return $this->sendSuccessResponse("Student details updated successfully", $student);
+
+        return $this->sendSuccessResponse('Student details updated successfully', $student);
     }
 
     /**
-     * Delete a student from the system
+     * Delete a student from the system.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy(int $id)
     {
         $student = Student::withTrashed()->find($id);
 
-        abort_if(! $student, 404, "Student not found");
+        abort_if(! $student, 404, 'Student not found');
 
         $student->forceDelete();
 
-        return $this->sendSuccessResponse("Student deleted successfully");
+        return $this->sendSuccessResponse('Student deleted successfully');
     }
 }
