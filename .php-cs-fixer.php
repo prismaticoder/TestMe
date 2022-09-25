@@ -25,7 +25,7 @@ $fixerRules = [
     'blank_line_after_opening_tag' => true,
     'blank_line_before_statement' => true,
     'cast_spaces' => true,
-    'class_attributes_separation' => ['elements' => ['method']],
+    'class_attributes_separation' => ['elements' => ['method' => 'one']],
     'compact_nullable_typehint' => true,
     'concat_space' => true,
     'declare_equal_normalize' => true,
@@ -39,7 +39,7 @@ $fixerRules = [
     'lowercase_static_reference' => true,
     'magic_constant_casing' => true,
     'magic_method_casing' => true,
-    'method_argument_space' => ['ensure_fully_multiline' => false],
+    'method_argument_space' => ['on_multiline' => 'ensure_fully_multiline'],
     'method_chaining_indentation' => true,
     'modernize_types_casting' => true,
     'multiline_comment_opening_closing' => true,
@@ -76,11 +76,11 @@ $fixerRules = [
     'normalize_index_brace' => true,
     'not_operator_with_successor_space' => true,
     'object_operator_without_whitespace' => true,
-    'ordered_imports' => ['sortAlgorithm' => 'length'],
+    'ordered_imports' => ['sort_algorithm' => 'alpha'],
     'php_unit_method_casing' => true,
     'phpdoc_align' => ['align' => 'left', 'tags' => ['param', 'property', 'return', 'throws', 'type', 'var', 'method']],
     'phpdoc_indent' => true,
-    'phpdoc_inline_tag' => true,
+    'phpdoc_inline_tag_normalizer' => true,
     'phpdoc_no_access' => true,
     'phpdoc_no_package' => true,
     'phpdoc_no_useless_inheritdoc' => true,
@@ -93,7 +93,7 @@ $fixerRules = [
     'phpdoc_types' => true,
     'phpdoc_types_order' => ['null_adjustment' => 'always_last'],
     'phpdoc_var_without_name' => true,
-    'psr4' => true,
+    'psr_autoloading' => true,
     'return_type_declaration' => true,
     'self_accessor' => true,
     'self_static_accessor' => true,
@@ -107,7 +107,7 @@ $fixerRules = [
     'switch_case_semicolon_to_colon' => true,
     'ternary_operator_spaces' => true,
     'ternary_to_null_coalescing' => true,
-    'trailing_comma_in_multiline_array' => true,
+    'trailing_comma_in_multiline' => ['elements' => ['arrays']],
     'trim_array_spaces' => true,
     'unary_operator_spaces' => true,
     'whitespace_after_comma_in_array' => true,
@@ -118,7 +118,7 @@ $finder = Finder::create()
     ->notName($filesToExclude)
     ->in(__DIR__);
 
-return Config::create()
-    ->setFinder($finder)
+return (new Config())
     ->setRules($fixerRules)
-    ->setRiskyAllowed(true);
+    ->setRiskyAllowed(true)
+    ->setFinder($finder);
