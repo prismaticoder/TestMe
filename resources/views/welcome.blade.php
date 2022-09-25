@@ -184,7 +184,7 @@
 
   <footer class="mastfoot mt-auto">
     <div class="inner">
-      <p>&copy;{{date('Y')}} {{config('app.name')}}</p>
+      <p>&copy;{{date('Y')}} {{config('app.name')}} <span class="text-danger">by Prismatic</span></p>
     </div>
   </footer>
 </div>
