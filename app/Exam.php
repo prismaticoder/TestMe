@@ -2,9 +2,9 @@
 
 namespace App;
 
-use Illuminate\Support\Arr;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 
 class Exam extends Model
 {
@@ -18,6 +18,10 @@ class Exam extends Model
         'started_at',
     ];
 
+    protected $casts = [
+        'has_started' => 'boolean',
+    ];
+
     /**
      * The "booted" method of the model.
      *
@@ -29,6 +33,26 @@ class Exam extends Model
             $exam->created_by = auth()->id();
             $exam->unique_code = self::generateUniqueExaminationCode($exam->class_id, $exam->subject_id);
         });
+    }
+
+    /**
+     * Start an exam.
+     *
+     * @return void
+     */
+    public function start()
+    {
+        $this->update(['has_started' => true, 'started_at' => now()]);
+    }
+
+    /**
+     * End an exam.
+     *
+     * @return void
+     */
+    public function end()
+    {
+        $this->update(['has_started' => false, 'started_at' => null]);
     }
 
     public function subject()
