@@ -18,10 +18,11 @@ class DashboardController extends Controller
         $subjects = auth()->user()->subjects();
         $classes = Classes::get();
         $startedExams = Exam::startedByCurrentUser()->get();
+
         $pendingExamsForToday = Exam::canBeStarted()->get();
 
         if ($startedExams) {
-            $startedExams = collect($startedExams)->map(function ($exam) {
+            $startedExams = $startedExams->map(function ($exam) {
                 return [
                     'id' => $exam->id,
                     'subject' => $exam->subject,

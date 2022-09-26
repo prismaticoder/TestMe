@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 class TeachersController extends Controller
 {
     /**
-     * Get all teachers
+     * Get all teachers.
      *
      * @return \Illuminate\Http\Response
      */
@@ -24,16 +24,17 @@ class TeachersController extends Controller
         $classes = Classes::all();
         $type = 'teachers';
         $teachers = Teacher::notAdmin()->orderBy('username')->with(['subjects' => function ($q) {
-            $q->with('classes','subject');
+            $q->with('classes', 'subject');
         }])->get();
 
-        return view('teacher.admin.teacher-subject', compact('subjects','classes','type','teachers'));
+        return view('teacher.admin.teacher-subject', compact('subjects', 'classes', 'type', 'teachers'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\CreateTeacherRequest  $request
+     * @param \App\Http\Requests\CreateTeacherRequest $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(CreateTeacherRequest $request)
@@ -41,40 +42,42 @@ class TeachersController extends Controller
         DB::beginTransaction();
 
         try {
-            $teacher = Teacher::create($request->only('title','firstname','lastname','username','password'));
+            $teacher = Teacher::create($request->only('title', 'firstname', 'lastname', 'username', 'password'));
 
             foreach ($request->subjects as $subject) {
-                $this->createSubjectWithClasses($teacher->id,$subject);
+                $this->createSubjectWithClasses($teacher->id, $subject);
             }
 
             DB::commit();
             $teacher->load(['subjects' => function ($q) {
-                $q->with('classes','subject');
+                $q->with('classes', 'subject');
             }]);
 
             return $this->sendSuccessResponse("User <b>{$teacher->username}</b> created successfully.", $teacher, 201);
         } catch (\Throwable $e) {
             DB::rollback();
+
             return $this->sendErrorResponse("There was an error creating this teacher: {$e->getMessage()}");
         }
     }
 
     /**
-     * Update a teacher's details
+     * Update a teacher's details.
      *
-     * @param  \App\Http\Requests\UpdateTeacherRequest  $request
-     * @param  \App\Teacher  $teacher
+     * @param \App\Http\Requests\UpdateTeacherRequest $request
+     * @param \App\Teacher $teacher
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateTeacherRequest $request, Teacher $teacher)
     {
-        abort_if($teacher->isAdmin(), 404, "Teacher not found");
+        abort_if($teacher->isAdmin(), 404, 'Teacher not found');
 
         DB::beginTransaction();
 
         try {
             $teacher->update(
-                $request->only('title','firstname','lastname','username')
+                $request->only('title', 'firstname', 'lastname', 'username')
             );
 
             $teacher->subjects()->delete();
@@ -85,27 +88,30 @@ class TeachersController extends Controller
 
             DB::commit();
             $teacher->load(['subjects' => function ($q) {
-                $q->with('classes','subject');
+                $q->with('classes', 'subject');
             }]);
 
-            return $this->sendSuccessResponse("Teacher details updated successfully", $teacher);
+            return $this->sendSuccessResponse('Teacher details updated successfully', $teacher);
         } catch (\Throwable $e) {
             DB::rollback();
+
             return $this->sendErrorResponse("There was an error updating this teacher's details: {$e->getMessage()}");
         }
     }
 
     /**
-     * Revoke user access for a teacher
+     * Revoke user access for a teacher.
      *
-     * @param  \App\Teacher  $teacher
+     * @param \App\Teacher $teacher
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy(Teacher $teacher)
     {
-        abort_if($teacher->isAdmin(), 404, "Teacher not found");
+        abort_if($teacher->isAdmin(), 404, 'Teacher not found');
 
         $teacher->delete();
+
         return $this->sendSuccessResponse("Access revoked successfully for user <b>{$teacher->username}</b>");
     }
 
@@ -113,7 +119,7 @@ class TeachersController extends Controller
     {
         $teacherSubject = TeacherSubject::create([
             'teacher_id' => $teacherId,
-            'subject_id' => $subjectWithClasses['subject_id']
+            'subject_id' => $subjectWithClasses['subject_id'],
         ]);
 
         $teacherSubject->classes()->sync($subjectWithClasses['classes']);

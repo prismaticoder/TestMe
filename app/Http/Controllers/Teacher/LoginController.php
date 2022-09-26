@@ -13,22 +13,26 @@ class LoginController extends Controller
         $this->middleware('guest:admins')->except('logout');
     }
 
-    public function show() {
+    public function show()
+    {
         return view('teacher.login');
     }
 
-    public function authenticate(Request $request) {
-        $credentials = $request->only('username','password');
+    public function authenticate(Request $request)
+    {
+        $credentials = $request->only('username', 'password');
 
-        if(auth()->guard('admins')->attempt($credentials)) {
+        if (auth()->guard('admins')->attempt($credentials)) {
             return redirect()->intended('/admin');
         }
 
         return view('teacher.login')->withErrors('Incorrect Username or Password!');
     }
 
-    public function logout() {
+    public function logout()
+    {
         auth()->guard('admins')->logout();
+
         return redirect('/admin/login');
     }
 }
