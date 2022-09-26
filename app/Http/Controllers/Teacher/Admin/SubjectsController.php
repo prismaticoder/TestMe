@@ -21,13 +21,14 @@ class SubjectsController extends Controller
         $type = 'subjects';
         $subjects = Subject::with('classes')->orderBy('name')->get();
 
-        return view('teacher.admin.teacher-subject', compact('classes','type','subjects'));
+        return view('teacher.admin.teacher-subject', compact('classes', 'type', 'subjects'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -36,7 +37,7 @@ class SubjectsController extends Controller
             'subject_name' => ['required', 'string', 'unique:subjects,name'],
             'subject_code' => ['required', 'string', 'size:3', 'alpha', 'unique:subjects,code'],
             'classes' => ['required', 'array'],
-            'classes.*' => ['required', 'exists:classes,id']
+            'classes.*' => ['required', 'exists:classes,id'],
         ]);
 
         $slug = $this->generateUniqueSlug($request);
@@ -44,7 +45,7 @@ class SubjectsController extends Controller
         $subject = Subject::create([
             'name' => $request->subject_name,
             'code' => $request->subject_code,
-            'slug' => $slug
+            'slug' => $slug,
         ]);
         $subject->classes()->sync($request->classes);
 
@@ -56,8 +57,9 @@ class SubjectsController extends Controller
     /**
      * Update a subject's details.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Subject  $subject
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Subject $subject
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Subject $subject)
@@ -66,7 +68,7 @@ class SubjectsController extends Controller
             'subject_name' => ['required', 'string', 'unique:subjects,name,'.$subject->id.',id'],
             'subject_code' => ['required', 'string', 'size:3', 'alpha', 'unique:subjects,code,'.$subject->id.',id'],
             'classes' => ['required', 'array'],
-            'classes.*' => ['required', 'exists:classes,id']
+            'classes.*' => ['required', 'exists:classes,id'],
         ]);
 
         $slug = $this->generateUniqueSlug($request);
@@ -74,24 +76,30 @@ class SubjectsController extends Controller
         $subject->update([
             'name' => $request->subject_name,
             'code' => $request->subject_code,
-            'slug' => $slug
+            'slug' => $slug,
         ]);
         $subject->classes()->sync($request->classes);
 
         $subject->load('classes');
 
-        return $this->sendSuccessResponse("Subject details updated successfully", $subject);
+        return $this->sendSuccessResponse('Subject details updated successfully', $subject);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Subject  $subject
+     * @param \App\Subject $subject
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy(Subject $subject)
     {
+        if ($subject->exams()->exists()) {
+            return $this->sendErrorResponse('This subject cannot be deleted because it has exams associated with it.');
+        }
+
         $subject->delete();
+
         return $this->sendSuccessResponse("Subject {$subject->name} deleted successfully");
     }
 
@@ -99,7 +107,7 @@ class SubjectsController extends Controller
     {
         $slug = Str::slug($request->subject_name);
         if (Subject::where('slug', $slug)->exists()) {
-            $slug .= '-' . strtolower($request->subject_code);
+            $slug .= '-'.strtolower($request->subject_code);
         }
 
         return $slug;
