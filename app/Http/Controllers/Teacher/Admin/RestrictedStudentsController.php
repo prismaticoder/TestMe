@@ -9,42 +9,44 @@ use Illuminate\Http\Request;
 class RestrictedStudentsController extends Controller
 {
     /**
-     * Create a new restricted student
+     * Create a new restricted student.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         $request->validate([
-            'id' => ['required', 'int', 'exists:students,id']
+            'id' => ['required', 'int', 'exists:students,id'],
         ]);
 
-        $student = Student::withTrashed()->find($request->id);
+        $student = Student::find($request->id);
 
-        abort_if(! $student, 404, "Student not found");
-        abort_if($student->trashed(), 400, "This student's access has already been restricted");
+        abort_if(! $student, 404, 'Student not found');
+        abort_if((bool) $student->deactivated_at, 400, "This student's access has already been restricted");
 
-        $student->delete();
+        $student->deactivate();
 
-        return $this->sendSuccessResponse("Student access restricted successfully!", $student);
+        return $this->sendSuccessResponse('Student access restricted successfully!', $student);
     }
 
     /**
-     * Remove student from restricted students list
+     * Remove student from restricted students list.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy(int $id)
     {
-        $student = Student::withTrashed()->find($id);
+        $student = Student::find($id);
 
-        abort_if(! $student, 404, "Student not found");
-        abort_if(! $student->trashed(), 400, "This student already has access to examinations");
+        abort_if(! $student, 404, 'Student not found');
+        abort_if(is_null($student->deactivated_at), 400, 'This student already has access to examinations');
 
-        $student->restore();
+        $student->reactivate();
 
-        return $this->sendSuccessResponse("Student access restored successfully", $student);
+        return $this->sendSuccessResponse('Student access restored successfully', $student);
     }
 }

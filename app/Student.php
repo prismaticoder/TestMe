@@ -20,8 +20,9 @@ class Student extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'firstname', 'lastname', 'class_id', 'examination_number',
+        'firstname', 'lastname', 'class_id', 'examination_number', 'deactivated_at',
     ];
+
     protected $appends = ['fullName'];
 
     /**
@@ -34,6 +35,16 @@ class Student extends Authenticatable
         static::creating(function ($student) {
             $student->examination_number = self::generateExaminationNumber();
         });
+    }
+
+    public function deactivate()
+    {
+        $this->update(['deactivated_at' => now()]);
+    }
+
+    public function reactivate()
+    {
+        $this->update(['deactivated_at' => null]);
     }
 
     public function exams()

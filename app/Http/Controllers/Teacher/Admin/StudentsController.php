@@ -20,7 +20,7 @@ class StudentsController extends Controller
     public function index()
     {
         $classes = Classes::with(['students' => function ($q) {
-            $q->withTrashed()->orderBy('lastname');
+            $q->orderBy('lastname');
         }])->get();
 
         return view('teacher.admin.students', compact('classes'));
@@ -104,11 +104,11 @@ class StudentsController extends Controller
      */
     public function destroy(int $id)
     {
-        $student = Student::withTrashed()->find($id);
+        $student = Student::find($id);
 
         abort_if(! $student, 404, 'Student not found');
 
-        $student->forceDelete();
+        $student->delete();
 
         return $this->sendSuccessResponse('Student deleted successfully');
     }

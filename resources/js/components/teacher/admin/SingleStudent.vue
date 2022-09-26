@@ -16,7 +16,7 @@
     </td>
     <td>
       <v-btn
-        v-if="!student.deleted_at"
+        v-if="!student.deactivated_at"
         small
         text
         :color="yellow"
@@ -83,13 +83,13 @@
 
     <v-dialog v-model="disableDialog" :persistent="loading" max-width="350">
       <v-card>
-        <v-card-title v-if="student.deleted_at" class="headline"
+        <v-card-title v-if="student.deactivated_at" class="headline"
           >Restore Examination Access?</v-card-title
         >
         <v-card-title v-else class="headline"
           >Disable Examination Access?</v-card-title
         >
-        <v-card-text v-if="student.deleted_at">
+        <v-card-text v-if="student.deactivated_at">
           Please confirm that you want to restore
           <strong>{{ student.fullName }}'s</strong> access to the next school
           examinations.
@@ -113,7 +113,7 @@
             :disabled="loading"
             color="green darken-1"
             text
-            @click="student.deleted_at ? restoreStudent() : disableStudent()"
+            @click="student.deactivated_at ? restoreStudent() : disableStudent()"
             >Confirm</v-btn
           >
         </v-card-actions>

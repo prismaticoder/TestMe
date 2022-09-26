@@ -68,7 +68,9 @@ class Exam extends Model
 
     public function students()
     {
-        return $this->belongsToMany(Student::class, 'submissions')->withPivot('actual_score', 'computed_score');
+        return $this->belongsToMany(Student::class, 'submissions')
+            ->withPivot('actual_score', 'computed_score')
+            ->withoutGlobalScopes();
     }
 
     public function submissions()
