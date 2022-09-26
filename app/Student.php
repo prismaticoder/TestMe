@@ -20,7 +20,7 @@ class Student extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'firstname', 'lastname', 'class_id', 'examination_number'
+        'firstname', 'lastname', 'class_id', 'examination_number',
     ];
     protected $appends = ['fullName'];
 
@@ -38,7 +38,7 @@ class Student extends Authenticatable
 
     public function exams()
     {
-        return $this->belongsToMany(Exam::class, 'submissions')->withPivot('actual_score','computed_score');
+        return $this->belongsToMany(Exam::class, 'submissions')->withPivot('actual_score', 'computed_score');
     }
 
     public function submissions()
@@ -48,7 +48,7 @@ class Student extends Authenticatable
 
     public function class()
     {
-        return $this->belongsTo(Classes::class);
+        return $this->belongsTo(Classes::class)->withoutGlobalScopes();
     }
 
     public function getFullNameAttribute()
@@ -63,10 +63,9 @@ class Student extends Authenticatable
 
     public function getAvailableExams()
     {
-
         return Exam::started()
             ->where('class_id', $this->class_id)
-            ->whereDoesntHave('submissions', fn($q) => $q->where('student_id',$this->id))
+            ->whereDoesntHave('submissions', fn ($q) => $q->where('student_id', $this->id))
             ->get();
     }
 
