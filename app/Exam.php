@@ -11,7 +11,7 @@ class Exam extends Model
     protected $fillable = ['class_id', 'subject_id', 'aggregate_score', 'hours', 'minutes', 'date', 'started_at'];
     protected $appends = ['hasBeenWritten', 'questions', 'code', 'has_started'];
     protected $hidden = [
-        'unique_code',
+        'code',
     ];
 
     protected $dates = [
@@ -27,7 +27,7 @@ class Exam extends Model
     {
         static::creating(function ($exam) {
             $exam->created_by = auth()->id();
-            $exam->unique_code = self::generateUniqueExaminationCode($exam->class_id, $exam->subject_id);
+            $exam->code = self::generateUniqueExaminationCode($exam->class_id, $exam->subject_id);
         });
     }
 
@@ -114,14 +114,14 @@ class Exam extends Model
     {
         $subjectCode = $this->subject->code;
         $classId = $this->class_id;
-        $uniqueCode = $this->unique_code;
+        $uniqueCode = $this->code;
 
         return "{$subjectCode}{$classId}{$uniqueCode}";
     }
 
     public function getAveragePointAttribute()
     {
-        return $this->base_score / $this->questions->count();
+        return $this->aggregate_score / $this->questions->count();
     }
 
     public function getHasBeenWrittenAttribute()
@@ -143,7 +143,7 @@ class Exam extends Model
     {
         do {
             $uniqueCode = mt_rand(10, 99);
-        } while (self::where(['class_id' => $classId, 'subject_id' => $subjectId, 'unique_code' => $uniqueCode])->exists());
+        } while (self::where(['class_id' => $classId, 'subject_id' => $subjectId, 'code' => $uniqueCode])->exists());
 
         return $uniqueCode;
     }
