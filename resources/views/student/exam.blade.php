@@ -50,13 +50,28 @@
                 {{config('app.name')}} | {{config('app.schoolAlias')}} {{strtoupper($subject->name) . ' ' . auth()->user()->class->name}} EXAMINATION
             </a>
 
-            <timer :hours="{{$hours}}" :minutes="{{$minutes}}"></timer>
+            <timer 
+                :hours="{{$hours}}"
+                :minutes="{{$minutes}}"
+                :exam-id="{{$exam->id}}"
+                :student-id="{{auth()->id()}}"
+            >
+            </timer>
         </nav>
 
         <div>
             {{-- made it class-id(kebab-case) because HTML converts it to lowercase automatically --}}
             <v-app>
-                <questions :questions="{{$questions}}" :hours="{{$hours}}" :minutes="{{$minutes}}" :subject="{{$subject}}" :student="{{auth()->user()}}"></questions>
+                <questions 
+                    :questions="{{$questions}}"
+                    :exam-id="{{$exam->id}}"
+                    :student-id="{{auth()->id()}}"
+                    :student="{{auth()->user()}}"
+                    :hours="{{$hours}}"
+                    :minutes="{{$minutes}}"
+                    :subject="{{$subject}}"
+                >
+                </questions>
             </v-app>
         </div>
     </div>

@@ -40,8 +40,7 @@ Vue.prototype.$http.interceptors.response.use(undefined, function (err) {
     }
 
     else if (err.request) {
-        throw err;
-        // Vue.prototype.$noty.error("Oops! There was an error sending this request, please confirm that you are connected to the network and try again.")
+        Vue.prototype.$noty.error("Oops! There was an error sending this request, please confirm that you are connected to the network and try again.")
     }
 
     else {

@@ -8,14 +8,28 @@ export default {
       currentSelectedOption: null
     },
     getters: {
-      hasStarted: state => !!state.examParams,
+      hasStarted: (state) => (studentId, examId) => {
+        if (!state.examParams) {
+          return false;
+        }
+
+        let examParams = JSON.parse(state.examParams);
+        
+        return examParams.studentId === studentId && examParams.examId === examId;
+      },
       choices: state => JSON.parse(state.choices),
       timeExamStarted: (state) => {
         return state.examParams ? JSON.parse(state.examParams).startedAt : null
       },
       timeExamEnds: (state) => {
         return state.examParams ? JSON.parse(state.examParams).endsAt : null
-      }
+      },
+      studentId: (state) => {
+        return state.examParams ? JSON.parse(state.examParams).studentId : null
+      },
+      examId: (state) => {
+        return state.examParams ? JSON.parse(state.examParams).examId : null
+      },
     },
     mutations: {
       START_EXAM(state, data) {
@@ -47,15 +61,23 @@ export default {
     actions: {
       startExam({commit}, data) {
         return new Promise((resolve, reject) => {
-            const { hours, minutes} = data
+            const { hours, minutes, examId, studentId} = data
             const timeExamStarted = new Date().getTime();
             const timeExamEnds = timeExamStarted + (hours * 60 * 60 * 1000) + (minutes * 60 * 1000)
+
             const examParams = JSON.stringify({
-                startedAt: timeExamStarted,
-                endsAt: timeExamEnds
+              startedAt: timeExamStarted,
+              endsAt: timeExamEnds,
+              studentId,
+              examId,
             })
 
-            localStorage.setItem('exam_params', examParams)
+            localStorage.setItem('exam_params', examParams);
+
+            // remove anything formerly in local storage
+            const keysToRemove = ['choices', 'tabClosed', 'timeLeft'];
+            keysToRemove.forEach(key => localStorage.removeItem(key));
+
             commit('START_EXAM', examParams)
 
             resolve()

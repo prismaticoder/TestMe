@@ -18,7 +18,7 @@
         block
         class="nav-link"
         color="bg-warning"
-        :disabled="!hasStarted"
+        :disabled="!hasStarted || !studentCanNowSubmit"
         @click="dialog = true"
       >
         SUBMIT
@@ -69,7 +69,7 @@
 <script>
 export default {
   name: "Timer",
-  props: ["hours", "minutes"],
+  props: ["hours", "minutes", 'examId', 'studentId'],
   data() {
     return {
       currentHour: this.hasStarted ? "-" : this.hours,
@@ -77,7 +77,6 @@ export default {
       currentSecond: this.hasStarted ? "-" : 0,
       interval: null,
       duration: null,
-      examIsAlmostEnding: false,
       x: null,
       dialog: false,
       pauseDialog: false,
@@ -86,8 +85,14 @@ export default {
   },
   computed: {
     hasStarted() {
-      return this.$store.getters.hasStarted;
+      return this.$store.getters.hasStarted(this.studentId, this.examId);
     },
+    examIsAlmostEnding() {
+      return this.interval <= (0.1 * this.duration);
+    },
+    studentCanNowSubmit() {
+      return this.interval <= (0.5 * this.duration);
+    }
   },
   watch: {
     interval(newValue) {
@@ -97,8 +102,6 @@ export default {
         this.currentMinute = 0;
         this.currentSecond = 0;
         this.submitExam();
-      } else if (newValue <= 0.1 * this.duration) {
-        this.examIsAlmostEnding = true;
       }
     },
     hasStarted(newValue) {
@@ -106,24 +109,22 @@ export default {
     },
   },
   methods: {
-    checkState() {
-      setInterval(() => {
-        this.$http
-          .get("network-status")
+    triggerOfflineStatus() {
+      if (this.x) {
+        clearInterval(this.x);
+        this.x = null;
+        this.pauseDialog = true;
+      }
+    },
+    networkReactivationCheck() {
+      if (this.hasStarted && this.x === null && this.pauseDialog) {
+        //make a call to the network status to be sure the server is reachable not just that the system is online
+        this.$http.get("network-status")
           .then((res) => {
-            if (this.hasStarted && this.x === null) {
               this.pauseDialog = false;
               this.setInterval();
-            }
           })
-          .catch((err) => {
-            if (this.x) {
-              clearInterval(this.x);
-              this.x = null;
-              this.pauseDialog = true;
-            }
-          });
-      }, 1000);
+      }
     },
     setInterval() {
       const timeExamEnds = this.$store.getters.timeExamEnds;
@@ -161,18 +162,29 @@ export default {
         .then((res) => {
           this.btnLoading = false;
           this.dialog = false;
+          localStorage.removeItem("timeLeft");
           window.location.href = "/success";
         })
         .catch((err) => {
           this.btnLoading = false;
-          this.$noty.error(
-            `Error submitting examination: ${err.response.data.message}`
-          );
+          console.log(err.response.data)
+          const errorMessage = err.response.status === 403
+            ? err.response.data.message
+            : "Sorry, there was an error submitting your examination. Kindly contact the invigilator for assistance."
+          this.$noty.error(errorMessage);
         });
     },
   },
   mounted() {
-    this.checkState();
+    if (this.hasStarted) {
+      this.setInterval();
+    }
+    window.addEventListener('offline', this.triggerOfflineStatus);
+    window.addEventListener('online', this.networkReactivationCheck);
+  },
+  destroyed() {
+    window.removeEventListener('offline', this.triggerOfflineStatus);
+    window.removeEventListener('online', this.networkReactivationCheck);
   },
 };
 </script>

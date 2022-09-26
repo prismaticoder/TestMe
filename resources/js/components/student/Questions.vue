@@ -68,7 +68,7 @@ export default {
     components: {
         SingleQuestion
     },
-    props: ['questions', 'hours', 'minutes', 'subject', 'student'],
+    props: ['questions', 'hours', 'minutes', 'subject', 'student', 'examId', 'studentId'],
     data() {
         return {
             currentQuestion: null,
@@ -83,6 +83,8 @@ export default {
                 this.$store.dispatch('startExam', {
                     hours: this.hours,
                     minutes: this.minutes,
+                    examId: this.examId,
+                    studentId: this.studentId
                 })
                 .then(() => {
                     this.currentQuestion = this.questions[0]
@@ -116,12 +118,7 @@ export default {
         hasNotBeenAnswered(questionNumber) {
             let check = this.choices.filter(choice => choice.question == questionNumber)
             if (check.length > 0) {
-                if (check[0].choice == null) {
-                    return true
-                }
-                else {
-                    return false
-                }
+                return check[0].choice == null
             }
             else {
                 return true
@@ -181,7 +178,7 @@ export default {
             return this.$store.state.currentSelectedOption
         },
         hasStarted() {
-            return this.$store.getters.hasStarted
+            return this.$store.getters.hasStarted(this.studentId, this.examId);
         },
         hasEnded() {
             return this.$store.getters.hasEnded
