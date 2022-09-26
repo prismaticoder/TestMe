@@ -26,9 +26,8 @@ class EditAdminsTable extends Migration
      */
     public function down()
     {
-        Schema::table('admins', function(Blueprint $table) {
+        Schema::table('admins', function (Blueprint $table) {
             $table->dropColumn('role_id');
-            $table->dropColumn('subject_id');
         });
     }
 }

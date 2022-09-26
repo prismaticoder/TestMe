@@ -2,8 +2,7 @@
 
 namespace App\Imports;
 
-use App\User;
-use Illuminate\Validation\Rule;
+use App\Student;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
@@ -19,15 +18,14 @@ class StudentsImport implements ToModel, WithHeadingRow, WithValidation
     /**
     * @param array $row
     *
-    * @return \Illuminate\Database\Eloquent\Model|null
+    * @return \App\Student|null
     */
-    public function model(array $row)
+    public function model(array $row): Student
     {
-        return new User([
+        return new Student([
             'lastname' => $row['surname'],
             'firstname' => $row['first_name'],
-            'class_id' => $this->class_id,
-            'code' => $this->generateStudentCode()
+            'class_id' => $this->class_id
         ]);
     }
 
@@ -54,16 +52,5 @@ class StudentsImport implements ToModel, WithHeadingRow, WithValidation
             'first_name.required' => 'Empty cell in :attribute field',
             'first_name.string' => 'Invalid :attribute provided: :input'
         );
-    }
-
-    private function generateStudentCode()
-    {
-        $characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
-        $code = mt_rand(2111, 9999) . $characters[rand(0, strlen($characters) - 1)] . $characters[rand(0, strlen($characters) - 1)];
-
-        $check = User::where('class_id',$this->class_id)->where('code', $code)->first();
-
-        //recursively check whether another student exists in that class with the same code
-        return ($check) ? $this->generateStudentCode() : $code;
     }
 }

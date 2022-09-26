@@ -11,15 +11,15 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarText">
-        <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-            <a class="nav-link" href="#">{{strtoupper($subject->alias)}} <span class="sr-only">(current)</span></a>
-        </li>
-        @foreach ($classes as $class)
-            <li class="nav-item">
-                <a class="nav-link {{ (request()->segment(3) == $class->id) ? 'active' : '' }}" href="{{\Request::route()->getName() == 'questions' ? route('questions',['subject'=>$subject->alias,'class_id'=>$class->id]) : route('results',['subject'=>$subject->alias,'class_id'=>$class->id])}}">{{$class->class}}</a>
+        <ul class="navbar-nav mx-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">{{strtoupper($subject->name)}} <span class="sr-only">(current)</span></a>
             </li>
-        @endforeach
+            @foreach ($classes as $class)
+                <li class="nav-item">
+                    <a class="nav-link {{ (request()->segment(3) == $class->id) ? 'active' : '' }}" href="{{\Request::route()->getName() == 'questions' ? route('questions',['subject'=>$subject->slug,'class'=>$class->id]) : route('results',['subject'=>$subject->slug,'class'=>$class->id])}}">{{$class->name}}</a>
+                </li>
+            @endforeach
         </ul>
         <span>
             <a class="mt-2 nav-link logoutBtn" href="{{route('admin-logout')}}">Sign Out</a>

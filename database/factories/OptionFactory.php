@@ -10,6 +10,6 @@ $factory->define(Option::class, function (Faker $faker) {
     return [
         'question_id' => $faker->numberBetween(1,700),
         'body' => $faker->text(),
-        'isCorrect' => $faker->boolean(25),
+        'is_correct' => $faker->boolean(25),
     ];
 });

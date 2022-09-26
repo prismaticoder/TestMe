@@ -7,11 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class Option extends Model
 {
     //
-    protected $fillable = ['question_id','body','isCorrect'];
+    protected $fillable = ['question_id', 'body', 'is_correct'];
+    protected $touches = ['question'];
 
     public $timestamps = false;
 
-    public function question() {
+    public function question()
+    {
         return $this->belongsTo(Question::class);
     }
 }

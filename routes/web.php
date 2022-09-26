@@ -11,115 +11,117 @@
 |
 */
 
+use App\Http\Controllers\Student\ExamsController as StudentExamsController;
+use App\Http\Controllers\Student\LoginController as StudentLoginController;
+use App\Http\Controllers\Student\SubmissionsController;
+use App\Http\Controllers\Teacher\AccountPasswordController;
+use App\Http\Controllers\Teacher\Admin\RestrictedStudentsController;
+use App\Http\Controllers\Teacher\Admin\StudentsController;
+use App\Http\Controllers\Teacher\Admin\SubjectsController;
+use App\Http\Controllers\Teacher\Admin\TeachersController;
+use App\Http\Controllers\Teacher\DashboardController;
+use App\Http\Controllers\Teacher\ExamsController as TeacherExamsController;
+use App\Http\Controllers\Teacher\LoginController as TeacherLoginController;
+use App\Http\Controllers\Teacher\ManageAccountController;
+use App\Http\Controllers\Teacher\QuestionsController;
+use App\Http\Controllers\Teacher\StartedExamsController;
+use App\Http\Controllers\Teacher\SubjectResultsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/downloadSampleExcelFile', function () {
-    return response()->download(public_path('upload_format.xlsx'),'upload-students-sample.xlsx');
+Route::get('/success', function () {
+    return view('student.submit-success');
+})->name('success');
+
+Route::get('/download-sample-excel-file', function () {
+    return response()->download(public_path('upload_format.xlsx'), 'upload-students-sample.xlsx');
 });
 
-Route::post('register/institution', function(){
-    return view('register.institution');
+//Student Authentication routes
+Route::get('/login', [StudentLoginController::class, 'index'])->name('login');
+Route::post('/login', [StudentLoginController::class, 'login']);
+Route::get('/logout', [StudentLoginController::class, 'logout'])->name('logout');
+
+//Teacher Authentication routes
+Route::get('/admin/login', [TeacherLoginController::class, 'show'])->name('admin-login');
+Route::post('/admin/login', [TeacherLoginController::class, 'authenticate']);
+Route::get('/admin/logout', [TeacherLoginController::class, 'logout'])->name('admin-logout');
+
+Route::get('/exams', [StudentExamsController::class, 'index'])->middleware('auth')->name('home');
+Route::get('/exams/{subject}', [StudentExamsController::class, 'show'])->middleware('auth')->name('exam');
+
+Route::group(['prefix' => 'admin', 'middleware' => 'auth:admins'], function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/manage-account', [ManageAccountController::class, 'index'])->name('account');
+    Route::get('/students', [StudentsController::class, 'index'])->name('students');
+    Route::get('/subjects', [SubjectsController::class, 'index'])->name('subjects');
+    Route::get('/teachers', [TeachersController::class, 'index'])->name('teachers');
+    Route::get('/{subject}/{class}/questions', [QuestionsController::class, 'index'])->name('questions');
+    Route::get('/{subject}/{class}/results', [SubjectResultsController::class, 'index'])->name('results');
+    Route::get('/{subject}/{class}/results/{exam}/download', [SubjectResultsController::class, 'download'])->name('download-result');
 });
-
-Route::get('/singleresult', function() {
-    return view('admin.main-result');
-});
-
-Route::get('/hostexam', function() {
-    return view('admin.host-exam');
-});
-
-
-Route::get('/login', 'Auth\LoginController@showLoginForm')->name('login');
-Route::post('/login', 'Auth\LoginController@login');
-Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
-
-Route::get('/exam/{subject}','StudentController@getExamQuestions')->name('exam');
-
-
-// Auth::routes();
-
-Route::get('/home', 'StudentController@index')->name('home');
 
 Route::group(['prefix' => 'api'], function () {
-    Route::get('/getQuestions','StudentController@getAjaxQuestions')->name('get-questions');
-    Route::post('/updateQuestion/{id}','AdminController@updateQuestion');
-    Route::post('/addQuestion', 'AdminController@addQuestion')->middleware('check-exam-status');
-    Route::post('/deleteQuestion/{id}','AdminController@deleteQuestion')->middleware('check-exam-status');
-    Route::post('/submitExam', 'StudentController@submitExam');
-    Route::post('/exams','AdminController@createExam')->middleware('check-exam-status');
-    Route::put('/exams/{id}','AdminController@updateExam')->middleware('check-exam-status');
-    Route::patch('/start-exam','AdminController@startExam');
-    Route::patch('/end-exam/{id}','AdminController@endExam');
-    Route::post('/useTemplate/{template_id}','AdminController@createExamFromTemplate');
-    Route::post('/students/single', 'AdminController@addStudent');
-    Route::post('/students/multiple', 'AdminController@addMultipleStudents');
-    Route::put('/students/{id}','AdminController@updateStudent');
-    Route::delete('/students/{id}','AdminController@deleteStudent');
-    Route::get('/disableStudent/{id}','AdminController@disableStudent');
-    Route::get('/restoreStudent/{id}','AdminController@restoreStudent');
-
-    Route::group(['prefix' => 'admins', 'middleware' => ['auth:admins']], function() {
-        Route::post('/','Admin\AdminSectionController@createAdmin')->middleware('can:superAdminGate');
-        Route::get('/teachers','Admin\AdminSectionController@getAllTeachers')->middleware('can:superAdminGate');
-        Route::post('/teachers','Admin\AdminSectionController@createTeacher')->middleware('can:superAdminGate');
-        Route::put('/teachers/{id}','Admin\AdminSectionController@updateTeacher')->middleware('can:superAdminGate');
-        Route::delete('/teachers/{id}','Admin\AdminSectionController@deleteTeacher')->middleware('can:superAdminGate');
-        Route::get('/subjects','Admin\AdminSectionController@getAllSubjects')->middleware('can:superAdminGate');
-        Route::post('/subjects','Admin\AdminSectionController@createSubject')->middleware('can:superAdminGate');
-        Route::put('/subjects/{id}','Admin\AdminSectionController@updateSubject')->middleware('can:superAdminGate');
-        Route::post('/confirmPassword', 'AdminController@confirmPassword');
-        Route::put('/updatePassword', 'AdminController@updatePassword');
-
+    Route::get('/network-status', function () {
+        return response()->json([
+            'status' => 'connected',
+        ]);
     });
+    Route::post('/submissions', [SubmissionsController::class, 'store']);
 
-    Route::get('/generateNumber', function() {
-        $characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+    Route::group(['middleware' => ['auth:admins']], function () {
+        Route::group(['prefix' => 'exams', 'middleware' => ['check-exam-status']], function () {
+            Route::post('/', [TeacherExamsController::class, 'store']);
+            Route::put('/{id}', [TeacherExamsController::class, 'update']);
+        });
 
-        $code = mt_rand(5111, 9999) . $characters[rand(0, strlen($characters) - 1)] . $characters[rand(0, strlen($characters) - 1)];
+        Route::group(['prefix' => 'duplicated-exams'], function () {
+            Route::post('/', [TeacherExamsController::class, 'duplicate']);
+        });
 
-        dd($code);
+        Route::group(['prefix' => 'started-exams'], function () {
+            Route::post('/', [StartedExamsController::class, 'store']);
+            Route::delete('/{id}', [StartedExamsController::class, 'destroy']);
+        });
 
+        Route::group(['prefix' => 'update-password'], function () {
+            Route::post('/', [AccountPasswordController::class, 'update']);
+            Route::post('/verify', [AccountPasswordController::class, 'verify']);
+        });
+
+        Route::group(['prefix' => 'questions', 'middleware' => ['check-exam-status']], function () {
+            Route::post('/', [QuestionsController::class, 'store']);
+            Route::put('/{question}', [QuestionsController::class, 'update']);
+            Route::delete('/{question}', [QuestionsController::class, 'destroy']);
+        });
+
+        Route::group(['middleware' => ['can:superAdminGate']], function () {
+            Route::group(['prefix' => 'teachers'], function () {
+                Route::post('/', [TeachersController::class, 'store']);
+                Route::put('/{teacher}', [TeachersController::class, 'update']);
+                Route::delete('/{teacher}', [TeachersController::class, 'destroy']);
+            });
+
+            Route::group(['prefix' => 'subjects'], function () {
+                Route::post('/', [SubjectsController::class, 'store']);
+                Route::put('/{subject:id}', [SubjectsController::class, 'update']);
+                Route::delete('/{subject:id}', [SubjectsController::class, 'destroy']);
+            });
+
+            Route::group(['prefix' => 'students'], function () {
+                Route::post('/', [StudentsController::class, 'store']);
+                Route::post('/multiple', [StudentsController::class, 'storeMany']);
+                Route::put('/{student}', [StudentsController::class, 'update']);
+                Route::delete('/{id}', [StudentsController::class, 'destroy']);
+            });
+
+            Route::group(['prefix' => 'restricted-students'], function () {
+                Route::post('/', [RestrictedStudentsController::class, 'store']);
+                Route::delete('/{id}', [RestrictedStudentsController::class, 'destroy']);
+            });
+        });
     });
 });
-
-Route::get('/success','StudentController@submitSuccess')->name('success');
-
-Route::group(['prefix' => 'admin'], function () {
-    Route::get('/login', "Admin\LoginController@showLoginForm")->name('admin-login');
-    Route::post('/login', "Admin\LoginController@authenticate");
-    Route::get('/logout', "Admin\LoginController@logout")->name('admin-logout');
-    Route::get('/', 'AdminController@dashboard')->name('dashboard');
-    Route::get('/students', 'AdminController@getAllStudents')->name('students');
-    Route::get('/account', 'AdminController@getAccountPage')->name('account');
-    Route::get('/{subject}/hostexam','AdminController@hostExam')->name('host-exam');
-    Route::get('/{subject}/endexam','AdminController@endExam')->name('end-exam');
-    Route::get('/teachers', 'Admin\AdminSectionController@teachersPage')->name('teachers');
-    Route::get('/subjects', 'Admin\AdminSectionController@subjectsPage')->name('subjects');
-    Route::get('/{subject}/{class_id}/questions', 'AdminController@getAllQuestions')->name('questions');
-    Route::get('/{subject}/{class_id}/results', 'AdminController@getSingleResult')->name('results');
-    Route::get('/{subject}/{class_id}/results/download/{exam_id}', 'AdminController@downloadResult')->name('download-result');
-
-});
-
-//function to add new teacher (username, password and subject, c'est fini)
-//function to add new admin (like a superadmin) - username and password only. Confirm that the user wants to add the person as an admin
-
-//Function to update admin details. Only the details of the admin that is logged in (like his/her username and password), the person's username and password
-//function to delete a teacher, that is to revoke their access.
-
-//can't delete an admin, can only revoke the person's access. Admins have equal rights so it should be very minimal
-//teacher can also change password but not subject
-//function to add the new teacher to the database on the place that the user is located
-//admin cannot change teacher's password, he can only change his own password and add a new teacher
-
-//why does a teacher's password have to be renewed everyday?
-//Teacher can change password but not subject
-
-//username should have no spaces in between. An example is aremu.physics or aremu_physics or olaosebikan-chemistry
-//main admin username can be anything.
-//so main admin can only add and delete teachers

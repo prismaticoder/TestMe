@@ -2,80 +2,108 @@ import axios from 'axios';
 
 export default {
     state: {
-      examStarted: localStorage.getItem('exam_params') ? JSON.parse(localStorage.getItem('exam_params')).start || false : false,
-      examEnded: localStorage.getItem('exam_params') ? JSON.parse(localStorage.getItem('exam_params')).end || false : false,
-      endTime: localStorage.getItem('exam_params') ? JSON.parse(localStorage.getItem('exam_params')).time || null : null,
-      subjectId: localStorage.getItem('exam_params') ? JSON.parse(localStorage.getItem('exam_params')).subject_id || null : null,
-      classId: localStorage.getItem('exam_params') ? JSON.parse(localStorage.getItem('exam_params')).class_id || null : null,
-      choices: localStorage.getItem('choices') ? JSON.parse(localStorage.getItem('choices')) : [],
+      examParams: localStorage.getItem('exam_params') || null,
+      choices: localStorage.getItem('choices') || null,
       currentQuestionNumber: null,
       currentSelectedOption: null
     },
     getters: {
-      hasStarted: state => !!state.examStarted,
-      hasEnded: state => !!state.examEnded
+      hasStarted: (state) => (studentId, examId) => {
+        if (!state.examParams) {
+          return false;
+        }
+
+        let examParams = JSON.parse(state.examParams);
+        
+        return examParams.studentId === studentId && examParams.examId === examId;
+      },
+      choices: state => JSON.parse(state.choices),
+      timeExamStarted: (state) => {
+        return state.examParams ? JSON.parse(state.examParams).startedAt : null
+      },
+      timeExamEnds: (state) => {
+        return state.examParams ? JSON.parse(state.examParams).endsAt : null
+      },
+      studentId: (state) => {
+        return state.examParams ? JSON.parse(state.examParams).studentId : null
+      },
+      examId: (state) => {
+        return state.examParams ? JSON.parse(state.examParams).examId : null
+      },
     },
     mutations: {
       START_EXAM(state, data) {
-        state.examStarted = true;
-        state.endTime = data.time
-        state.subjectId = data.subjectId
-        state.classId = data.classId
-      },
-      END_EXAM(state) {
-        state.examEnded = true;
+        state.examParams = data
       },
       UPDATE_SELECTION(state, newValue) {
           state.currentSelectedOption = newValue
       },
       STORE_CHOICE(state, data) {
-          localStorage.setItem('choices', JSON.stringify(data.choices))
-          state.choices = data.choices
+          const choices = JSON.stringify(data.choices);
+
+          localStorage.setItem('choices', choices)
+          state.choices = choices
           state.currentQuestionNumber = data.currentQuestionNumber
           state.currentSelectedOption = data.currentSelectedOption
       },
       STORE_LAST_CHOICE(state) {
-        state.choices = state.choices.filter(choice => choice.question !== state.currentQuestionNumber)
-        state.choices.push({question: state.currentQuestionNumber, choice: state.currentSelectedOption})
+        let choices = JSON.parse(state.choices);
+
+        choices = choices.filter(choice => choice.question !== state.currentQuestionNumber)
+        choices.push({
+            question: state.currentQuestionNumber,
+            choice: state.currentSelectedOption
+        })
+
+        state.choices = JSON.stringify(choices);
       }
     },
     actions: {
       startExam({commit}, data) {
         return new Promise((resolve, reject) => {
-            let { hours, minutes, subjectId, classId } = data
-            let timeExamEnds = new Date().getTime() + (hours * 60 * 60 * 1000) + (minutes * 60 * 1000)
+            const { hours, minutes, examId, studentId} = data
+            const timeExamStarted = new Date().getTime();
+            const timeExamEnds = timeExamStarted + (hours * 60 * 60 * 1000) + (minutes * 60 * 1000)
 
-            localStorage.setItem('exam_params', JSON.stringify({start: true, end: false, time: timeExamEnds, subject_id: subjectId, class_id: classId}))
-            commit('START_EXAM', {time: timeExamEnds, subjectId, classId})
+            const examParams = JSON.stringify({
+              startedAt: timeExamStarted,
+              endsAt: timeExamEnds,
+              studentId,
+              examId,
+            })
+
+            localStorage.setItem('exam_params', examParams);
+
+            // remove anything formerly in local storage
+            const keysToRemove = ['choices', 'tabClosed', 'timeLeft'];
+            keysToRemove.forEach(key => localStorage.removeItem(key));
+
+            commit('START_EXAM', examParams)
+
             resolve()
         })
       },
       endExam(context) {
         return new Promise((resolve, reject) => {
-        //   commit('END_EXAM')
-        //first store the last question in the choices
-            context.commit('STORE_LAST_CHOICE');
+            //first store the last question in the choices
+            if (context.state.currentQuestionNumber) {
+                context.commit('STORE_LAST_CHOICE');
+            }
 
-            axios.post('submitExam', {choices: JSON.stringify(context.state.choices), subject_id: context.state.subjectId, class_id: context.state.classId})
+            axios.post('submissions', {
+                choices: context.getters.choices
+            })
             .then(() => {
-                localStorage.removeItem('exam_params')
-                localStorage.removeItem('choices')
+                const keysToRemove = ['exam_params','choices','tabClosed','timeLeft'];
+                keysToRemove.forEach(key => localStorage.removeItem(key));
+
                 window.formSubmitting = true;
+
                 resolve()
             })
             .catch(err => {
                 reject(err)
             })
-        //   window.location.href = '/success'
-        })
-      },
-      storeChoice({commit}, data) {
-        return new Promise((resolve, reject) => {
-          commit('STORE_CHOICE')
-          localStorage.removeItem('exam_params')
-          localStorage.removeItem('choices')
-          window.location.href = '/success'
-          resolve()
         })
       },
     },
