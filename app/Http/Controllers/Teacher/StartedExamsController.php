@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Teacher;
 
-use App\Actions\EndExamAction;
-use App\Actions\StartExamAction;
 use App\Exam;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -18,7 +16,7 @@ class StartedExamsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, StartExamAction $startExamAction)
+    public function store(Request $request)
     {
         $request->validate([
             'subject_id' => ['required', 'int', 'exists:subjects,id'],
@@ -44,7 +42,7 @@ class StartedExamsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy(int $id, EndExamAction $endExamAction)
+    public function destroy(int $id)
     {
         $exam = Exam::started()->where('id', $id)->with('subject', 'class')->first();
 

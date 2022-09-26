@@ -8,18 +8,14 @@ use Illuminate\Support\Arr;
 
 class Exam extends Model
 {
-    protected $fillable = ['class_id', 'subject_id', 'aggregate_score', 'hours', 'minutes', 'date', 'has_started'];
-    protected $appends = ['hasBeenWritten', 'questions', 'code'];
+    protected $fillable = ['class_id', 'subject_id', 'aggregate_score', 'hours', 'minutes', 'date', 'started_at'];
+    protected $appends = ['hasBeenWritten', 'questions', 'code', 'has_started'];
     protected $hidden = [
         'unique_code',
     ];
 
     protected $dates = [
         'started_at',
-    ];
-
-    protected $casts = [
-        'has_started' => 'boolean',
     ];
 
     /**
@@ -42,7 +38,7 @@ class Exam extends Model
      */
     public function start()
     {
-        $this->update(['has_started' => true, 'started_at' => now()]);
+        $this->update(['started_at' => now()]);
     }
 
     /**
@@ -52,7 +48,7 @@ class Exam extends Model
      */
     public function end()
     {
-        $this->update(['has_started' => false, 'started_at' => null]);
+        $this->update(['started_at' => null]);
     }
 
     public function subject()
@@ -78,6 +74,11 @@ class Exam extends Model
     public function submissions()
     {
         return $this->hasMany(Submission::class);
+    }
+
+    public function getHasStartedAttribute(): bool
+    {
+        return (bool) $this->started_at;
     }
 
     public function scopeStarted($query)
