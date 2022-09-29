@@ -65,7 +65,7 @@ class SubjectResultsController extends Controller
             'You are not authorized to view results of this subject'
         );
 
-        $exam = Exam::findOrFail($examId);
+        $exam = Exam::withCount('questions')->where('id', $examId)->firstOrFail();
         $students = $this->getExamStudents($exam, $class);
 
         $data = compact('subject', 'class', 'exam', 'students');
