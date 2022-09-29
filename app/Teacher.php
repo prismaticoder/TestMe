@@ -2,8 +2,9 @@
 
 namespace App;
 
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 class Teacher extends Authenticatable
 {
@@ -36,12 +37,15 @@ class Teacher extends Authenticatable
 
     public function subjects()
     {
+        return $this->hasMany(TeacherSubject::class)
+            ->with(['classes' => fn ($q) => $q->orderBy('name')], ['subject' => fn ($q) => $q->orderBy('name')]);
+    }
+
+    public function getAccessibleSubjects(): Collection
+    {
         return $this->isAdmin()
                 ? Subject::orderBy('name')->with(['classes' => fn ($q) => $q->orderBy('name')])->get()
-                : $this->hasMany(TeacherSubject::class)->with(
-                    ['classes' => fn ($q) => $q->orderBy('name')],
-                    ['subject' => fn ($q) => $q->orderBy('name')]
-                );
+                : $this->subjects;
     }
 
     public function classes()

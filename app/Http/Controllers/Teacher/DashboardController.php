@@ -15,7 +15,7 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $subjects = auth()->user()->subjects();
+        $subjects = auth()->user()->getAccessibleSubjects();
         $classes = Classes::get();
         $startedExams = Exam::startedByCurrentUser()->get();
 
