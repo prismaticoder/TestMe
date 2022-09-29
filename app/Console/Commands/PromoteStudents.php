@@ -40,7 +40,7 @@ class PromoteStudents extends Command
      */
     public function handle()
     {
-        $graduandClass = Classes::where('name', 'Graduated')->first();
+        $graduandClass = Classes::withoutGlobalScopes()->where('name', 'Graduated')->first();
 
         try {
             Student::where('class_id', '<>', $graduandClass->id)
