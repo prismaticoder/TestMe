@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateTeacherRequest;
 use App\Subject;
 use App\Teacher;
 use App\TeacherSubject;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
 class TeachersController extends Controller
@@ -76,11 +77,9 @@ class TeachersController extends Controller
         DB::beginTransaction();
 
         try {
-            $teacher->update(
-                $request->only('title', 'firstname', 'lastname', 'username')
-            );
+            $subjectIds = Arr::pluck($request->subjects, 'subject_id');
 
-            $teacher->subjects()->delete();
+            $teacher->subjects()->whereNotIn('subject_id', $subjectIds)->delete();
 
             foreach ($request->subjects as $subject) {
                 $this->createSubjectWithClasses($teacher->id, $subject);
@@ -117,7 +116,7 @@ class TeachersController extends Controller
 
     private function createSubjectWithClasses(int $teacherId, array $subjectWithClasses): void
     {
-        $teacherSubject = TeacherSubject::create([
+        $teacherSubject = TeacherSubject::firstOrCreate([
             'teacher_id' => $teacherId,
             'subject_id' => $subjectWithClasses['subject_id'],
         ]);

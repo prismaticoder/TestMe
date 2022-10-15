@@ -24,14 +24,10 @@ class UpdateTeacherRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => ['required', 'in:Mr,Mrs,Miss'],
-            'firstname' => ['required', 'string', 'min:2'],
-            'lastname' => ['required', 'string', 'min:2'],
-            'username' => ['required', 'string', 'unique:teachers,username,'.request()->route('id') . ',id', 'max:255'],
             'subjects' => ['required', 'array'],
             'subjects.*.subject_id' => ['required', 'exists:subjects,id'],
             'subjects.*.classes' => ['required', 'array'],
-            'subjects.*.classes.*' => ['required', 'exists:classes,id']
+            'subjects.*.classes.*' => ['required', 'exists:classes,id'],
         ];
     }
 }
