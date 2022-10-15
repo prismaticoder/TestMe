@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Teacher;
 use App\Classes;
 use App\Exam;
 use App\Http\Controllers\Controller;
-use App\Option;
 use App\Question;
 use App\Subject;
 use DOMDocument;
@@ -17,51 +16,51 @@ use Illuminate\Support\Facades\Storage;
 class QuestionsController extends Controller
 {
     private ?DOMDocument $domDocument;
+
     public function __construct()
     {
         $this->domDocument = new \domdocument('1.0', 'utf-8');
     }
 
-
     /**
-     * Index Page
+     * Index Page.
      *
      * @return \Illuminate\Http\Response
      */
     public function index(Subject $subject, Classes $class)
     {
-        abort_if(! Gate::allows('access-class-subject', [$class->id, $subject->id]), 404, "Page not found");
+        abort_if(! Gate::allows('access-class-subject', [$class->id, $subject->id]), 404, 'Page not found');
 
-        $exams = Exam::belongsToClassSubject($class->id, $subject->id)->with('subject','class')->latest('updated_at')->get();
+        $exams = Exam::belongsToClassSubject($class->id, $subject->id)->with('subject', 'class')->latest('updated_at')->get();
         $classes = auth()->user()->isAdmin()
                         ? $subject->classes->sortBy('id')
-                        : $subject->teacherSubjects()->where('admin_id', auth()->id())->first()->classes->sortBy('id');
-
+                        : $subject->teacherSubjects()->where('teacher_id', auth()->id())->first()->classes->sortBy('id');
 
         ($exams->isNotEmpty()) ? session()->put('exam_id', $exams[0]->id) : session()->forget('exam_id');
 
-        return view('teacher.questions', compact('subject','class','classes','exams'));
+        return view('teacher.questions', compact('subject', 'class', 'classes', 'exams'));
     }
 
     /**
      * Create a new question for an upcoming exam.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         $request->merge(
-            array(
-                'correct_option' => strtolower($request->input('correct_option'))
-            )
+            [
+                'correct_option' => strtolower($request->input('correct_option')),
+            ]
         );
 
         $request->validate([
             'question' => ['required', 'string'],
             'options' => ['required', 'array', 'size:4'],
             'options.*' => ['required', 'string'],
-            'correct_option' => ['required', 'string', 'in:'. join(',', array_keys($this->getValidOptionKeys()))]
+            'correct_option' => ['required', 'string', 'in:'.implode(',', array_keys($this->getValidOptionKeys()))],
         ]);
 
         $question = $this->loadAsHtml($request->question)->storeImages()->save();
@@ -75,10 +74,10 @@ class QuestionsController extends Controller
             ]);
 
             $options = collect($request->options)->map(function ($option, $index) use ($request) {
-                return array(
+                return [
                     'body' => $this->loadAsHtml($option)->storeImages()->save(),
-                    'is_correct' => $this->getValidOptionKeys()[$request->correct_option] === $index
-                );
+                    'is_correct' => $this->getValidOptionKeys()[$request->correct_option] === $index,
+                ];
             });
 
             $createdQuestion->options()->createMany($options);
@@ -87,34 +86,35 @@ class QuestionsController extends Controller
 
             $createdQuestion->load('options');
 
-            return $this->sendSuccessResponse("Question added successfully", $createdQuestion, 201);
-
+            return $this->sendSuccessResponse('Question added successfully', $createdQuestion, 201);
         } catch (\Throwable $e) {
             DB::rollback();
+
             return $this->sendErrorResponse("An error was encountered submitting this question: {$e->getMessage()}");
         }
     }
 
     /**
-     * Update a question
+     * Update a question.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Question $question)
     {
         $request->merge(
-            array(
-                'correct_option' => strtolower($request->input('correct_option'))
-            )
+            [
+                'correct_option' => strtolower($request->input('correct_option')),
+            ]
         );
 
         $request->validate([
             'question' => ['required', 'string'],
             'options' => ['required', 'array', 'size:4'],
             'options.*' => ['required', 'string'],
-            'correct_option' => ['required', 'string', 'in:'. join(',', array_keys($this->getValidOptionKeys()))]
+            'correct_option' => ['required', 'string', 'in:'.implode(',', array_keys($this->getValidOptionKeys()))],
         ]);
 
         $questionBody = $this->loadAsHtml($request->question)->storeImages()->save();
@@ -140,35 +140,38 @@ class QuestionsController extends Controller
             $question->refresh();
             $question->load('options');
 
-            return $this->sendSuccessResponse("Question updated successfully", $question);
-
+            return $this->sendSuccessResponse('Question updated successfully', $question);
         } catch (\Throwable $e) {
             DB::rollback();
+
             return $this->sendErrorResponse("An error was encountered updating this question: {$e->getMessage()}");
         }
     }
 
     /**
-     * Delete a question
+     * Delete a question.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy(Question $question)
     {
         $question->delete();
-        return $this->sendSuccessResponse("Question deleted successfully", null, 204);
+
+        return $this->sendSuccessResponse('Question deleted successfully', null, 200);
     }
 
     private function getValidOptionKeys(): array
     {
-        return array_flip(range('a','d'));
+        return array_flip(range('a', 'd'));
     }
 
     /**
-     * Loads a string as an HTML DOM document
+     * Loads a string as an HTML DOM document.
      *
      * @param string $text
+     *
      * @return self
      */
     private function loadAsHtml(string $text): self
@@ -185,7 +188,7 @@ class QuestionsController extends Controller
     }
 
     /**
-     * Decodes each base64 image string in the document and stores it on the server
+     * Decodes each base64 image string in the document and stores it on the server.
      *
      * @return self
      */
@@ -193,7 +196,7 @@ class QuestionsController extends Controller
     {
         $images = $this->domDocument->getElementsByTagName('img');
 
-        foreach($images as $image){
+        foreach ($images as $image) {
             $this->upload($image);
         }
 
@@ -205,9 +208,8 @@ class QuestionsController extends Controller
         $base64Data = $image->getAttribute('src');
 
         if (strpos($base64Data, 'data:image') !== false) { //check if it's a base64 image
-
-            list($type, $base64Data) = explode(';', $base64Data);
-            list($format, $base64String) = explode(',', $base64Data);
+            [$type, $base64Data] = explode(';', $base64Data);
+            [$format, $base64String] = explode(',', $base64Data);
 
             $imageData = base64_decode($base64String);
 
