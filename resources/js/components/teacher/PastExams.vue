@@ -79,17 +79,17 @@ export default {
         setTemplate() {
             this.loading = true
 
-            this.$http.post(`duplicate-exams/${this.selectedExam.id}`, {
+            this.$http.post('duplicated-exams', {
+                from_exam_id: this.selectedExam.id,
                 number: this.maxImport
             })
             .then(res => {
                 this.loading = false
                 this.dialog = false
-                this.$emit('usePQTemplate', res.data.exam)
+                this.$emit('usePQTemplate', res.data.data)
             })
             .catch(err => {
-                console.log(err.response.data)
-                alert("Sorry, an error was encountered in creating this template, please try again.")
+                this.$noty.error(err.response.data.message || "Sorry, an error was encountered in creating this template, please try again.")
                 this.loading = false
                 this.dialog = false
             })

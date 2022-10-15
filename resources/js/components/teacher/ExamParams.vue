@@ -7,7 +7,7 @@
             <!-- <div class="col-md-1"></div> -->
             <div class="col-md-6">
                 <div class="float-right">
-                    <v-btn v-show="!exam.hasBeenWritten && examCount > 1" :color="yellow" @click="$emit('alter-pq-list', 'open')" small tile title="Import some of the previous examination questions into the current examination">
+                    <v-btn v-show="!exam.hasBeenWritten && examCount > 1 && !exam.duplicated_from" :color="yellow" @click="$emit('alterPQList', 'open')" small tile title="Import some of the previous examination questions into the current examination">
                         EXAM PQ TEMPLATES
                     </v-btn>
                     <v-btn v-show="exam.date == today && questionCount > 0 && !exam.has_started" :color="yellow" @click="examDialog = true" small tile title="Start this Examination">
@@ -88,9 +88,9 @@
 
                     <v-menu ref="dateMenu" v-model="createDateMenu" :close-on-content-click="false" transition="scale-transition" offset-y max-width="290px" min-width="290px">
                       <template v-slot:activator="{ on }">
-                          <v-text-field readonly v-model="date" label="Date" v-on="on" persistent-hint :hint="date < today ? 'Date selected must be after or equal to today\'s date' : ''"></v-text-field>
+                          <v-text-field readonly v-model="newExamDate" label="Date" v-on="on" persistent-hint :hint="newExamDate < today ? 'Date selected must be after or equal to today\'s date' : ''"></v-text-field>
                       </template>
-                      <v-date-picker :color="yellow" :min="today"  v-model="date" no-title @input="createDateMenu = false"></v-date-picker>
+                      <v-date-picker :color="yellow" :min="today"  v-model="newExamDate" no-title @input="createDateMenu = false"></v-date-picker>
                     </v-menu>
 
                     <v-text-field type="number" v-model="totalMarks" persistent-hint label="Aggregate Score" hint="Note: student scores will be calculated using this as a base value">
@@ -117,6 +117,7 @@ export default {
             minutes: this.exam.minutes,
             totalMarks: this.exam.aggregate_score,
             date: this.exam.date,
+            newExamDate: new Date().toISOString().substr(0, 10),
             today: new Date().toISOString().substr(0, 10),
             hourArray: [0,1,2,3,4,5,6],
             minuteArray: [0,5,10,15,20,25,30,35,40,45,50,55],
@@ -131,12 +132,12 @@ export default {
     methods: {
         createExam() {
             this.loading = true
-            let { hours, minutes, totalMarks, date } = this;
+            let { hours, minutes, totalMarks, newExamDate } = this;
 
             this.$http.post('exams', {
                 hours,
                 minutes,
-                date,
+                date: newExamDate,
                 aggregate_score: totalMarks,
                 class_id: this.classId,
                 subject_id: this.subjectId
@@ -187,6 +188,7 @@ export default {
             this.hours = this.exam.hours
             this.minutes = this.exam.minutes
             this.totalMarks = this.exam.aggregate_score
+            this.newExamDate = new Date().toISOString().substr(0, 10)
         },
         startExam() {
             this.loading = true

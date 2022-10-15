@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Teacher;
 
 use App\Exam;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\CreateExamRequest;
 use App\Http\Requests\UpdateExamRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class ExamsController extends Controller
 {
@@ -50,22 +50,19 @@ class ExamsController extends Controller
             'number' => ['required', 'int', 'min:1', 'max:30'],
         ]);
 
+        $currentExam = Exam::where('id', session()->get('exam_id'))->with('subject', 'class')->first();
+
+        abort_if(! is_null($currentExam->duplicated_from), 403, 'You cannot import questions more than once for this exam.');
+
         $examToDuplicate = Exam::find($request->from_exam_id);
-        abort_if(Gate::denies('access-class-subject', [$examToDuplicate->subject_id, $examToDuplicate->class_id]), 403, 'You do not have the appropriate permissions to duplicate this examination.');
+
+        abort_if(Gate::denies('access-class-subject', [$examToDuplicate->class_id, $examToDuplicate->subject_id]), 403, 'You do not have the appropriate permissions to duplicate this examination.');
 
         $numberOfQuestionsToImport = $request->number;
 
-        $questions = $examToDuplicate->questions()->with('options')->inRandomOrder()->get();
-        $questions->take($numberOfQuestionsToImport);
+        $this->importExamQuestions($request->from_exam_id, session()->get('exam_id'), $numberOfQuestionsToImport);
 
-        $this->importIntoCurrentExam($questions);
-
-        $exam = Exam::where('id', session()->get('exam_id'))->with('subject', 'class')->first();
-        $exam->update([
-            'duplicated_from' => $request->from_exam_id,
-        ]);
-
-        return $this->sendSuccessResponse('Questions imported successfully', $exam);
+        return $this->sendSuccessResponse('Questions imported successfully', $currentExam->refresh());
     }
 
     /**
@@ -95,10 +92,7 @@ class ExamsController extends Controller
         $fromExam = Exam::find($from);
         $toExam = Exam::find($to);
 
-        abort_if(Gate::denies('access-class-subject', [$fromExam->class_id, $fromExam->subject_id]), 403, 'You do not have the appropriate permissions to import questions from this examination.');
-
-        $questions = $fromExam->questions()->with('options')->inRandomOrder()->get();
-        $questions->take($numberToImport);
+        $questions = $fromExam->questions()->with('options')->inRandomOrder()->limit($numberToImport)->get();
 
         DB::transaction(function () use ($questions, $fromExam, $toExam) {
             foreach ($questions as $question) {
@@ -113,8 +107,7 @@ class ExamsController extends Controller
                 }
             }
 
-            $toExam->update([
-                'duplicated_from' => $fromExam->id,
+            $toExam->update(['duplicated_from' => $fromExam->id,
             ]);
         });
     }

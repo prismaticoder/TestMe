@@ -8,11 +8,12 @@ use Illuminate\Support\Arr;
 
 class Exam extends Model
 {
-    protected $fillable = ['class_id', 'subject_id', 'aggregate_score', 'hours', 'minutes', 'date', 'started_at'];
     protected $appends = ['hasBeenWritten', 'questions', 'code', 'has_started'];
     protected $hidden = [
         'code',
     ];
+
+    protected $guarded = ['id'];
 
     protected $dates = [
         'started_at',
