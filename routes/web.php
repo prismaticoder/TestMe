@@ -73,9 +73,9 @@ Route::group(['prefix' => 'api'], function () {
     Route::post('/submissions', [SubmissionsController::class, 'store']);
 
     Route::group(['middleware' => ['auth:admins']], function () {
-        Route::group(['prefix' => 'exams', 'middleware' => ['check-exam-status']], function () {
+        Route::group(['prefix' => 'exams'], function () {
             Route::post('/', [TeacherExamsController::class, 'store']);
-            Route::put('/{id}', [TeacherExamsController::class, 'update']);
+            Route::put('/{id}', [TeacherExamsController::class, 'update'])->middleware('check-exam-status');
         });
 
         Route::group(['prefix' => 'duplicated-exams'], function () {
