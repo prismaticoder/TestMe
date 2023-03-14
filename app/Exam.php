@@ -111,15 +111,6 @@ class Exam extends Model
         return $query->where('class_id', $classId)->where('subject_id', $subjectId)->orderByDesc('date');
     }
 
-    public function getCodeAttribute()
-    {
-        $subjectCode = $this->subject->code;
-        $classId = $this->class_id;
-        $uniqueCode = $this->code;
-
-        return "{$subjectCode}{$classId}{$uniqueCode}";
-    }
-
     public function getAveragePointAttribute()
     {
         return $this->aggregate_score / $this->questions->count();
@@ -143,8 +134,8 @@ class Exam extends Model
     public static function generateUniqueExaminationCode(int $classId, int $subjectId): int
     {
         do {
-            $uniqueCode = mt_rand(10, 99);
-        } while (self::where(['class_id' => $classId, 'subject_id' => $subjectId, 'code' => $uniqueCode])->exists());
+            $uniqueCode = $classId.'-'.$subjectId.'-'.mt_rand(10, 99);
+        } while (self::where(['code' => $uniqueCode])->exists());
 
         return $uniqueCode;
     }
