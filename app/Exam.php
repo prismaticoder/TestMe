@@ -131,7 +131,7 @@ class Exam extends Model
         return $this->students()->where('student_id', auth()->id())->exists();
     }
 
-    public static function generateUniqueExaminationCode(int $classId, int $subjectId): int
+    public static function generateUniqueExaminationCode(int $classId, int $subjectId): string
     {
         do {
             $uniqueCode = $classId.'-'.$subjectId.'-'.mt_rand(10, 99);
