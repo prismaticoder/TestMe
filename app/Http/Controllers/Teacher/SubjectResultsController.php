@@ -41,7 +41,7 @@ class SubjectResultsController extends Controller
         $students = $this->getExamStudents($currentExam, $class);
         $classes = auth()->user()->isAdmin()
                     ? $subject->classes->sortBy('id')
-                    : $subject->teacherSubjects()->where('admin_id', auth()->id())->first()->classes->sortBy('id');
+                    : $subject->teacherSubjects()->where('teacher_id', auth()->id())->first()->classes->sortBy('id');
 
         return view(
             'teacher.results',
