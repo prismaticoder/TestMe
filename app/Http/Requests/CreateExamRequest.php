@@ -31,7 +31,7 @@ class CreateExamRequest extends FormRequest
             'minutes' => ['required', 'int', 'in:0,5,10,15,20,25,30,35,40,45,50,55'],
             'date' => ['required', 'date', 'after_or_equal:today'],
             'from_exam_id' => ['nullable', 'int', 'exists:exams,id'],
-            'number_to_import' => ['required_with:from_exam_id', 'int', 'min:1', 'max:30'],
+            'number_to_import' => ['required_with:from_exam_id', 'int', 'min:1', 'max:60'],
         ];
     }
 }

@@ -47,7 +47,7 @@ class ExamsController extends Controller
     {
         $request->validate([
             'from_exam_id' => ['required', 'int', 'exists:exams,id', 'not_in:'.session()->get('exam_id')],
-            'number' => ['required', 'int', 'min:1', 'max:30'],
+            'number' => ['required', 'int', 'min:1', 'max:60'],
         ]);
 
         $currentExam = Exam::where('id', session()->get('exam_id'))->with('subject', 'class')->first();

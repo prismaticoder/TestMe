@@ -38,12 +38,12 @@
             <v-card>
                 <v-card-title class="headline">Import Questions From This Examination?</v-card-title>
                 <v-card-text>
-                Doing this will randomly import a specified number of questions from this examination. It is important to note that question imports can only be done ONCE, and a maximum of <strong>thirty</strong> is allowed for imports. <br>
+                Doing this will randomly import a specified number of questions from this examination. It is important to note that question imports can only be done ONCE, and a maximum of <strong>sixty</strong> is allowed for imports. <br>
                 Kindly enter the number of questions you wish to import from this examination (<strong>Exam Date: {{formatDate(selectedExam.date)}}</strong>) into the current examination in the input field below:
                 </v-card-text>
 
                 <v-col cols="5" sm="6" md="6">
-                    <v-text-field solo type="number" min="1" :max="selectedExam.questions.length > 30 ? 30 : selectedExam.questions.length" v-model="maxImport" label="Number of questions to import" persistent-hint :hint="`No of Questions in selected examination: ${selectedExam.questions.length}`">
+                    <v-text-field solo type="number" min="1" :max="selectedExam.questions.length > 60 ? 60 : selectedExam.questions.length" v-model="maxImport" label="Number of questions to import" persistent-hint :hint="`No of Questions in selected examination: ${selectedExam.questions.length}`">
                     </v-text-field>
                 </v-col>
 
